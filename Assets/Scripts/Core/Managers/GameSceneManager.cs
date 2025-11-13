@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class GameSceneManager : MonoBehaviour
 {
-    private static AudioManager _instance;
+    private static GameSceneManager _instance;
     
-    public static AudioManager Instance
+    public static GameSceneManager Instance
     {
         get
         {
             // 씬에 생성된 싱글톤이 없으면 자동 생성
             if (_instance == null)
             {
-                var obj = new GameObject("AudioManager");
-                _instance = obj.AddComponent<AudioManager>();
+                var obj = new GameObject("GameSceneManager");
+                _instance = obj.AddComponent<GameSceneManager>();
                 DontDestroyOnLoad(obj);
             }
             return _instance;
@@ -25,7 +25,7 @@ public class AudioManager : MonoBehaviour
     {
         if (_instance == null)
         {
-            _instance = this as AudioManager;
+            _instance = this as GameSceneManager;
             DontDestroyOnLoad(gameObject);
         }
         else

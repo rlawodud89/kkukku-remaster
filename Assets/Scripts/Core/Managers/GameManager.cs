@@ -4,15 +4,33 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static GameManager _instance;
+    
+    public static GameManager Instance
     {
-        
+        get
+        {
+            // 씬에 생성된 싱글톤이 없으면 자동 생성
+            if (_instance == null)
+            {
+                var obj = new GameObject("GameManager");
+                _instance = obj.AddComponent<GameManager>();
+                DontDestroyOnLoad(obj);
+            }
+            return _instance;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Awake()
     {
-        
+        if (_instance == null)
+        {
+            _instance = this as GameManager;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
