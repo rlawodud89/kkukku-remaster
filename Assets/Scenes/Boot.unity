@@ -325,7 +325,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 26722239}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2075330995}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8855529928303853904, guid: 43013cca12f9a7843984450d0ace1b51, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &26722239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 368.1, y: -22}
+  m_AnchoredPosition: {x: 368.1, y: -61.7}
   m_SizeDelta: {x: 46.7425, y: 33.0153}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &285233150
@@ -1378,7 +1390,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 368.1, y: 22.4}
+  m_AnchoredPosition: {x: 368.1, y: -16.508}
   m_SizeDelta: {x: 46.7425, y: 33.0153}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &980147157
@@ -1424,7 +1436,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 980147158}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2075330995}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8855529928303853904, guid: 5a1c66afe1444e24091f4ad7887bd139, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &980147158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1934,7 +1958,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1230814148}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2075330995}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8855529928303853904, guid: 418dcf56c658daf4bb63a1531cfbc14b, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1230814148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2701,7 +2737,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1809118626}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2075330995}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8855529928303853904, guid: 7cb984e839a55f546b46140b96d8c9a3, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1809118626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3044,7 +3092,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 368.1, y: -63.6}
+  m_AnchoredPosition: {x: 368.1, y: -105.7}
   m_SizeDelta: {x: 46.7425, y: 33.0153}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1994892331
@@ -3090,7 +3138,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1994892332}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2075330995}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8855529928303853904, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1994892332
 MonoBehaviour:
   m_ObjectHideFlags: 0
