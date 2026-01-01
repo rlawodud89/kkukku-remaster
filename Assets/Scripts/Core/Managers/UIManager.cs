@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -57,5 +58,58 @@ public class UIManager : MonoBehaviour
             newPopup.name=popupName;
             _popupList[popupName]=newPopup;
         }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // 씬이 로드될 때 실행되는 함수
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 특정 씬에서 캔버스 숨기기 
+        /*
+        if (_canvasComponent == null) _canvasComponent = GetComponent<Canvas>();
+        if (scene.name==) _canvasComponent.enabled = false;
+        else _canvasComponent.enabled = true;*/
+
+        // 씬 이동할 때 열려있는 팝업 다 닫기
+        CloseAllPopups(); 
+    }
+
+    public void CloseAllPopups()
+    {
+        // 딕셔너리에 기록된 모든 창을 검사
+        foreach (var popup in _popupList.Values)
+        {
+            // 팝업이 실제로 존재한다면
+            if (popup != null)
+            {
+                Destroy(popup); 
+            }
+        }
+
+        // 딕셔너리를 깨끗하게 비움
+        _popupList.Clear();
+    }
+
+
+    [Header("확인 팝업 프리팹")]
+    public GameObject confirmPopupPrefab;
+
+    public void ShowConfirmPopup(string msg, System.Action onYes)
+    {
+        // 팝업 생성
+        GameObject go = Instantiate(confirmPopupPrefab, transform);
+        
+        // 팝업 세팅 (글자랑 할 일 넘겨주기)
+        ConfirmPopup popup = go.GetComponent<ConfirmPopup>();
+        popup.Setup(msg, onYes);
     }
 }

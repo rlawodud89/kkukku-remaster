@@ -3456,6 +3456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8d0ff51e689b2e4eb1b97e324354964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  confirmPopupPrefab: {fileID: 652760187867014421, guid: b798d18fec60c114cbd3d7e00cb72c4b, type: 3}
 --- !u!114 &2075330996
 MonoBehaviour:
   m_ObjectHideFlags: 0
