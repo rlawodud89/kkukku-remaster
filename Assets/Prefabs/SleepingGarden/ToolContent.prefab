@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5214112455995275369}
   - component: {fileID: 7455629343405289810}
   m_Layer: 5
-  m_Name: ToolBtn
+  m_Name: ToolContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
