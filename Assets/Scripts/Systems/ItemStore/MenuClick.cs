@@ -27,7 +27,7 @@ public class MenuClick : MonoBehaviour
     public void OnClickWorkerBtn()
     {
         MainMenuPanel.SetActive(false);
-        MaterialPurchasePanel.SetActive(true);
+        WorkerEmployPanel.SetActive(true);
     }
 
     public void OnClickMaterialBackBtn()
