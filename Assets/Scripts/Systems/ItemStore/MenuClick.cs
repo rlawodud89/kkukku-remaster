@@ -29,4 +29,17 @@ public class MenuClick : MonoBehaviour
         MainMenuPanel.SetActive(false);
         MaterialPurchasePanel.SetActive(true);
     }
+
+    public void OnClickMaterialBackBtn()
+    {
+        MaterialPurchasePanel.SetActive(false);
+        MainMenuPanel.SetActive(true);
+    }
+
+    public void OnClickWorkerBackBtn()
+    {
+        WorkerEmployPanel.SetActive(false);
+        MainMenuPanel.SetActive(true);
+    }
+
 }
