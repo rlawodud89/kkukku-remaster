@@ -14,4 +14,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Start.unity
     guid: c781240f446e56d44a4117a080e2594c
+  - enabled: 1
+    path: Assets/Scenes/BlanketShop.unity
+    guid: f63e5f9c85a6279439e5f353c1d67cd8
+  - enabled: 1
+    path: Assets/Scenes/CloudPond.unity
+    guid: c65758fdfb35bf545a8ecb20034d9202
+  - enabled: 1
+    path: Assets/Scenes/MoonlightHill.unity
+    guid: 3b026ced5250560488f5a8df53eb0fff
+  - enabled: 1
+    path: Assets/Scenes/Village.unity
+    guid: 7949bd2fa9104554c856491bdfe03d3a
   m_configObjects: {}
