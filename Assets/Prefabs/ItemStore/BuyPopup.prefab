@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1023095157763104330}
   - component: {fileID: 4928789336952662086}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: InfoText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35fa06b5b95d29e4a84ab9a93785bbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InfoText: {fileID: 4928789336952662086}
 --- !u!1 &5098576807319685727
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,7 +347,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4029222256957682887}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2068869087615079384}
+        m_TargetAssemblyTypeName: BuyPopup, Assembly-CSharp
+        m_MethodName: OnClickNoBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5840270055346250701
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,7 +614,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 299633327408046112}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2068869087615079384}
+        m_TargetAssemblyTypeName: BuyPopup, Assembly-CSharp
+        m_MethodName: OnClickYesBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7102119049514852991
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BuyPopup : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public TMP_Text InfoText;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnClickYesBtn()
     {
-        
+
+    }
+
+    public void OnClickNoBtn()
+    {
+        gameObject.SetActive(false);
     }
 }
