@@ -12,6 +12,9 @@ public class StoreItemLoader : MonoBehaviour
     public RectTransform CottonContent;
     public RectTransform MoonContent;
 
+    [Header("직원 고용")]
+    public RectTransform WorkerContent;
+
     void Start()
     {
 
