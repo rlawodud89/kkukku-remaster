@@ -5,15 +5,18 @@ using UnityEngine.UI;
 
 public class StoreItemLoader : MonoBehaviour
 {
-    public ScrollRect ScrollView;
+    public ScrollRect scrollView;
 
     [Header("신성 재료")]
-    public RectTransform YarnContent;
-    public RectTransform CottonContent;
-    public RectTransform MoonContent;
+    public RectTransform yarnContent;
+    public RectTransform cottonContent;
+    public RectTransform moonContent;
 
     [Header("직원 고용")]
-    public RectTransform WorkerContent;
+    public RectTransform workerContent;
+
+    [Header("구매 팝업창")]
+    public BuyPopup buyPopup;
 
     void Start()
     {
@@ -22,28 +25,28 @@ public class StoreItemLoader : MonoBehaviour
 
     public void OnClickYarnBtn()
     {
-        ScrollView.content = YarnContent;
+        scrollView.content = yarnContent;
 
-        YarnContent.gameObject.SetActive(true);
-        CottonContent.gameObject.SetActive(false);
-        MoonContent.gameObject.SetActive(false);
+        yarnContent.gameObject.SetActive(true);
+        cottonContent.gameObject.SetActive(false);
+        moonContent.gameObject.SetActive(false);
     }
 
     public void OnClickCottonBtn()
     {
-        ScrollView.content = CottonContent;
+        scrollView.content = cottonContent;
 
-        YarnContent.gameObject.SetActive(false);
-        CottonContent.gameObject.SetActive(true);
-        MoonContent.gameObject.SetActive(false);
+        yarnContent.gameObject.SetActive(false);
+        cottonContent.gameObject.SetActive(true);
+        moonContent.gameObject.SetActive(false);
     }
 
     public void OnClickMoonBtn()
     {
-        ScrollView.content = MoonContent;
+        scrollView.content = moonContent;
 
-        YarnContent.gameObject.SetActive(false);
-        CottonContent.gameObject.SetActive(false);
-        MoonContent.gameObject.SetActive(true);
+        yarnContent.gameObject.SetActive(false);
+        cottonContent.gameObject.SetActive(false);
+        moonContent.gameObject.SetActive(true);
     }
 }

@@ -551,11 +551,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScrollView: {fileID: 241573060}
-  YarnContent: {fileID: 619453847}
-  CottonContent: {fileID: 1168866181}
-  MoonContent: {fileID: 707119529}
-  WorkerContent: {fileID: 0}
+  scrollView: {fileID: 241573060}
+  yarnContent: {fileID: 619453847}
+  cottonContent: {fileID: 1168866181}
+  moonContent: {fileID: 707119529}
+  workerContent: {fileID: 0}
+  buyPopup: {fileID: 291063170}
 --- !u!1 &424704226
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,11 +870,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScrollView: {fileID: 1074303427}
-  YarnContent: {fileID: 0}
-  CottonContent: {fileID: 0}
-  MoonContent: {fileID: 0}
-  WorkerContent: {fileID: 1518463246}
+  scrollView: {fileID: 1074303427}
+  yarnContent: {fileID: 0}
+  cottonContent: {fileID: 0}
+  moonContent: {fileID: 0}
+  workerContent: {fileID: 1518463246}
+  buyPopup: {fileID: 291063170}
 --- !u!1001 &519642649
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1135,9 +1137,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b827a0525afd5498acbbae94b5585d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainMenuPanel: {fileID: 601611369}
-  MaterialPurchasePanel: {fileID: 349630738}
-  WorkerEmployPanel: {fileID: 508407246}
+  mainMenuPanel: {fileID: 601611369}
+  materialPurchasePanel: {fileID: 349630738}
+  workerEmployPanel: {fileID: 508407246}
   buyPopup: {fileID: 291063170}
 --- !u!1 &619453846
 GameObject:

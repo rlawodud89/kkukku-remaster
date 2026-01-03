@@ -6,17 +6,17 @@ using UnityEngine.UI;
 public class MenuClick : MonoBehaviour
 {
     [Header("´Þºû¾ð´ö ÆÐ³Î")]
-    public GameObject MainMenuPanel;
-    public GameObject MaterialPurchasePanel;
-    public GameObject WorkerEmployPanel;
+    public GameObject mainMenuPanel;
+    public GameObject materialPurchasePanel;
+    public GameObject workerEmployPanel;
 
     [Header("±¸¸Å ÆË¾÷Ã¢")]
     public BuyPopup buyPopup;
 
     public void OnClickMaterialBtn()
     {
-        MainMenuPanel.SetActive(false);
-        MaterialPurchasePanel.SetActive(true);
+        mainMenuPanel.SetActive(false);
+        materialPurchasePanel.SetActive(true);
     }
 
     public void OnClickLevelBtn()
@@ -26,20 +26,20 @@ public class MenuClick : MonoBehaviour
 
     public void OnClickWorkerBtn()
     {
-        MainMenuPanel.SetActive(false);
-        WorkerEmployPanel.SetActive(true);
+        mainMenuPanel.SetActive(false);
+        workerEmployPanel.SetActive(true);
     }
 
     public void OnClickMaterialBackBtn()
     {
-        MaterialPurchasePanel.SetActive(false);
-        MainMenuPanel.SetActive(true);
+        materialPurchasePanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 
     public void OnClickWorkerBackBtn()
     {
-        WorkerEmployPanel.SetActive(false);
-        MainMenuPanel.SetActive(true);
+        workerEmployPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 
 }
