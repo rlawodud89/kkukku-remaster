@@ -53,7 +53,7 @@ public class CountableContent : MonoBehaviour
 
     public void OnClickMinusBtn()
     {
-        if (count != 0)
+        if (count != 1)
         {
             count--;
             countText.text = count.ToString();
