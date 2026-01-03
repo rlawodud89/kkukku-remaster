@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,17 +6,17 @@ using UnityEngine.UI;
 
 public class CountableContent : MonoBehaviour
 {
-    [Header("UI ¿ä¼Ò")]
+    [Header("UI ìš”ì†Œ")]
     public Image itemImg;
     public TMP_Text nameText;
     public Image priceImg;
     public TMP_Text priceText;
     public TMP_Text countText;
 
-    [Header("±¸¸Å ÆË¾÷Ã¢ (ÄÚµå¿¡¼­ ¿¬°á)")]
+    [Header("êµ¬ë§¤ íŒì—…ì°½ (ì½”ë“œì—ì„œ ì—°ê²°)")]
     public BuyPopup buyPopup;
 
-    [Header("ÀÏ¹İ ÀçÈ­, ¿ù¼® »çÁø")]
+    [Header("ì¼ë°˜ ì¬í™”, ì›”ì„ ì‚¬ì§„")]
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 

@@ -1,16 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuClick : MonoBehaviour
 {
-    [Header("´Şºû¾ğ´ö ÆĞ³Î")]
+    [Header("ë‹¬ë¹›ì–¸ë• íŒ¨ë„")]
     public GameObject mainMenuPanel;
     public GameObject materialPurchasePanel;
     public GameObject workerEmployPanel;
 
-    [Header("±¸¸Å ÆË¾÷Ã¢")]
+    [Header("êµ¬ë§¤ íŒì—…ì°½")]
     public BuyPopup buyPopup;
 
     public void OnClickMaterialBtn()

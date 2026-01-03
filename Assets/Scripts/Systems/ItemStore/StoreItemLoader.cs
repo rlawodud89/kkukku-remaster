@@ -1,24 +1,26 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StoreItemLoader : MonoBehaviour
 {
+    [Header("아이템 띄울 스크롤뷰")]
     public ScrollRect scrollView;
     public GameObject countablePrefab;
     public GameObject countlessPrefab;
 
-    [Header("�ż� ���")]
+    [Header("구매 팝업창")]
+    public BuyPopup buyPopup;
+
+    [Header("신성 재료")]
     public RectTransform yarnContent;
     public RectTransform cottonContent;
     public RectTransform moonContent;
 
-    [Header("���� ����")]
+    [Header("직원 고용")]
     public RectTransform workerContent;
 
-    [Header("���� �˾�â")]
-    public BuyPopup buyPopup;
 
     void Start()
     {
@@ -27,6 +29,7 @@ public class StoreItemLoader : MonoBehaviour
         //CountableContent ui = item.GetComponent<CountableContent>();
         //ui.SetItem();
     }
+
 
     public void OnClickYarnBtn()
     {
