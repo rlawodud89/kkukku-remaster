@@ -6,21 +6,26 @@ using UnityEngine.UI;
 public class StoreItemLoader : MonoBehaviour
 {
     public ScrollRect scrollView;
+    public GameObject countablePrefab;
+    public GameObject countlessPrefab;
 
-    [Header("½Å¼º Àç·á")]
+    [Header("ï¿½Å¼ï¿½ ï¿½ï¿½ï¿½")]
     public RectTransform yarnContent;
     public RectTransform cottonContent;
     public RectTransform moonContent;
 
-    [Header("Á÷¿ø °í¿ë")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public RectTransform workerContent;
 
-    [Header("±¸¸Å ÆË¾÷Ã¢")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½Ã¢")]
     public BuyPopup buyPopup;
 
     void Start()
     {
-
+        // ìŠ¤í¬ë¡¤ë·°ì— ì•„ì´í…œ ì¶”ê°€í•  ë•Œ ì‚¬ìš©í•˜ëŠ” ì½”ë“œ
+        //GameObject item = Instantiate(countablePrefab, moonContent);
+        //CountableContent ui = item.GetComponent<CountableContent>();
+        //ui.SetItem();
     }
 
     public void OnClickYarnBtn()

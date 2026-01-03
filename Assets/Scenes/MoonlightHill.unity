@@ -551,12 +551,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storeType: 0
   scrollView: {fileID: 241573060}
+  countablePrefab: {fileID: 6668796002199582652, guid: 1c8683c15e71e1b4b975d287f731c82b, type: 3}
+  countlessPrefab: {fileID: 6791349185190971465, guid: 88aeab8b781f25d4cbbf002ee5e88266, type: 3}
+  buyPopup: {fileID: 291063170}
   yarnContent: {fileID: 619453847}
   cottonContent: {fileID: 1168866181}
   moonContent: {fileID: 707119529}
   workerContent: {fileID: 0}
-  buyPopup: {fileID: 291063170}
 --- !u!1 &424704226
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,12 +873,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storeType: 0
   scrollView: {fileID: 1074303427}
+  countablePrefab: {fileID: 6668796002199582652, guid: 1c8683c15e71e1b4b975d287f731c82b, type: 3}
+  countlessPrefab: {fileID: 6791349185190971465, guid: 88aeab8b781f25d4cbbf002ee5e88266, type: 3}
+  buyPopup: {fileID: 291063170}
   yarnContent: {fileID: 0}
   cottonContent: {fileID: 0}
   moonContent: {fileID: 0}
   workerContent: {fileID: 1518463246}
-  buyPopup: {fileID: 291063170}
 --- !u!1001 &519642649
 PrefabInstance:
   m_ObjectHideFlags: 0

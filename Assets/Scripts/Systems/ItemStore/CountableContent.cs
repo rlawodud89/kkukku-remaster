@@ -23,7 +23,7 @@ public class CountableContent : MonoBehaviour
     //private ItemSo item;
     private bool isGold;
     private int count;
-  
+
 
     void Start()
     {
@@ -62,9 +62,7 @@ public class CountableContent : MonoBehaviour
 
     public void OnClickBuyBtn()
     {
-        /*
-        buyPopup.gameObject.SetActive(true);
-
-        */
+        //buyPopup.SetItem();
+        //buyPopup.gameObject.SetActive(true);
     }
 }
