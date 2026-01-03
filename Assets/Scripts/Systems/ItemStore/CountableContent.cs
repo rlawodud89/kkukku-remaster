@@ -50,10 +50,10 @@ public class CountableContent : MonoBehaviour
         count++;
         countText.text = count.ToString();
     }
-
+ 
     public void OnClickMinusBtn()
     {
-        if (count != 0)
+        if (count != 1)
         {
             count--;
             countText.text = count.ToString();

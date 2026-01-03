@@ -10,9 +10,16 @@ public class MenuClick : MonoBehaviour
     public GameObject materialPurchasePanel;
     public GameObject workerEmployPanel;
 
+    [Header("마을 패널")]
+    public GameObject interiorStorePanel;
+    public GameObject craftStorePanel;
+    public GameObject toolPurcahsePanel;
+    public GameObject facilityUpgradePanel;
+
     [Header("구매 팝업창")]
     public BuyPopup buyPopup;
 
+    // 달빛 언덕
     public void OnClickMaterialBtn()
     {
         mainMenuPanel.SetActive(false);
@@ -42,4 +49,59 @@ public class MenuClick : MonoBehaviour
         mainMenuPanel.SetActive(true);
     }
 
+
+    // 마을
+    public void OnClickInteriorStoreBtn()
+    {
+        interiorStorePanel.SetActive(true);
+    }
+
+    public void OnClickCraftStoreBtn()
+    {
+        craftStorePanel.SetActive(true);
+    }
+
+    public void OnClickInteriorStoreBackBtn()
+    {
+        interiorStorePanel.SetActive(false);
+    }
+
+    public void OnClickToolBtn()
+    {
+        toolPurcahsePanel.SetActive(true);
+        craftStorePanel.SetActive(false);
+    }
+
+    public void OnClickFacilityBtn()
+    {
+        facilityUpgradePanel.SetActive(true);
+        craftStorePanel.SetActive(false);
+    }
+
+    public void OnClickCraftStoreBackBtn()
+    {
+        craftStorePanel.SetActive(false);
+    }
+
+    public void OnClickToolPurchaseBackBtn()
+    {
+        toolPurcahsePanel.SetActive(false);
+        craftStorePanel.SetActive(true);
+    }
+
+    public void OnClickInteriorBoxBtn()
+    {
+        buyPopup.gameObject.SetActive(true);
+    }
+
+    public void OnClickExpansionBtn()
+    {
+        buyPopup.gameObject.SetActive(true);
+    }
+
+    public void OnClickFacilityUpgradeBackBtn()
+    {
+        facilityUpgradePanel.SetActive(false);
+        craftStorePanel.SetActive(true);
+    }
 }
