@@ -329,7 +329,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5670416181632663018}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2843925329289987357}
+        m_TargetAssemblyTypeName: CountlessContent, Assembly-CSharp
+        m_MethodName: OnClickBuyBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6791349185190971465
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +353,7 @@ GameObject:
   - component: {fileID: 1625217306067429039}
   - component: {fileID: 5849049482718168559}
   - component: {fileID: 3033579922310474031}
+  - component: {fileID: 2843925329289987357}
   m_Layer: 5
   m_Name: CountlessContent
   m_TagString: Untagged
@@ -410,6 +423,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2843925329289987357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791349185190971465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580dfc35ac16a9443bf886cba1692065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemImg: {fileID: 4847379912639598933}
+  nameText: {fileID: 6044375220102174538}
+  priceImg: {fileID: 1646905735606561201}
+  priceText: {fileID: 4568858544290602913}
+  buyPopup: {fileID: 0}
+  goldSprite: {fileID: 0}
+  moonrockSprite: {fileID: 0}
 --- !u!1 &7527169739633900029
 GameObject:
   m_ObjectHideFlags: 0

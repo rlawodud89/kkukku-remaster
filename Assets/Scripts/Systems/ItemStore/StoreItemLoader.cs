@@ -39,7 +39,8 @@ public class StoreItemLoader : MonoBehaviour
         //ui.SetItem();
     }
 
-
+    
+    // 스크롤뷰에 표시되는 부류 변경 버튼 핸들러
     public void OnClickYarnBtn()
     {
         scrollView.content = yarnContent;
