@@ -57,4 +57,29 @@ public class StoreItemLoader : MonoBehaviour
         cottonContent.gameObject.SetActive(false);
         moonContent.gameObject.SetActive(true);
     }
+
+    public void OnClickShopBtn()
+    {
+
+    }
+
+    public void OnClickRoomBtn()
+    {
+
+    }
+
+    public void OnClickTileBtn()
+    {
+
+    }
+
+    public void OnClickFishingBtn()
+    {
+
+    }
+
+    public void OnClickGatheringBtn()
+    {
+
+    }
 }

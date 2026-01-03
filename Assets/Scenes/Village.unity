@@ -1462,6 +1462,7 @@ GameObject:
   - component: {fileID: 338403608}
   - component: {fileID: 338403610}
   - component: {fileID: 338403609}
+  - component: {fileID: 338403611}
   m_Layer: 5
   m_Name: InteriorStore
   m_TagString: Untagged
@@ -1531,6 +1532,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338403607}
   m_CullTransparentMesh: 1
+--- !u!114 &338403611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338403607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollView: {fileID: 0}
+  countablePrefab: {fileID: 0}
+  countlessPrefab: {fileID: 0}
+  buyPopup: {fileID: 0}
+  yarnContent: {fileID: 0}
+  cottonContent: {fileID: 0}
+  moonContent: {fileID: 0}
+  workerContent: {fileID: 0}
 --- !u!1 &339038796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,7 +1754,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 339662172}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickCraftStoreBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &339662172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2366,7 +2399,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 535403709}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickCraftStoreBackBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &535403709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5586,7 +5631,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1033022336}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickExpansionBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1033022336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5770,6 +5827,7 @@ GameObject:
   - component: {fileID: 1119665864}
   - component: {fileID: 1119665866}
   - component: {fileID: 1119665865}
+  - component: {fileID: 1119665867}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -5845,6 +5903,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1119665863}
   m_CullTransparentMesh: 1
+--- !u!114 &1119665867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119665863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90b827a0525afd5498acbbae94b5585d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuPanel: {fileID: 0}
+  materialPurchasePanel: {fileID: 0}
+  workerEmployPanel: {fileID: 0}
+  interiorStorePanel: {fileID: 338403607}
+  craftStorePanel: {fileID: 249438961}
+  toolPurcahsePanel: {fileID: 1797980285}
+  facilityUpgradePanel: {fileID: 615248774}
+  buyPopup: {fileID: 8976709631531724788}
 --- !u!224 &1144793699 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3185274233473156427, guid: 50d38bf63b6e48a4aae99acd8b2520ef, type: 3}
@@ -6059,7 +6137,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1216670236}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickToolBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1216670236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6179,7 +6269,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1246903583}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickToolPurchaseBackBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1246903583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6376,7 +6478,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1295087016}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickFacilityBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1295087016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7236,7 +7350,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1600581760}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickInteriorBoxBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1600581760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7361,6 +7487,7 @@ GameObject:
   - component: {fileID: 1797980286}
   - component: {fileID: 1797980288}
   - component: {fileID: 1797980287}
+  - component: {fileID: 1797980289}
   m_Layer: 5
   m_Name: ToolPurchase
   m_TagString: Untagged
@@ -7429,6 +7556,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1797980285}
   m_CullTransparentMesh: 1
+--- !u!114 &1797980289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797980285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc9d136c909d5414a8fba8476bb468a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollView: {fileID: 0}
+  countablePrefab: {fileID: 0}
+  countlessPrefab: {fileID: 0}
+  buyPopup: {fileID: 0}
+  yarnContent: {fileID: 0}
+  cottonContent: {fileID: 0}
+  moonContent: {fileID: 0}
+  workerContent: {fileID: 0}
 --- !u!1 &1811546583
 GameObject:
   m_ObjectHideFlags: 0
@@ -7510,7 +7657,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1811546586}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickInteriorStoreBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1811546586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7780,7 +7939,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1991118891}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickFacilityUpgradeBackBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1991118891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8473,7 +8644,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2121126495}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1119665867}
+        m_TargetAssemblyTypeName: MenuClick, Assembly-CSharp
+        m_MethodName: OnClickInteriorStoreBackBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2121126495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8710,6 +8893,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50d38bf63b6e48a4aae99acd8b2520ef, type: 3}
+--- !u!114 &8976709631531724788 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2068869087615079384, guid: 50d38bf63b6e48a4aae99acd8b2520ef, type: 3}
+  m_PrefabInstance: {fileID: 8976709631531724787}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35fa06b5b95d29e4a84ab9a93785bbb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
