@@ -24,18 +24,25 @@ public class ToolContent : MonoBehaviour
         this.toolInventory = toolInventory;
     }*/
 
+    public void SetTool(ToolInventory toolInventory)
+    {
+        this.toolInventory = toolInventory;
+    }
+
     public void HighlightOn()
     {
+        // 임시 하이라이트
         toolImg.color = Color.red;
     }
 
     public void HighlightOff()
     {
+        // 임시 하이라이트 해제
         toolImg.color = Color.white;
     }
 
     public void OnClickToolContent()
     {
-        //toolInventory.SelectTool();
+        toolInventory.SelectTool(this);
     }
 }

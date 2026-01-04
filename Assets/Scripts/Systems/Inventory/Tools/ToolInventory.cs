@@ -28,6 +28,17 @@ public class ToolInventory : MonoBehaviour
         // 현재 선택되어 있는 도구 데이터 받아서 설정 필요
         //selectedTool = GetToolSO();
         //selectedToolContent = toolContentDictionary[""];
+
+
+        GameObject tool = Instantiate(toolPrefab, toolContent);
+        ToolContent ui = tool.GetComponent<ToolContent>();
+        ui.SetTool(this);
+
+        GameObject tool2 = Instantiate(toolPrefab, toolContent);
+        ToolContent ui2 = tool2.GetComponent<ToolContent>();
+        ui2.SetTool(this);
+        selectedToolContent = ui2;
+        selectedToolContent.HighlightOn();
     }
 
     /*public void SelectTool(ToolSO selectedTool, ToolContent selectedToolContent)
@@ -40,4 +51,14 @@ public class ToolInventory : MonoBehaviour
         this.selectedToolContent = selectedToolContent;
         selectedToolContent.HighlightOn();
     }*/
+
+    public void SelectTool(ToolContent selectedToolContent)
+    {
+        // 기존 선택 해제
+        this.selectedToolContent.HighlightOff();
+
+        // 새로운 선택 저장 및 표시
+        this.selectedToolContent = selectedToolContent;
+        selectedToolContent.HighlightOn();
+    }
 }
