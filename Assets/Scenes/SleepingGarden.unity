@@ -712,8 +712,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GatheringUI, Assembly-CSharp
+      - m_Target: {fileID: 1512228360}
+        m_TargetAssemblyTypeName: ToolUI, Assembly-CSharp
         m_MethodName: OnClickToolBtn
         m_Mode: 1
         m_Arguments:
