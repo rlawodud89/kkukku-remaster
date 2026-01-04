@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ToolInventory : MonoBehaviour
 {
+    [Header("도구 선택 패널")]
+    [SerializeField] private GameObject toolPanel;
+
     [Header("도구 스크롤뷰")]
     [SerializeField] private RectTransform scrollView;
 
@@ -60,5 +64,15 @@ public class ToolInventory : MonoBehaviour
         // 새로운 선택 저장 및 표시
         this.selectedToolContent = selectedToolContent;
         selectedToolContent.HighlightOn();
+    }
+
+    public void OnClickToolBtn()
+    {
+        toolPanel.SetActive(true);
+    }
+
+    public void OnClickToolBackBtn()
+    {
+        toolPanel.SetActive(false);
     }
 }
