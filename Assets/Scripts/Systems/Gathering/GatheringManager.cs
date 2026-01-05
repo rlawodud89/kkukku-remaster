@@ -9,9 +9,10 @@ public class GatheringManager : MonoBehaviour
     [Header("전체 제한시간")]
     [SerializeField] private float timeLimit = 2f;
 
+    private Coroutine timerCoroutine;
     private List<ItemTree> trees = new List<ItemTree>();
 
-    private float timer;
+    public bool IsTimerRunning => timerCoroutine != null;
 
     void Awake()
     {
@@ -23,19 +24,58 @@ public class GatheringManager : MonoBehaviour
 
     void Start()
     {
-        StartRound();
+        StartTimer();
     }
 
-    void Update()
-    {
-        timer -= Time.deltaTime;
 
-        if (timer <= 0f)
+    // === 타이머 외부 제어 ===
+
+    public void StartTimer()
+    {
+        if (timerCoroutine != null)
+            return;
+
+        timerCoroutine = StartCoroutine(TimerRoutine());
+    }
+
+    public void StopTimer()
+    {
+        if (timerCoroutine != null)
         {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+
             ResetAllButtons();
-            StartRound();
         }
     }
+
+    // === 타이머 코루틴 ===
+
+    private IEnumerator TimerRoutine()
+    {
+        while (true)
+        {
+            float elapsed = 0f;
+
+            // 0초 → timeLimit
+            while (elapsed < timeLimit)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // 제한시간 도달
+            OnTimeOver();
+        }
+    }
+
+    private void OnTimeOver()
+    {
+        ResetAllButtons();
+    }
+
+
+    // === 아이템 트리 관리 ===
 
     public void RegisterItemTree(ItemTree itemTree)
     {
@@ -43,12 +83,7 @@ public class GatheringManager : MonoBehaviour
             trees.Add(itemTree);
     }
 
-    void StartRound()
-    {
-        timer = timeLimit;
-    }
-
-    void ResetAllButtons()
+    private void ResetAllButtons()
     {
         foreach (var itemTree in trees)
         {
