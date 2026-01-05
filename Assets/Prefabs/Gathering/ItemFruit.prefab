@@ -169,10 +169,10 @@ RectTransform:
   - {fileID: 1641842823531084215}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -109.19577, y: 15.2436}
-  m_SizeDelta: {x: -628.1391, y: -315.8719}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -109.19577, y: 15.243599}
+  m_SizeDelta: {x: 45.8609, y: 62.128113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7545515099128682961
 CanvasRenderer:
@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf5e2ef6a5513d4408d8b03fd017ab94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemFruitPanel: {fileID: 64525305274335470}
   itemBtn: {fileID: 8531187662165134746}
   countText: {fileID: 8818202329708170540}
 --- !u!1 &9097906168827534663
