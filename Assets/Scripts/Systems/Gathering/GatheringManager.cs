@@ -9,10 +9,10 @@ public class GatheringManager : MonoBehaviour
     [Header("전체 제한시간")]
     [SerializeField] private float timeLimit = 2f;
 
-    private Coroutine timerCoroutine;
     private List<ItemTree> trees = new List<ItemTree>();
+    private Coroutine timerCoroutine;
+    private float elapsed;
 
-    public bool IsTimerRunning => timerCoroutine != null;
 
     void Awake()
     {
@@ -28,7 +28,7 @@ public class GatheringManager : MonoBehaviour
     }
 
 
-    // === 타이머 외부 제어 ===
+    // === 타이머 외부 제어 및 접근 ===
 
     public void StartTimer()
     {
@@ -49,18 +49,31 @@ public class GatheringManager : MonoBehaviour
         }
     }
 
+    public bool IsTimerRunning()
+    {
+        return timerCoroutine != null;
+    }
+
+    public float GetRemainingTime()
+    {
+        return 1 - Mathf.Clamp01(elapsed / timeLimit);
+        // 0 ~ 1 사이 값으로 반환, 시작할 때 남은 시간이 1이고 다 지난 후 남은 시간 0이 됨
+    }
+
+
     // === 타이머 코루틴 ===
 
     private IEnumerator TimerRoutine()
     {
         while (true)
         {
-            float elapsed = 0f;
+            elapsed = 0f;
 
             // 0초 → timeLimit
             while (elapsed < timeLimit)
             {
                 elapsed += Time.deltaTime;
+                //Debug.Log("남은 시간: " + GetRemainingTime());
                 yield return null;
             }
 
