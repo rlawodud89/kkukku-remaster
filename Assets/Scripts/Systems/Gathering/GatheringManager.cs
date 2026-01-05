@@ -24,6 +24,7 @@ public class GatheringManager : MonoBehaviour
 
     void Start()
     {
+        ResetAllButtons();
         StartTimer();
     }
 
