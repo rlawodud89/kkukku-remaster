@@ -3,8 +3,8 @@ using System;
 // 퀘스트 종류 (수집, 대화, 방문 등)
 public enum QuestType
 {
-    Collect, // 아이템 수집 (예: 원두 10개)
-    Visit,   // 장소 방문 (예: 공원 가기)
+    CollectItem, // 아이템 수집 (예: 원두 10개)
+    VisitLocation,   // 장소 방문 (예: 공원 가기)
     Talk     // NPC 대화 (예: 단골손님 대화)
 }
 

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20d4734ddfab8c04184bfc89d9228533, type: 3}
+  m_Name: Quest1
+  m_EditorClassIdentifier: 
+  questID: 1
+  title: "\uC774\uBD88 \uB9CC\uB4E4\uAE30"
+  description: "\uC774\uBD88\uC744 \uB9CC\uB4E4\uAE30 \uC704\uD574 \uD544\uC694\uD55C
+    \uC7AC\uB8CC\uB97C \uBAA8\uC544\uC11C 2\uAC1C\uC758 \uC774\uBD88\uC744 \uB9CC\uB4E4\uC5B4
+    \uBCF4\uC138\uC694."
+  icon: {fileID: 0}
+  requiredLevel: 0
+  type: 0
+  goalCount: 2
+  rewardGold: 100
+  rewardMoonRock: 0
+  rewardEnergy: 200
