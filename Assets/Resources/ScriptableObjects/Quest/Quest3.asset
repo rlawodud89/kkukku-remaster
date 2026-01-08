@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Quest3
   m_EditorClassIdentifier: 
   questID: 3
-  title: 
+  title: "\u3147\u3134\u3139\u3134"
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d722fe7ec2e837b4cb5660be1b1a84d4, type: 3}
   requiredLevel: 0
   type: 0
-  goalCount: 0
+  goalCount: 1
   rewardGold: 0
   rewardMoonRock: 0
   rewardEnergy: 0

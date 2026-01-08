@@ -12,7 +12,6 @@ public class QuestManager : MonoBehaviour
     public List<Quest> myActiveQuests;   // 플레이어가 진행 중인 퀘스트들
 
     public GameObject questButtonPrefab;
-    //public GameObject questPanelPrefab; 
     public Transform contentPanel;  // questButton 생성될 위치
     
     public static QuestManager Instance
@@ -88,8 +87,6 @@ public class QuestManager : MonoBehaviour
     // UI 갱신하는 함수
     public void UpdateUI()
     {
-        //contentPanel=questPanelPrefab.transform.Find("Scroll View/Viewport/Content");
-
         if(contentPanel==null)  return;
 
         // 기존에 있던 것들 다 지우기 

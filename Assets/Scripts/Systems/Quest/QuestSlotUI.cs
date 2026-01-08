@@ -23,7 +23,14 @@ public class QuestSlotUI : MonoBehaviour
         questIcon.sprite=quest.data.icon;
 
         // 진행도 설정
-        progressText.text = $"{quest.currentCount} / {quest.data.goalCount}";
+        if (quest.data.goalCount == 1)
+        {
+            progressText.text=" ";
+        }
+        else
+        {
+            progressText.text = $"{quest.currentCount} / {quest.data.goalCount}";
+        }
 
         // 퀘스트 완료 시 색바꾸고 완료 표시
         if (quest.isCompleted)
