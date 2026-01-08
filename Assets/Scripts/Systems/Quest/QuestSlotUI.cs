@@ -8,10 +8,16 @@ using UnityEngine.UI;
 
 public class QuestSlotUI : MonoBehaviour
 {
-    public  TMP_Text questTitle;   // 퀘스트 제목
-    //public TMP_Text questDescription;   // 퀘스트 설명
+    [Header("UI Components")]
     public UnityEngine.UI.Image questIcon;   // 퀘스트 아이콘
+    public  TMP_Text questTitle;   // 퀘스트 제목
     public TMP_Text progressText;   // 진행도
+
+    //public UnityEngine.UI.Image reward1Image;   // 퀘스트 보상
+    //public GameObject reward2;
+
+    public TMP_Text completeButton;  // 보상받기/진행중 버튼
+
 
     // 데이터를 받아서 화면을 갱신하는 함수
     public void Setup(Quest quest)
@@ -32,15 +38,17 @@ public class QuestSlotUI : MonoBehaviour
             progressText.text = $"{quest.currentCount} / {quest.data.goalCount}";
         }
 
-        // 퀘스트 완료 시 색바꾸고 완료 표시
+        // 보상이미지, 갯수 설정
+
+
+        // 퀘스트 완료 여부 표시
         if (quest.isCompleted)
         {
-            questTitle.color=Color.green;
-            progressText.text="완료!";
+            completeButton.text="보상받기";
         }
         else
         {
-            questTitle.color=Color.black;
+            completeButton.text="진행중";
         }
     }
 }

@@ -79,4 +79,13 @@ public class UIManager : MonoBehaviour
         ConfirmPopup popup = go.GetComponent<ConfirmPopup>();
         popup.Setup(msg, onYes);
     }
+
+    [Header("퀘스트 디테일 프리팹")]
+    public GameObject questDetailPopupPrefab;
+
+    public void ShowQuestDetailPopup()
+    {
+        questDetailPopupPrefab.SetActive(true);
+    }
+
 }
