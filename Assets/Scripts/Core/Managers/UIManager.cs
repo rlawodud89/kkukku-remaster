@@ -36,12 +36,12 @@ public class UIManager : MonoBehaviour
     }
 
     
-    private Dictionary<string, GameObject> _popupList = new Dictionary<string, GameObject>();
+    //private Dictionary<string, GameObject> _popupList = new Dictionary<string, GameObject>();
 
     public void OpenPopup(GameObject popupPrefab)
     {
         if (popupPrefab == null) return;
-
+/*
         string popupName=popupPrefab.name;
 
         // 이미 생성되어있으면 켜주기만 함
@@ -57,7 +57,8 @@ public class UIManager : MonoBehaviour
             GameObject newPopup=Instantiate(popupPrefab,transform);
             newPopup.name=popupName;
             _popupList[popupName]=newPopup;
-        }
+        }*/
+        popupPrefab.SetActive(true);
     }
 
     private void OnEnable()
@@ -80,9 +81,10 @@ public class UIManager : MonoBehaviour
         else _canvasComponent.enabled = true;*/
 
         // 씬 이동할 때 열려있는 팝업 다 닫기
-        CloseAllPopups(); 
+        //CloseAllPopups(); 
     }
 
+/*
     public void CloseAllPopups()
     {
         // 딕셔너리에 기록된 모든 창을 검사
@@ -97,7 +99,7 @@ public class UIManager : MonoBehaviour
 
         // 딕셔너리를 깨끗하게 비움
         _popupList.Clear();
-    }
+    }*/
 
 
     [Header("확인 팝업 프리팹")]
