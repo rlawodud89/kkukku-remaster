@@ -69,10 +69,22 @@ public class ToolInventory : MonoBehaviour
     public void OnClickToolBtn()
     {
         toolPanel.SetActive(true);
+
+        // 수면정원인 경우, 채집 제한시간 타이머 멈춰둠
+        if (GatheringManager.Instance != null)
+        {
+            GatheringManager.Instance.StopTimer();
+        }
     }
 
     public void OnClickToolBackBtn()
     {
         toolPanel.SetActive(false);
+
+        // 수면정원인 경우, 채집 제한시간 타이머 다시 시작
+        if (GatheringManager.Instance != null)
+        {
+            GatheringManager.Instance.StartTimer();
+        }
     }
 }
