@@ -35,29 +35,12 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    
-    private Dictionary<string, GameObject> _popupList = new Dictionary<string, GameObject>();
 
+    // 메뉴 팝업 여는 함수
     public void OpenPopup(GameObject popupPrefab)
     {
         if (popupPrefab == null) return;
-
-        string popupName=popupPrefab.name;
-
-        // 이미 생성되어있으면 켜주기만 함
-        if(_popupList.ContainsKey(popupName) && _popupList[popupName] != null)
-        {
-            GameObject existingPopup = _popupList[popupName];
-            existingPopup.SetActive(true);
-            existingPopup.transform.SetAsLastSibling(); // 맨앞으로
-        }
-        // 없으면 생성
-        else
-        {
-            GameObject newPopup=Instantiate(popupPrefab,transform);
-            newPopup.name=popupName;
-            _popupList[popupName]=newPopup;
-        }
+        popupPrefab.SetActive(true);
     }
 
     private void OnEnable()
@@ -80,23 +63,7 @@ public class UIManager : MonoBehaviour
         else _canvasComponent.enabled = true;*/
 
         // 씬 이동할 때 열려있는 팝업 다 닫기
-        CloseAllPopups(); 
-    }
-
-    public void CloseAllPopups()
-    {
-        // 딕셔너리에 기록된 모든 창을 검사
-        foreach (var popup in _popupList.Values)
-        {
-            // 팝업이 실제로 존재한다면
-            if (popup != null)
-            {
-                Destroy(popup); 
-            }
-        }
-
-        // 딕셔너리를 깨끗하게 비움
-        _popupList.Clear();
+        // CloseAllPopups(); 
     }
 
 
@@ -112,4 +79,13 @@ public class UIManager : MonoBehaviour
         ConfirmPopup popup = go.GetComponent<ConfirmPopup>();
         popup.Setup(msg, onYes);
     }
+
+    [Header("퀘스트 디테일 프리팹")]
+    public GameObject questDetailPopupPrefab;
+
+    public void ShowQuestDetailPopup()
+    {
+        questDetailPopupPrefab.SetActive(true);
+    }
+
 }
