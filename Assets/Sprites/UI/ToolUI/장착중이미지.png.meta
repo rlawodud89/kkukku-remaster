@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b207124855123ee45b9a10376715ee34
+guid: d89e598748d648343a7cd62b4fb2804c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: "ChatGPT Image 2026\uB144 1\uC6D4 10\uC77C \uC624\uC804 12_49_41-Photoroom_0"
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 305
+        width: 741
+        height: 243
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bcbcf8c010a5bc44b3144917965d520
+      internalID: 1981798294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +140,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "ChatGPT Image 2026\uB144 1\uC6D4 10\uC77C \uC624\uC804 12_49_41-Photoroom_0": 1981798294
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
