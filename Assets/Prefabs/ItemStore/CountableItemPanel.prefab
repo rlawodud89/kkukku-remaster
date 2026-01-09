@@ -695,7 +695,7 @@ GameObject:
   - component: {fileID: 2049159776305539252}
   - component: {fileID: 6511124871860795255}
   m_Layer: 5
-  m_Name: CountableContent
+  m_Name: CountableItemPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

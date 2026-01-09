@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CountableContent : MonoBehaviour
+public class CountableItemPanel : MonoBehaviour
 {
     [Header("UI 요소")]
     public Image itemImg;

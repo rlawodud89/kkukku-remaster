@@ -4,12 +4,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToolContent : MonoBehaviour
+public class ToolItemPanel : MonoBehaviour
 {
     [Header("UI 요소")]
     [SerializeField] private Image toolImg;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text infoText;
+    [SerializeField] private GameObject UsedImg;
 
     private ToolInventory toolInventory;
     //private ToolSO tool;
@@ -29,16 +30,14 @@ public class ToolContent : MonoBehaviour
         this.toolInventory = toolInventory;
     }
 
-    public void HighlightOn()
+    public void UsedOn()
     {
-        // 임시 하이라이트
-        toolImg.color = Color.red;
+        UsedImg.SetActive(true);
     }
 
-    public void HighlightOff()
+    public void UsedOff()
     {
-        // 임시 하이라이트 해제
-        toolImg.color = Color.white;
+        UsedImg.SetActive(false);
     }
 
     public void OnClickToolContent()

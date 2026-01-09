@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 3033579922310474031}
   - component: {fileID: 2843925329289987357}
   m_Layer: 5
-  m_Name: CountlessContent
+  m_Name: CountlessItemPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
