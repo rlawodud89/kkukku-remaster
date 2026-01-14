@@ -10,10 +10,17 @@ public class NPCAI : MonoBehaviour
     public Pathfinding pathfinding; // A* 스크립트 연결을 위해 추가
     public float moveSpeed = 2f;
     private SpriteRenderer sr;
+    private Animator animator;
+    private Vector3 lastPosition;
+    private Vector2 lastMoveDir = Vector2.down;
+
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        lastPosition = transform.position;
+
         // 씬에 있는 Pathfinding 스크립트를 자동으로 찾거나 인스펙터에서 할당하세요.
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
 
@@ -25,6 +32,31 @@ public class NPCAI : MonoBehaviour
         // Y축 기반 정렬 (장애물 앞/뒤 처리)
         sr.sortingOrder = Mathf.RoundToInt(transform.position.y * -100);
     }
+
+    void UpdateAnimation(Vector3 currentPosition)
+    {
+        Vector3 delta = currentPosition - lastPosition;
+
+        if (delta.sqrMagnitude > 0.0001f)
+        {
+            Vector2 dir = delta.normalized;
+            lastMoveDir = dir;
+
+            animator.SetFloat("MoveX", dir.x);
+            animator.SetFloat("MoveY", dir.y);
+            animator.SetFloat("Speed", delta.magnitude);
+        }
+        else
+        {
+            // 멈췄을 때는 마지막 방향 유지
+            animator.SetFloat("MoveX", lastMoveDir.x);
+            animator.SetFloat("MoveY", lastMoveDir.y);
+            animator.SetFloat("Speed", 0f);
+        }
+
+        lastPosition = currentPosition;
+    }
+
 
     IEnumerator BehaviorRoutine()
     {
@@ -84,8 +116,10 @@ public class NPCAI : MonoBehaviour
                 while (Vector3.Distance(transform.position, worldPos) > 0.05f)
                 {
                     transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
+                    UpdateAnimation(transform.position);
                     yield return null;
                 }
+                animator.SetFloat("Speed", 0f);
             }
         }
         else
@@ -133,7 +167,9 @@ public class NPCAI : MonoBehaviour
         while (Vector3.Distance(transform.position, targetPos) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            UpdateAnimation(transform.position);
             yield return null;
         }
+        animator.SetFloat("Speed", 0f);
     }
 }
