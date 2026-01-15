@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class ToolInventory : MonoBehaviour
+public class ToolInventoryUI : MonoBehaviour
 {
     [Header("도구 선택 패널")]
     [SerializeField] private GameObject toolPanel;
@@ -65,6 +65,7 @@ public class ToolInventory : MonoBehaviour
         this.selectedToolContent = selectedToolContent;
         selectedToolContent.UsedOn();
     }
+
 
     public void OnClickToolBtn()
     {
