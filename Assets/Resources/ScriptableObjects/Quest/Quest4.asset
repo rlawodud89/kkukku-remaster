@@ -15,7 +15,7 @@ MonoBehaviour:
   questID: 4
   title: "\u3147\u3139\u3134\u3131\u314E\u3131"
   description: 
-  icon: {fileID: 21300000, guid: d722fe7ec2e837b4cb5660be1b1a84d4, type: 3}
+  icon: {fileID: 21300000, guid: 49d080e42df266948bb86a3ab216ea84, type: 3}
   requiredLevel: 0
   type: 0
   goalCount: 1
