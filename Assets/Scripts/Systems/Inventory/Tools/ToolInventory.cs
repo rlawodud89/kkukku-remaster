@@ -17,9 +17,9 @@ public class ToolInventory : MonoBehaviour
     [Header("도구 스크롤뷰에 들어갈 프리팹")]
     [SerializeField] private GameObject toolPrefab;
 
-    private Dictionary<string, ToolContent> toolContentDictionary = new Dictionary<string, ToolContent>();
+    private Dictionary<string, ToolItemPanel> toolContentDictionary = new Dictionary<string, ToolItemPanel>();
     //private ToolSO selectedTool;
-    private ToolContent selectedToolContent;
+    private ToolItemPanel selectedToolContent;
 
     void Start()
     {
@@ -35,14 +35,14 @@ public class ToolInventory : MonoBehaviour
 
 
         GameObject tool = Instantiate(toolPrefab, toolContent);
-        ToolContent ui = tool.GetComponent<ToolContent>();
+        ToolItemPanel ui = tool.GetComponent<ToolItemPanel>();
         ui.SetTool(this);
 
         GameObject tool2 = Instantiate(toolPrefab, toolContent);
-        ToolContent ui2 = tool2.GetComponent<ToolContent>();
+        ToolItemPanel ui2 = tool2.GetComponent<ToolItemPanel>();
         ui2.SetTool(this);
         selectedToolContent = ui2;
-        selectedToolContent.HighlightOn();
+        selectedToolContent.UsedOn();
     }
 
     /*public void SelectTool(ToolSO selectedTool, ToolContent selectedToolContent)
@@ -56,14 +56,14 @@ public class ToolInventory : MonoBehaviour
         selectedToolContent.HighlightOn();
     }*/
 
-    public void SelectTool(ToolContent selectedToolContent)
+    public void SelectTool(ToolItemPanel selectedToolContent)
     {
         // 기존 선택 해제
-        this.selectedToolContent.HighlightOff();
+        this.selectedToolContent.UsedOff();
 
         // 새로운 선택 저장 및 표시
         this.selectedToolContent = selectedToolContent;
-        selectedToolContent.HighlightOn();
+        selectedToolContent.UsedOn();
     }
 
     public void OnClickToolBtn()
