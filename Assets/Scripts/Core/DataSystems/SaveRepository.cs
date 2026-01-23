@@ -1,6 +1,7 @@
 using SQLite4Unity3d;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UIElements;
 
 public class SaveRepository
 {
@@ -137,7 +138,14 @@ public class SaveRepository
 
     private InteriorAggregate LoadInteriorAggregate()
     {
+        List<ShopInteriorPlaced> shopPlaced = connection.Table<ShopInteriorPlaced>().ToList();
+        List<RoomInteriorPlaced> roomPlaced = connection.Table<RoomInteriorPlaced>().ToList();
+        List<TileInteriorPlaced> tilePlaced = connection.Table<TileInteriorPlaced>().ToList();
 
+        var aggregate = new InteriorAggregate();
+        aggregate.LoadInteriorAggregate(shopPlaced, roomPlaced, tilePlaced);
+
+        return aggregate;
     }
 
     private QuestAggregate LoadQuestAggregate()
@@ -159,6 +167,12 @@ public class SaveRepository
 
     private BlanketCraftAggregate LoadBlanketCraftAggregate()
     {
+        List<BlanketRecord> blanketRecord = connection.Table<BlanketRecord>().ToList();
+        List<BlanketRecipe> blanketRecipe = connection.Table<BlanketRecipe>().ToList();
 
+        var aggregate = new BlanketCraftAggregate();
+        aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord);
+
+        return aggregate;
     }
 }

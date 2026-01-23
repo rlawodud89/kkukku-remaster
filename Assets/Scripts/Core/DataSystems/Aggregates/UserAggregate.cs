@@ -18,7 +18,12 @@ public class UserAggregate : IAggregate
         ServiceLocator.Get<DirtyDataRegistry>().RegisterDirty(this);
     }
 
-    public void ClearDirty() => IsDirty = false;
+    public void ClearDirty()
+    {
+        IsDirty = false;
+
+        updateToolTypes.Clear();
+    }
 
     public IEnumerable<SavePayload> ToSavePayloads()
     {
@@ -71,7 +76,6 @@ public class UserAggregate : IAggregate
             };
         }
 
-        updateToolTypes.Clear();
     }
 
     public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed)

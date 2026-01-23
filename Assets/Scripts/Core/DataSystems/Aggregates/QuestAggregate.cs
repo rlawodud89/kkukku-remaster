@@ -29,7 +29,20 @@ public class QuestAggregate : IAggregate
         ServiceLocator.Get<DirtyDataRegistry>().RegisterDirty(this);
     }
 
-    public void ClearDirty() => IsDirty = false;
+    public void ClearDirty()
+    {
+        IsDirty = false;
+
+        insertedQuest.Clear();
+        updatedQuest.Clear();
+        deletedQuest.Clear();
+
+        insertedSpeicalQuest.Clear();
+        updatedSpecialQuest.Clear();
+        deletedSpecialQuest.Clear();
+
+        insertedLetter.Clear();
+    }
 
     public IEnumerable<SavePayload> ToSavePayloads()
     {
@@ -74,15 +87,13 @@ public class QuestAggregate : IAggregate
         }
         foreach (var dq in deletedQuest)
         {
-            QuestBox quest = questBox[dq];
-
             yield return new SavePayload
             {
                 Operation = SaveOperation.DELETE,
                 Table = "QuestBox",
                 Conditions = new Dictionary<string, object>
                 {
-                    { "questName", quest.questName }
+                    { "questName", dq }
                 }
             };
         }
@@ -125,15 +136,13 @@ public class QuestAggregate : IAggregate
         }
         foreach (var dq in deletedSpecialQuest)
         {
-            SpecialQuestBox specialQuest = specialQuestBox[dq];
-
             yield return new SavePayload
             {
                 Operation = SaveOperation.DELETE,
                 Table = "SpecialQuestBox",
                 Conditions = new Dictionary<string, object>
                 {
-                    { "questName", specialQuest.questName }
+                    { "questName", dq }
                 }
             };
         }
@@ -152,13 +161,6 @@ public class QuestAggregate : IAggregate
             };
         }
 
-        insertedQuest.Clear();
-        updatedQuest.Clear();
-        deletedQuest.Clear();
-        insertedSpeicalQuest.Clear();
-        updatedSpecialQuest.Clear();
-        deletedSpecialQuest.Clear();
-        insertedLetter.Clear();
     }
 
     public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox, IEnumerable<LetterBox> letterBox)

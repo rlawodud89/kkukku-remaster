@@ -12,7 +12,12 @@ public class ShopStateAggregate : IAggregate
         ServiceLocator.Get<DirtyDataRegistry>().RegisterDirty(this);
     }
 
-    public void ClearDirty() => IsDirty = false;
+    public void ClearDirty()
+    {
+        IsDirty = false;
+
+
+    }
 
     public IEnumerable<SavePayload> ToSavePayloads()
     {
