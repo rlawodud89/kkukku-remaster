@@ -162,7 +162,13 @@ public class SaveRepository
 
     private ShopStateAggregate LoadShopStateAggregate()
     {
+        List<ShopTable> shopTable = connection.Table<ShopTable>().ToList();
+        List<WorkerState> workerState = connection.Table<WorkerState>().ToList();
 
+        var aggregate = new ShopStateAggregate();
+        aggregate.LoadShopStateAggregate(shopTable, workerState);
+
+        return aggregate;
     }
 
     private BlanketCraftAggregate LoadBlanketCraftAggregate()

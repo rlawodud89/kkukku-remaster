@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InventoryAggregate : IAggregate
 {
+
+
     public bool IsDirty { get; private set; }
 
     private void MarkDirty()
@@ -23,4 +25,12 @@ public class InventoryAggregate : IAggregate
     {
 
     }
+
+    public void LoadInventoryAggregate()
+    {
+        
+    }
+
+    // === 게임 플레이 메서드 ===
+
 }

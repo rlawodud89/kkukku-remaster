@@ -6,18 +6,20 @@ using UnityEngine;
 
 public class InteriorAggregate : IAggregate
 {
-    private Dictionary<Position, ShopInteriorPlaced> shopPlaced;
-    private Dictionary<Position, RoomInteriorPlaced> roomPlaced;
+    // 현재는 x,y 좌표 float, 그리드 칸 번호 int 기반으로 바꾸면 변경 필요
+
+    private Dictionary<(float x, float y), ShopInteriorPlaced> shopPlaced;
+    private Dictionary<(float x, float y), RoomInteriorPlaced> roomPlaced;
     private Dictionary<TilePositionType, TileInteriorPlaced> tilePlaced;
 
 
-    private HashSet<Position> insertedShopPlaced = new();
-    private HashSet<Position> updatedShopPlaced = new();
-    private HashSet<Position> deletedShopPlaced = new();
+    private HashSet<(float x, float y)> insertedShopPlaced = new();
+    private HashSet<(float x, float y)> updatedShopPlaced = new();
+    private HashSet<(float x, float y)> deletedShopPlaced = new();
 
-    private HashSet<Position> insertedRoomPlaced = new();
-    private HashSet<Position> updatedRoomPlaced = new();
-    private HashSet<Position> deletedRoomPlaced = new();
+    private HashSet<(float x, float y)> insertedRoomPlaced = new();
+    private HashSet<(float x, float y)> updatedRoomPlaced = new();
+    private HashSet<(float x, float y)> deletedRoomPlaced = new();
 
     private HashSet<TilePositionType> updatedTilePlaced = new();
 
@@ -183,42 +185,11 @@ public class InteriorAggregate : IAggregate
     public void LoadInteriorAggregate(IEnumerable<ShopInteriorPlaced> shopPlaced, IEnumerable<RoomInteriorPlaced> roomPlaced,
         IEnumerable<TileInteriorPlaced> tilePlaced)
     {
-        this.shopPlaced = shopPlaced.ToDictionary(sp => new Position(sp.x, sp.y));
-        this.roomPlaced = roomPlaced.ToDictionary(rp => new Position(rp.x, rp.y));
+        this.shopPlaced = shopPlaced.ToDictionary(sp => (sp.x, sp.y));
+        this.roomPlaced = roomPlaced.ToDictionary(rp => (rp.x, rp.y));
         this.tilePlaced = tilePlaced.ToDictionary(tp => tp.tilePosition);
     }
 
     // === 게임 플레이 메서드 ===
 
-}
-
-
-// 임시로 사용하는 위치 표현 구조체 (float 기반이 아니라 칸 번호 int 기반으로 바꾸면 변경 필요)
-public struct Position
-{
-    public float x;
-    public float y;
-
-    public Position(float x, float y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    public static bool operator ==(Position left, Position right)
-    {
-        return (left.x == right.x) && (left.y == right.y);
-    }
-    public static bool operator !=(Position left, Position right)
-    {
-        return !((left.x == right.x) && (left.y == right.y));
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (!(obj is Position)) return false;
-        return Equals((Position)obj);
-    }
-
-    public override int GetHashCode() => x.GetHashCode();
 }
