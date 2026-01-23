@@ -1,10 +1,14 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UserAggregate : IAggregate
 {
     private User user;
+    private Dictionary<ToolType, ToolUsed> toolUsed;
 
+    private HashSet<ToolType> updateToolTypes = new();
 
     public bool IsDirty { get; private set; }
 
@@ -21,6 +25,9 @@ public class UserAggregate : IAggregate
         if (!IsDirty)
             yield break;
 
+        List<SavePayload> savePayloads = new List<SavePayload>();
+
+        // 사용자 정보 UPDATE
         yield return new SavePayload
         {
             Operation = SaveOperation.UPDATE,
@@ -45,20 +52,40 @@ public class UserAggregate : IAggregate
                 { "shopName", user.shopName }
             }
         };
+
+        // 변경된 장착 도구 UPDATE
+        foreach (var toolType in updateToolTypes)
+        {
+            yield return new SavePayload
+            {
+                Operation = SaveOperation.UPDATE,
+                Table = "ToolUsed",
+                Values = new Dictionary<string, object>
+                {
+                    { "toolName", toolUsed[toolType].toolName }
+                },
+                Conditions = new Dictionary<string, object>
+                {
+                    { "toolType", toolType }
+                }
+            };
+        }
+
+        updateToolTypes.Clear();
     }
 
-
-    public void LoadUser(User user)
+    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed)
     {
         this.user = user;
+        this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
     }
 
 
     // === 게임 플레이 메서드 ===
 
-    public void ChangeGold(int delta)
+    public void ChangeGold(int amount)
     {
-        user.gold += delta;
+        user.gold += amount;
         MarkDirty();
     }
 }

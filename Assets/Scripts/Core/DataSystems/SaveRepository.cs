@@ -1,4 +1,5 @@
 using SQLite4Unity3d;
+using System.Collections.Generic;
 using System.Linq;
 
 public class SaveRepository
@@ -47,12 +48,17 @@ public class SaveRepository
         //connection.Insert(user);
 
         return new GameData(
-            LoadUser()
+            LoadUserAggregate(),
+            LoadInventoryAggregate(),
+            LoadInteriorAggregate(),
+            LoadQuestAggregate(),
+            LoadShopStateAggregate(),
+            LoadBlanketCraftAggregate()
         );
     }
 
 
-    // --- SavePayload -> DB 적용 ---
+    // === SavePayload -> DB 적용 ===
 
     private void ExecuteInsert(SavePayload payload)
     {
@@ -111,20 +117,48 @@ public class SaveRepository
     }
 
 
-    // --- 첫 로딩 시 SELECT 메서드 ---
+    // === 첫 로딩 시 SELECT 메서드 ===
 
-    private UserAggregate LoadUser()
+    private UserAggregate LoadUserAggregate()
     {
-        var aggregate = new UserAggregate();
-
         User user = connection.Table<User>().FirstOrDefault();
-        aggregate.LoadUser(user);
+        List<ToolUsed> toolUsed = connection.Table<ToolUsed>().ToList();
+
+        var aggregate = new UserAggregate();
+        aggregate.LoadUserAggregate(user, toolUsed);
 
         return aggregate;
     }
 
-    //private QuestAggregate LoadQuests()
-    //{
+    private InventoryAggregate LoadInventoryAggregate()
+    {
 
-    //}
+    }
+
+    private InteriorAggregate LoadInteriorAggregate()
+    {
+
+    }
+
+    private QuestAggregate LoadQuestAggregate()
+    {
+        List<QuestBox> questBox = connection.Table<QuestBox>().ToList();
+        List<SpecialQuestBox> specialQuestBox = connection.Table<SpecialQuestBox>().ToList();
+        List<LetterBox> letterBox = connection.Table<LetterBox>().ToList();
+
+        var aggregate = new QuestAggregate();
+        aggregate.LoadQuestAggregate(questBox, specialQuestBox, letterBox);
+
+        return aggregate;
+    }
+
+    private ShopStateAggregate LoadShopStateAggregate()
+    {
+
+    }
+
+    private BlanketCraftAggregate LoadBlanketCraftAggregate()
+    {
+
+    }
 }

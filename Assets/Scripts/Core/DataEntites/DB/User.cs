@@ -2,8 +2,7 @@ using SQLite4Unity3d;
 
 public class User
 {
-    [PrimaryKey]
-    public string shopName { get; set; }
+    [PrimaryKey] public string shopName { get; set; }
     public int level { get; set; }
     public float energy { get; set; }
     public int gold { get; set; }

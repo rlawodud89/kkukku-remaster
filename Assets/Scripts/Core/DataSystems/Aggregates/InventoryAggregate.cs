@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryAggregate : MonoBehaviour
+public class InventoryAggregate : IAggregate
 {
-    // Start is called before the first frame update
-    void Start()
+    public bool IsDirty { get; private set; }
+
+    private void MarkDirty()
     {
-        
+        IsDirty = true;
+        ServiceLocator.Get<DirtyDataRegistry>().RegisterDirty(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ClearDirty() => IsDirty = false;
+
+    public IEnumerable<SavePayload> ToSavePayloads()
     {
-        
+
     }
 }
