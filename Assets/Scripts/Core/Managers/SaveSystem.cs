@@ -17,6 +17,9 @@ public class SaveSystem : MonoBehaviour
         var connection = new SQLiteConnection(testdbPath);
         var repository = new SaveRepository(connection);
         var dirtyRegistry = new DirtyDataRegistry();
+
+        // repository.MakeDefaultDB();
+
         var gameData = repository.LoadAll();
 
         saveService = new SaveService(repository, dirtyRegistry);

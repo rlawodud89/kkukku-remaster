@@ -192,10 +192,46 @@ public class SaveRepository
 
     public void MakeDefaultDB()
     {
-        //connection.CreateTable<User>();
-        //User user = new User();
-        //user.shopName = "shopName";
-        //user.gold = 100;
-        //connection.Insert(user);
+        connection.CreateTable<User>();
+        connection.CreateTable<ShopInteriorInventory>();
+        connection.CreateTable<RoomInteriorInventory>();
+        connection.CreateTable<TileInteriorInventory>();
+        connection.CreateTable<ShopInteriorPlaced>();
+        connection.CreateTable<RoomInteriorPlaced>();
+        connection.CreateTable<TileInteriorPlaced>();
+        connection.CreateTable<MaterialInventory>();
+        connection.CreateTable<SnackInventory>();
+        connection.CreateTable<BlanketInventory>();
+        connection.CreateTable<BlanketRecipe>();
+        connection.CreateTable<BlanketRecord>();
+        connection.CreateTable<ShopTable>();
+        connection.CreateTable<WorkerState>();
+        connection.CreateTable<QuestBox>();
+        connection.CreateTable<SpecialQuestBox>();
+        connection.CreateTable<LetterBox>();
+        connection.CreateTable<ToolInventory>();
+        connection.CreateTable<ToolUsed>();
+
+        // User
+
+        // TileInteriorInventory
+
+        // ShopInteriorPlaced
+
+        // RoomInteriorPlaced
+
+        // TileInteriorPlaced
+
+        // MaterialInventory
+
+        // BlanketRecipe
+
+        // WorkerState
+
+        // QuestBox
+
+        // ToolInventory
+
+        // ToolUsed
     }
 }
