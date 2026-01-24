@@ -42,12 +42,6 @@ public class SaveRepository
 
     public GameData LoadAll()
     {
-        //connection.CreateTable<User>();
-        //User user = new User();
-        //user.shopName = "shopName";
-        //user.gold = 100;
-        //connection.Insert(user);
-
         return new GameData(
             LoadUserAggregate(),
             LoadInventoryAggregate(),
@@ -133,7 +127,19 @@ public class SaveRepository
 
     private InventoryAggregate LoadInventoryAggregate()
     {
+        List<ShopInteriorInventory> shopInteriorInventory = connection.Table<ShopInteriorInventory>().ToList();
+        List<RoomInteriorInventory> roomInteriorInventory = connection.Table<RoomInteriorInventory>().ToList();
+        List<TileInteriorInventory> tileInventory = connection.Table<TileInteriorInventory>().ToList();
+        List<MaterialInventory> materialInventory = connection.Table<MaterialInventory>().ToList();
+        List<SnackInventory> snackInventory = connection.Table<SnackInventory>().ToList();
+        List<BlanketInventory> blanketInventory = connection.Table<BlanketInventory>().ToList();
+        List<ToolInventory> toolInventory = connection.Table<ToolInventory>().ToList();
 
+        var aggregate = new InventoryAggregate();
+        aggregate.LoadInventoryAggregate(shopInteriorInventory, roomInteriorInventory, tileInventory,
+            materialInventory, snackInventory, blanketInventory, toolInventory);
+
+        return aggregate;
     }
 
     private InteriorAggregate LoadInteriorAggregate()
@@ -180,5 +186,16 @@ public class SaveRepository
         aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord);
 
         return aggregate;
+    }
+
+
+    // === 새로운 유저의 데이터 만드는 메서드 (게임 최초 실행 시 실행) ===
+    public void MakeDefaultDB()
+    {
+        //connection.CreateTable<User>();
+        //User user = new User();
+        //user.shopName = "shopName";
+        //user.gold = 100;
+        //connection.Insert(user);
     }
 }
