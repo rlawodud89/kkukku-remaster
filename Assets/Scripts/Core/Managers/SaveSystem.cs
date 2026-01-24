@@ -1,18 +1,37 @@
+using SQLite4Unity3d;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class SaveSystem : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private SaveService saveService;
+    private static string testdbPath = Path.Combine(Application.streamingAssetsPath, "kkukkuDB.db");
+
+
+    void Awake()
     {
-        
+        DontDestroyOnLoad(this);
+
+        var connection = new SQLiteConnection(testdbPath);
+        var repository = new SaveRepository(connection);
+        var dirtyRegistry = new DirtyDataRegistry();
+
+        // repository.MakeDefaultDB();
+
+        var gameData = repository.LoadAll();
+
+        saveService = new SaveService(repository, dirtyRegistry);
+
+        ServiceLocator.Register(saveService);
+        ServiceLocator.Register(repository);
+        ServiceLocator.Register(dirtyRegistry);
+        ServiceLocator.Register(gameData);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        saveService.Tick(Time.deltaTime);
     }
 }
