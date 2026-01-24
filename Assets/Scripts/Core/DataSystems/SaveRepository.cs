@@ -1,7 +1,6 @@
 using SQLite4Unity3d;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UIElements;
 
 public class SaveRepository
 {
@@ -190,6 +189,7 @@ public class SaveRepository
 
 
     // === 새로운 유저의 데이터 만드는 메서드 (게임 최초 실행 시 실행) ===
+
     public void MakeDefaultDB()
     {
         //connection.CreateTable<User>();

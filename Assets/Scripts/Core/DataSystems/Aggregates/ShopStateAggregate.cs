@@ -1,21 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 
 public class ShopStateAggregate : IAggregate
 {
+    // === 런타임 데이터 ===
+
     private Dictionary<int, Dictionary<string, ShopTable>> shopTable;
     private Dictionary<int, WorkerState> workerState;
 
-    private HashSet<(int tableID, string itemName)> insertedShopTable = new();
-    private HashSet<(int tableID, string itemName)> updatedShopTable = new();
-    private HashSet<(int tableID, string itemName)> deletedShopTable = new();
+    // === 변경 사항 저장소 ===
 
-    private HashSet<int> insertedWorkerState = new();
-    private HashSet<int> updatedWorkerState = new();
-    private HashSet<int> deletedWorkerState = new();
+    private Dictionary<(int tableID, string itemName), SaveOperation> shopTableChanges = new();
+    private Dictionary<int, SaveOperation> workerStateChanges = new();
 
 
     public bool IsDirty { get; private set; }
@@ -30,13 +33,8 @@ public class ShopStateAggregate : IAggregate
     {
         IsDirty = false;
 
-        insertedShopTable.Clear();
-        updatedShopTable.Clear();
-        deletedShopTable.Clear();
-
-        insertedWorkerState.Clear();
-        updatedWorkerState.Clear();
-        deletedWorkerState.Clear();
+        shopTableChanges.Clear();
+        workerStateChanges.Clear();
     }
 
     public IEnumerable<SavePayload> ToSavePayloads()
@@ -45,108 +43,122 @@ public class ShopStateAggregate : IAggregate
             yield break;
 
         // 이불장 현황
-        foreach (var ist in insertedShopTable)
+        foreach (var ((tableID, itemName), change) in shopTableChanges)
         {
-            ShopTable table = shopTable[ist.tableID][ist.itemName];
+            switch (change)
+            {
+                case SaveOperation.INSERT:
+                    ShopTable insertTable = shopTable[tableID][itemName];
 
-            yield return new SavePayload
-            {
-                Operation = SaveOperation.INSERT,
-                Table = "ShopTable",
-                Values = new Dictionary<string, object>
-                {
-                    { "tableID", table.tableID },
-                    { "itemName", table.itemName },
-                    { "count", table.count }
-                }
-            };
-        }
-        foreach (var ust in updatedShopTable)
-        {
-            ShopTable table = shopTable[ust.tableID][ust.itemName];
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.INSERT,
+                        Table = "ShopTable",
+                        Values = new Dictionary<string, object>
+                        {
+                            { "tableID", insertTable.tableID },
+                            { "itemName", insertTable.itemName },
+                            { "count", insertTable.count }
+                        }
+                    };
+                    break;
 
-            yield return new SavePayload
-            {
-                Operation = SaveOperation.UPDATE,
-                Table = "ShopTable",
-                Values = new Dictionary<string, object>
-                {
-                    { "count", table.count }
-                },
-                Conditions = new Dictionary<string, object>
-                {
-                    { "tableID", table.tableID },
-                    { "itemName", table.itemName }
-                }
-            };
-        }
-        foreach (var dst in deletedShopTable)
-        {
-            yield return new SavePayload
-            {
-                Operation = SaveOperation.DELETE,
-                Table = "ShopTable",
-                Conditions = new Dictionary<string, object>
-                {
-                    { "tableID", dst.tableID },
-                    { "itemName", dst.itemName }
-                }
-            };
+                case SaveOperation.UPDATE:
+                    ShopTable updateTable = shopTable[tableID][itemName];
+
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.UPDATE,
+                        Table = "ShopTable",
+                        Values = new Dictionary<string, object>
+                        {
+                            { "count", updateTable.count }
+                        },
+                        Conditions = new Dictionary<string, object>
+                        {
+                            { "tableID", updateTable.tableID },
+                            { "itemName", updateTable.itemName }
+                        }
+                    };
+
+                    break;
+
+                case SaveOperation.DELETE:
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.DELETE,
+                        Table = "ShopTable",
+                        Conditions = new Dictionary<string, object>
+                        {
+                            { "tableID", tableID },
+                            { "itemName", itemName }
+                        }
+                    };
+
+                    break;
+            }
         }
 
         // 직원 상태
-        foreach (var iws in insertedWorkerState)
+        foreach (var (workerID, change) in workerStateChanges)
         {
-            WorkerState worker = workerState[iws];
-
-            yield return new SavePayload
+            switch (change)
             {
-                Operation = SaveOperation.INSERT,
-                Table = "WorkerState",
-                Values = new Dictionary<string, object>
-                {
-                    { "workerID", worker.workerID },
-                    { "stamina", worker.stamina },
-                    { "workingItem", worker.workingItem },
-                    { "progress", worker.progress },
-                    { "skill", worker.skill }
-                }
-            };
-        }
-        foreach (var uws in updatedWorkerState)
-        {
-            WorkerState worker = workerState[uws];
+                case SaveOperation.INSERT:
+                    WorkerState insertWorker = workerState[workerID];
 
-            yield return new SavePayload
-            {
-                Operation = SaveOperation.UPDATE,
-                Table = "WorkerState",
-                Values = new Dictionary<string, object>
-                {
-                    { "stamina", worker.stamina },
-                    { "workingItem", worker.workingItem },
-                    { "progress", worker.progress },
-                    { "skill", worker.skill }
-                },
-                Conditions = new Dictionary<string, object>
-                {
-                    { "workerID", worker.workerID }
-                }
-            };
-        }
-        foreach (var dws in deletedWorkerState)
-        {
-            yield return new SavePayload
-            {
-                Operation = SaveOperation.DELETE,
-                Table = "WorkerState",
-                Conditions = new Dictionary<string, object>
-                {
-                    { "workerID", dws }
-                }
-            };
-        }
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.INSERT,
+                        Table = "WorkerState",
+                        Values = new Dictionary<string, object>
+                        {
+                            { "workerID", insertWorker.workerID },
+                            { "stamina", insertWorker.stamina },
+                            { "workingItem", insertWorker.workingItem },
+                            { "progress", insertWorker.progress },
+                            { "skill", insertWorker.skill }
+                        }
+                    };
 
+                    break;
+
+                case SaveOperation.UPDATE:
+                    WorkerState updateWorker = workerState[workerID];
+
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.UPDATE,
+                        Table = "WorkerState",
+                        Values = new Dictionary<string, object>
+                        {
+                            { "stamina", updateWorker.stamina },
+                            { "workingItem", updateWorker.workingItem },
+                            { "progress", updateWorker.progress },
+                            { "skill", updateWorker.skill }
+                        },
+                        Conditions = new Dictionary<string, object>
+                        {
+                            { "workerID", updateWorker.workerID }
+                        }
+                    };
+
+                    break;
+
+                case SaveOperation.DELETE:
+                    yield return new SavePayload
+                    {
+                        Operation = SaveOperation.DELETE,
+                        Table = "WorkerState",
+                        Conditions = new Dictionary<string, object>
+                        {
+                            { "workerID", workerID }
+                        }
+                    };
+
+                    break;
+            }
+        }
     }
 
     public void LoadShopStateAggregate(IEnumerable<ShopTable> shopTable, IEnumerable<WorkerState> workerState)
@@ -158,6 +170,44 @@ public class ShopStateAggregate : IAggregate
             g => g.ToDictionary(st => st.itemName)
         );
         this.workerState = workerState.ToDictionary(ws => ws.workerID);
+    }
+
+    private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
+    {
+        if (!changes.TryGetValue(key, out var oldOp))
+        {
+            changes[key] = newOp;
+            return;
+        }
+
+        switch (oldOp, newOp)
+        {
+            case (SaveOperation.INSERT, SaveOperation.UPDATE):
+                // INSERT 유지
+                break;
+
+            case (SaveOperation.INSERT, SaveOperation.DELETE):
+                // 생성했다가 삭제 → 아무 일도 없었던 것
+                changes.Remove(key);
+                break;
+
+            case (SaveOperation.UPDATE, SaveOperation.UPDATE):
+                // UPDATE 유지
+                break;
+
+            case (SaveOperation.UPDATE, SaveOperation.DELETE):
+                changes[key] = SaveOperation.DELETE;
+                break;
+
+            case (SaveOperation.DELETE, SaveOperation.INSERT):
+                // 삭제 후 다시 추가 → UPDATE로 취급
+                changes[key] = SaveOperation.UPDATE;
+                break;
+
+            default:
+                changes[key] = newOp;
+                break;
+        }
     }
 
     // === 게임 플레이 메서드 ===
