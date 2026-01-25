@@ -1,18 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class LetterSO : MonoBehaviour
+[CreateAssetMenu(fileName = "Letter", menuName = "QuestSO/LetterSO")]
+public class LetterSO : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public string letterName;
+    public string description;
+    public Sprite sleepImage;
 }
