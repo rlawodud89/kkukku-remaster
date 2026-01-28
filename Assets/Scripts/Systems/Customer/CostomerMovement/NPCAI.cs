@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Collections.Generic; // List 사용을 위해 추가
+using TMPro;
+using UnityEditor.VersionControl;
 
 public class NPCAI : MonoBehaviour
 {
@@ -13,8 +15,53 @@ public class NPCAI : MonoBehaviour
     private Animator animator;
     private Vector3 lastPosition;
     private Vector2 lastMoveDir = Vector2.down;
+    public Vector3 questSpot;
+
+    public NPCDataSO npcBaseData; // 인스펙터에서 해당 동물의 SO를 할당
+
+    public enum NPCBehavior { Normal, SpecialQuest, Leaving }
+    public NPCBehavior currentBehavior = NPCBehavior.Normal;
+
+    [Header("Dialogue UI")]
+    public GameObject speechBubble; // 말풍선 부모 오브젝트
+    public TextMeshProUGUI speechText; // 말풍선 안의 텍스트 컴포넌트
+    public float displayTime = 2.0f; // 말풍선 유지 시간
+
+    [Header("Quest Effects")]
+    public GameObject questIcon; // '!' 아이콘 오브젝트
 
 
+    // 1. 캐릭터 클릭 감지
+    void OnMouseDown()
+    {
+        string talk = npcBaseData.smallTalks[Random.Range(0, npcBaseData.smallTalks.Length)];
+
+        if (currentBehavior != NPCBehavior.SpecialQuest)
+        {
+            ShowSpeechBubble(talk);
+        }
+    }
+
+    public void ShowSpeechBubble(string message)
+    {
+        // 이미 켜져 있다면 코루틴 중단 후 새로 시작 (타이머 리셋)
+        StopCoroutine("CloseSpeechBubble");
+
+        speechText.text = message;
+
+        // 3. 말풍선 오브젝트 활성화
+        speechBubble.SetActive(true);
+
+
+        // 4. 지정된 시간(예: 2초) 후에 꺼지도록 예약
+        StartCoroutine(CloseSpeechBubble(2.0f));
+    }
+
+    IEnumerator CloseSpeechBubble(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        speechBubble.SetActive(false);
+    }
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -24,7 +71,40 @@ public class NPCAI : MonoBehaviour
         // 씬에 있는 Pathfinding 스크립트를 자동으로 찾거나 인스펙터에서 할당하세요.
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
 
-        StartCoroutine(BehaviorRoutine());
+        if (npcBaseData != null)
+        {
+            int progress = npcBaseData.questProgress;
+
+            // 2. 퀘스트 상태에 따른 행동 결정
+            if (progress == 1)
+            {
+                currentBehavior = NPCBehavior.SpecialQuest;
+            }
+        }
+
+        StartCoroutine(MainBehaviorRoutine());
+    }
+    IEnumerator MainBehaviorRoutine()
+    {
+        if (currentBehavior == NPCBehavior.SpecialQuest)
+        {
+            // 1. 퀘스트 장소로 이동
+            yield return StartCoroutine(MoveWithAStar(questSpot));
+
+            // 2. 도착 완료 후 아이콘 활성화
+            if (questIcon != null)
+            {
+                questIcon.SetActive(true);
+            }
+
+            // 3. 이동을 멈추고 플레이어를 기다림
+            animator.SetFloat("Speed", 0f);
+        }
+        else
+        {
+            // [일반 로직] 기존의 이불 고르고 계산대 가는 루틴
+            yield return StartCoroutine(NormalShopRoutine());
+        }
     }
 
     void Update()
@@ -58,7 +138,7 @@ public class NPCAI : MonoBehaviour
     }
 
 
-    IEnumerator BehaviorRoutine()
+    IEnumerator NormalShopRoutine()
     {
         // 1. 이불장 이동 및 선택
         Vector3 targetPos = GetRandomWardrobePos();
@@ -69,7 +149,6 @@ public class NPCAI : MonoBehaviour
 
         // 이불 결정 및 시각화
         myData.selectedItemID = 0;
-        VisualizedSelectedItem(); // 이불 아이콘 띄우기
 
         // 2. 캐셔 대기열 합류
         myData.currentState = CustomerData.State.MovingToCashier;
@@ -87,7 +166,6 @@ public class NPCAI : MonoBehaviour
 
         // 결제 완료 후 줄에서 나감
         CashierManager.Instance.LeaveQueue(this);
-        itemDisplaySR.gameObject.SetActive(false); // 이불 아이콘 끄기
 
         // 4. 퇴장
         yield return StartCoroutine(MoveWithAStar(new Vector3(-5, -5, 0)));
@@ -134,23 +212,7 @@ public class NPCAI : MonoBehaviour
         return new Vector3(2, 3, 0);
     }
 
-    public SpriteRenderer itemDisplaySR; // NPC 머리 위에 배치한 자식 오브젝트의 SpriteRenderer
-
-    // 아이템 이미지를 보여주는 함수
-    public void VisualizedSelectedItem()
-    {
-        if (myData.selectedItemID != -1)
-        {
-            // ShopManager의 데이터베이스에서 ID로 아이템 데이터를 찾아 이미지 적용
-            ItemData selectedItem = ShopManager.Instance.itemDatabase.Find(x => x.itemID == myData.selectedItemID);
-            if (selectedItem != null)
-            {
-                itemDisplaySR.sprite = selectedItem.itemSprite;
-                itemDisplaySR.gameObject.SetActive(true); // 이미지 활성화
-            }
-        }
-    }
-
+  
     public void MoveToQueuePoint()
     {
         // CashierManager에게 내가 서야 할 월드 좌표를 물어봄
