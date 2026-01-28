@@ -4,14 +4,9 @@ using UnityEngine;
 public class ShopInteriorItemSO : ScriptableObject
 {
     public string itemName;
-
-    // public ShopInteriorType shopInteriorType
-
+    public ShopInteriorType shopInteriorType;
     public Sprite image;
-
-    public GameObject leftPrefab;
-    public GameObject rightPrefab;
-
+    public GameObject prefab;
     public int price;
 
     [Header("이불장인 경우, 슬롯 개수")]

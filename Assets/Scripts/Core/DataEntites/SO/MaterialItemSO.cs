@@ -4,10 +4,8 @@ using UnityEngine;
 public class MaterialItemSO : ScriptableObject
 {
     public string itemName;
-
     public Sprite image;
-
     public int level;
     public int price;
-    // public MaterialType materialType
+    public MaterialType materialType;
 }

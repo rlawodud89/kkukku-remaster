@@ -6,7 +6,7 @@ public class SpecialQuestSO : ScriptableObject
     public string questName;
     public string customerName;
     public string description;
-    // public MaterialType needType;
+    public MaterialType needType;
     public string hint;
     public string successComment;
     public int rewardGold;

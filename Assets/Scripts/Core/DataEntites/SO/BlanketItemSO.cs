@@ -5,9 +5,7 @@ using UnityEngine;
 public class BlanketItemSO : ScriptableObject
 {
     public string itemName;
-
     public Sprite image;
-
     public int level;
     public int price;
     public List<RecipePair> recipe;
