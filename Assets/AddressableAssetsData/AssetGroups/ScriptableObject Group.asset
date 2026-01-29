@@ -17,8 +17,146 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: e8f00f022f4061c49bb7041774fc577f
   m_SerializeEntries:
-  - m_GUID: 71c2d93c04b4ad04ab2c829fc9e3aaba
-    m_Address: Assets/ScriptableObjects/testSO.asset
+  - m_GUID: 0d5eacc4d61b3254f9a06fa190b89c48
+    m_Address: "Assets/ScriptableObjects/Item/Tool/Gathering/\uAE30\uBCF8\uCC44.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tool
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10de4ffd9e089a14ea5f6cba7512a05d
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uC5BC\uC74C \uAFC0 \uCCB4\uB9AC.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12c77728b89d75c4fa673cbe7f9f43a3
+    m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uBCC4\uBE5B\uAFC8\uC2E4.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14bdc27966808d243a49ed2fc640f065
+    m_Address: "Assets/ScriptableObjects/Item/Blanket/\uAE30\uBCF8\uC774\uBD88.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - blanket
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 184769b54533b144798816f142d5520b
+    m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uAE30\uBCF8\uB09A\uC2DC\uB300.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32305ab4686839a419f3967ce399945a
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uD1A1\uD1A1 \uD0C4\uC0B0
+      \uB77C\uC784.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ab78f88fcf20d9489fabc86bdf98c5c
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uC824\uB9AC\uBB34\uD654\uACFC.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bab3c60eb0f1f4469ebbe0d40e03961
+    m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uCC9C\uC57C\uB2EC\uC870\uAC01.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48687224fc21b2a4ca57092725663828
+    m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uAFC8\uC2E4.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 574acdd782f222746851b5f690f6d978
+    m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uB2EC\uC870\uAC01.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5da662b5fe9aaf6498fb77068a368ab4
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uCD08\uCF54 \uD401\uB4C0
+      \uC194\uBC29\uC6B8.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 699e4c073a344964e8735e17dcb6f5ae
+    m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uC740\uBE5B\uB2EC\uC870\uAC01.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 783cc1a7562b7bb45bdb37fdf9d2a444
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uC640\uC791 \uCFE0\uD0A4
+      \uB3C4\uD1A0\uB9AC.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78ef455dcc2cfe34bb4249e4ad7b59b9
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uD61C\uC131 \uD30C\uB974\uD398
+      \uD30C\uC778\uC560\uD50C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ac196645531cdb418c01c4c3b80ae1f
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uBCC4\uBC24 \uB808\uBAAC\uC218\uC815.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7baadcca69b92e64f82ca92c0c6f3b84
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uC0AC\uD0D5\uADE4.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80e32fb8a908d7b429aac303a0e5c1cf
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uAD6C\uB984 \uC19C\uC0AC\uD0D5
+      \uBC84\uC12F.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8156f2307f40d894a874bc797c0c19fa
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uBC18\uB527\uBD88 \uC824\uB9AC
+      \uB9DD\uACE0.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81d49000a96d72b4fa5f2af3f63cdc73
+    m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uC624\uB85C\uB77C \uD06C\uB9AC\uC2A4\uD0C8
+      \uD3EC\uB3C4.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a100572970e0064cb5a58bf7fc89cb2
+    m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uD587\uBE5B\uC6B4\uBB34\uC19C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3173d7f57903cb41b71473d181fc910
+    m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uC740\uD558\uAFC8\uC2E4.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfc186803c4e055428a143f667d3e491
+    m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uCC9C\uACF5\uC6B4\uBB34\uC19C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff525bb32dbde504f951f6722076cfdd
+    m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uC6B4\uBB34\uC19C.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - material

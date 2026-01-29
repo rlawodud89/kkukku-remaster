@@ -11,6 +11,7 @@ public class BlanketItemSO : ScriptableObject
     public List<RecipePair> recipe;
 }
 
+[System.Serializable]
 public class RecipePair
 {
     public string itemName;
