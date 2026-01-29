@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 597560bb54ffe624cbfb7ffe9fc08a0d, type: 3}
-  m_Name: testSO
+  m_Name: "\uC740\uD558\uAFC8\uC2E4"
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: "\uC740\uD558\uAFC8\uC2E4"
+  materialType: 0
   image: {fileID: 0}
-  level: 0
+  level: 3
   price: 0
+  decoMaterialType: 0

@@ -4,14 +4,9 @@ using UnityEngine;
 public class RoomInteriorItemSO : ScriptableObject
 {
     public string itemName;
-
-    // public RoomInteriorType roomInteriorType
-
+    public RoomInteriorType roomInteriorType;
     public Sprite image;
-
-    public GameObject leftPrefab;
-    public GameObject rightPrefab;
-
+    public GameObject prefab;
     public int price;
 
     [Header("재고함인 경우, 슬롯 개수")]

@@ -39,6 +39,7 @@ public class UserAggregate : IAggregate
             Table = "User",
             Values = new Dictionary<string, object>
             {
+                { "shopName", user.shopName },
                 { "level", user.level },
                 { "energy", user.energy },
                 { "gold", user.gold },
@@ -51,10 +52,6 @@ public class UserAggregate : IAggregate
                 { "shopLevel", user.shopLevel },
                 { "bgSound", user.bgSound },
                 { "effectSound", user.effectSound },
-            },
-            Conditions = new Dictionary<string, object>
-            {
-                { "shopName", user.shopName }
             }
         };
 
