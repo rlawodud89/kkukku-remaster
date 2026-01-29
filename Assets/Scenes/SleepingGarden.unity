@@ -1002,7 +1002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6954155075049089963, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
       propertyPath: m_Name
-      value: ToolInventory
+      value: ToolInventoryUI
       objectReference: {fileID: 0}
     - target: {fileID: 8939628240989522844, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
       propertyPath: m_AnchorMax.x

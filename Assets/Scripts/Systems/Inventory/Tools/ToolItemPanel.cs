@@ -12,7 +12,7 @@ public class ToolItemPanel : MonoBehaviour
     [SerializeField] private TMP_Text infoText;
     [SerializeField] private GameObject UsedImg;
 
-    private ToolInventory toolInventory;
+    private ToolInventoryUI toolInventoryUi;
     //private ToolSO tool;
 
 
@@ -25,9 +25,9 @@ public class ToolItemPanel : MonoBehaviour
         this.toolInventory = toolInventory;
     }*/
 
-    public void SetTool(ToolInventory toolInventory)
+    public void SetTool(ToolInventoryUI toolInventoryUi)
     {
-        this.toolInventory = toolInventory;
+        this.toolInventoryUi = toolInventoryUi;
     }
 
     public void UsedOn()
@@ -42,6 +42,6 @@ public class ToolItemPanel : MonoBehaviour
 
     public void OnClickToolContent()
     {
-        toolInventory.SelectTool(this);
+        toolInventoryUi.SelectTool(this);
     }
 }
