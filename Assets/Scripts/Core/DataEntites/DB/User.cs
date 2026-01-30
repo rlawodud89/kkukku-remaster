@@ -13,6 +13,6 @@ public class User
     public int itemShopLevel { get; set; }
     public int interiorInventoryLevel { get; set; }
     public int shopLevel { get; set; }
-    public float bgSound { get; set; }
-    public float effectSound { get; set; }
+    public int bgmVol { get; set; }
+    public int sfxVol { get; set; }
 }

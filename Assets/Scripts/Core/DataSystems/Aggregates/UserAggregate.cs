@@ -61,8 +61,8 @@ public class UserAggregate : IAggregate
                 { "itemShopLevel", user.itemShopLevel },
                 { "interiorInventoryLevel", user.interiorInventoryLevel },
                 { "shopLevel", user.shopLevel },
-                { "bgSound", user.bgSound },
-                { "effectSound", user.effectSound },
+                { "bgmVol", user.bgmVol },
+                { "sfxVol", user.sfxVol },
             }
         };
 
