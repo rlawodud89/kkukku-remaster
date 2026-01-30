@@ -4,7 +4,7 @@ using UnityEngine;
 public class QuestSO : ScriptableObject
 {
     public string questName;
-    // public QuestType questType
+    public QuestType questType;
     public string description;
     public int level;
     public int completeState;

@@ -4,10 +4,7 @@ using UnityEngine;
 public class TileInteriorItemSO : ScriptableObject
 {
     public string itemName;
-
-    // public TileType tileType
-
+    public TileInteriorType tileType;
     public Sprite image;
-
     public int price;
 }
