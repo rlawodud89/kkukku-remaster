@@ -1,6 +1,9 @@
+using JetBrains.Annotations;
 using SQLite4Unity3d;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -39,15 +42,15 @@ public class SaveRepository
         materialSOs = Addressables.LoadAssetsAsync<MaterialItemSO>("material", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.itemName);
-        //snackSOs = Addressables.LoadAssetsAsync<SnackItemSO>("snack", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //blanketSOs = Addressables.LoadAssetsAsync<BlanketItemSO>("material", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
+        snackSOs = Addressables.LoadAssetsAsync<SnackItemSO>("snack", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        blanketSOs = Addressables.LoadAssetsAsync<BlanketItemSO>("blanket", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
 
         //questSOs = Addressables.LoadAssetsAsync<QuestSO>("quest", null)
         //        .WaitForCompletion()
@@ -109,6 +112,11 @@ public class SaveRepository
 
     private void ExecuteInsert(SavePayload payload)
     {
+        if (payload.Values == null || payload.Values.Count == 0)
+        {
+            throw new Exception($"INSERT without values is not allowed: {payload.Table}");
+        }
+
         var columns = payload.Values.Keys.ToList();
         var parameters = string.Join(", ", columns.Select(_ => "?"));
 
@@ -126,6 +134,16 @@ public class SaveRepository
 
     private void ExecuteUpdate(SavePayload payload)
     {
+        if (payload.Values == null || payload.Values.Count == 0)
+        {
+            throw new Exception($"UPDATE without SET values is not allowed: {payload.Table}");
+        }
+
+        if (payload.Conditions == null || payload.Conditions.Count == 0)
+        {
+            throw new Exception($"UPDATE without WHERE is not allowed: {payload.Table}");
+        }
+
         var setKeys = payload.Values.Keys.ToList();
         var whereKeys = payload.Conditions.Keys.ToList();
 
@@ -148,20 +166,30 @@ public class SaveRepository
 
     private void ExecuteDelete(SavePayload payload)
     {
+        // 전체 삭제
+        if (payload.Conditions == null || payload.Conditions.Count == 0)
+        {
+            string sql = $"DELETE FROM {payload.Table}";
+            connection.Execute(sql);
+            return;
+        }
+
+        // 조건부 삭제
         var whereKeys = payload.Conditions.Keys.ToList();
 
         var whereClause = string.Join(" AND ",
             whereKeys.Select(k => $"{k} = ?"));
 
-        string sql =
+        string sqlWithWhere =
             $"DELETE FROM {payload.Table} WHERE {whereClause}";
 
         var values = whereKeys
             .Select(k => payload.Conditions[k])
             .ToArray();
 
-        connection.Execute(sql, values);
+        connection.Execute(sqlWithWhere, values);
     }
+
 
 
     // === 첫 로딩 시 SELECT 메서드 ===
@@ -269,25 +297,89 @@ public class SaveRepository
         connection.CreateTable<ToolUsed>();
 
         // User
+        User user = new User();
+        user.shopName = "";
+        user.level = 1;
+        user.energy = 0;
+        user.gold = 100;
+        user.moonrock = 100;
+        user.playTime = 0;
+        user.endScene = "BlanketShop";
+        user.isOpen = false;
+        user.itemShopLevel = 1;
+        user.interiorInventoryLevel = 1;
+        user.shopLevel = 1;
+        user.bgmVol = 50;
+        user.sfxVol = 50;
+        connection.Insert(user);
 
         // TileInteriorInventory
+        TileInteriorInventory floorTile = new TileInteriorInventory();
+        floorTile.itemName = "기본바닥타일";
+        floorTile.tileType = TileInteriorType.FLOOR;
+        connection.Insert(floorTile);
+
+        TileInteriorInventory wallTile = new TileInteriorInventory();
+        wallTile.itemName = "기본벽타일";
+        wallTile.tileType = TileInteriorType.WALL;
+        connection.Insert(wallTile);
 
         // ShopInteriorPlaced
 
         // RoomInteriorPlaced
 
         // TileInteriorPlaced
+        TileInteriorPlaced shopfloor = new TileInteriorPlaced();
+        shopfloor.tilePosition = TilePositionType.SHOP_FLOOR;
+        shopfloor.itemName = "기본바닥타일";
+        connection.Insert(shopfloor);
+
+        TileInteriorPlaced shopwall = new TileInteriorPlaced();
+        shopwall.tilePosition = TilePositionType.SHOP_WALL;
+        shopwall.itemName = "기본벽타일";
+        connection.Insert(shopwall);
+
+        TileInteriorPlaced roomfloor = new TileInteriorPlaced();
+        roomfloor.tilePosition = TilePositionType.ROOM_FLOOR;
+        roomfloor.itemName = "기본바닥타일";
+        connection.Insert(roomfloor);
+
+        TileInteriorPlaced roomwall = new TileInteriorPlaced();
+        roomwall.tilePosition = TilePositionType.ROOM_WALL;
+        roomwall.itemName = "기본벽타일";
+        connection.Insert(roomwall);
 
         // MaterialInventory
 
         // BlanketRecipe
+        BlanketRecipe recipe = new BlanketRecipe();
+        recipe.itemName = "기본이불";
+        connection.Insert(recipe);
 
         // WorkerState
 
         // QuestBox
 
         // ToolInventory
+        ToolInventory gatheringtool = new ToolInventory();
+        gatheringtool.toolName = "기본채집망";
+        gatheringtool.toolType = ToolType.GATHERING;
+        connection.Insert(gatheringtool);
+
+        ToolInventory fishingtool = new ToolInventory();
+        fishingtool.toolName = "기본낚시대";
+        fishingtool.toolType = ToolType.FISHING;
+        connection.Insert(fishingtool);
 
         // ToolUsed
+        ToolUsed gatheringUsed = new ToolUsed();
+        gatheringUsed.toolType = ToolType.GATHERING;
+        gatheringUsed.toolName = "기본채집망";
+        connection.Insert(gatheringUsed);
+
+        ToolUsed fishingUsed = new ToolUsed();
+        fishingUsed.toolType = ToolType.FISHING;
+        fishingUsed.toolName = "기본낚시대";
+        connection.Insert(fishingUsed);
     }
 }

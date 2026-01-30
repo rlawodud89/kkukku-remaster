@@ -46,4 +46,9 @@ public class SaveService
             throw;
         }
     }
+
+    public float GetCurrentTimer()
+    {
+        return timer;
+    }
 }

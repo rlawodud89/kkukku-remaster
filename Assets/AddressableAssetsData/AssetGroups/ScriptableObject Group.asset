@@ -59,7 +59,8 @@ MonoBehaviour:
   - m_GUID: 184769b54533b144798816f142d5520b
     m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uAE30\uBCF8\uB09A\uC2DC\uB300.asset"
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - tool
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d26c0f8c2e3ed74c93d4773dea2dd1d
     m_Address: Assets/ScriptableObjects/Customer/Flamingo.asset

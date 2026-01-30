@@ -61,8 +61,8 @@ public class UserAggregate : IAggregate
                 { "itemShopLevel", user.itemShopLevel },
                 { "interiorInventoryLevel", user.interiorInventoryLevel },
                 { "shopLevel", user.shopLevel },
-                { "bgSound", user.bgSound },
-                { "effectSound", user.effectSound },
+                { "bgmVol", user.bgmVol },
+                { "sfxVol", user.sfxVol },
             }
         };
 
@@ -97,9 +97,49 @@ public class UserAggregate : IAggregate
 
     // === 게임 플레이 메서드 ===
 
+    public (string shopName, int level, float energy) GetUserData()
+    {
+        return (user.shopName, user.level, user.energy);
+    }
+
+    public void SetUserData(string shopName, int level, float energy)
+    {
+        user.shopName = shopName;
+        user.level = level;
+        user.energy = energy;
+
+        MarkDirty();
+    }
+
+    public List<int> GetVolumeData()
+    {
+        List<int> volumeData = new List<int>();
+        volumeData.Add(user.bgmVol);
+        volumeData.Add(user.sfxVol);
+
+        return volumeData;
+    }
+
+    public void SetVolumeData(int bgmVol, int sfxVol)
+    {
+        user.bgmVol = bgmVol;
+        user.sfxVol = sfxVol;
+
+        MarkDirty();
+    }
+
     public void ChangeGold(int amount)
     {
         user.gold += amount;
         MarkDirty();
     }
+
+    public void ChangeMoonrock(int amount)
+    {
+        user.moonrock += amount;
+        MarkDirty();
+    }
+
+
+
 }

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ public class BlanketCraftAggregate : IAggregate
             yield break;
 
         // 보유 이불 레시피
-        foreach (var ibr in insertedBlanketRecipe)
+        foreach (var itemName in insertedBlanketRecipe)
         {
             yield return new SavePayload
             {
@@ -52,7 +53,7 @@ public class BlanketCraftAggregate : IAggregate
                 Table = "BlanketRecipe",
                 Values = new Dictionary<string, object>()
                 {
-                    { "itemName", ibr }
+                    { "itemName", itemName }
                 }
             };
         }
@@ -94,4 +95,30 @@ public class BlanketCraftAggregate : IAggregate
 
 
     // === 게임 플레이 메서드 ===
+
+    public void AddBlanketRecipes(IEnumerable<string> blanketNameList)
+    {
+        foreach (string recipeName in blanketNameList)
+        {
+            BlanketRecipe newRecipe = new BlanketRecipe();
+            newRecipe.itemName = recipeName;
+            blanketRecipe.Add(newRecipe);
+
+            insertedBlanketRecipe.Add(recipeName);
+        }
+
+        MarkDirty();
+    }
+
+    public List<BlanketItemSO> GetCurrentRecipes()
+    {
+        List<BlanketItemSO> blanketList = new List<BlanketItemSO>();
+
+        foreach (BlanketRecipe recipe in blanketRecipe)
+        {
+            blanketList.Add(blanketSOs[recipe.itemName]);
+        }
+
+        return blanketList;
+    }
 }
