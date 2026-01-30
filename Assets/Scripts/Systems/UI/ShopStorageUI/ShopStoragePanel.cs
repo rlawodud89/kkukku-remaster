@@ -6,74 +6,77 @@ using UnityEngine.UI;
 
 public class ShopStoragePanel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public GameObject itemPrefab;
-    public Transform leftContent;   // ¿ŞÂÊ ½ºÅ©·ÑºäÀÇ Content
-    public Transform rightContent;  // ¿À¸¥ÂÊ ½ºÅ©·ÑºäÀÇ Content
 
-    // ±âÁ¸ ¸®½ºÆ®¸¦ ÃßÀûÇÏ±â À§ÇÑ ¸®½ºÆ® (³ªÁß¿¡ Áö¿ì±â À§ÇÔ)
+    // Start is called before the first frame update
+    public GameObject leftItemPrefab;
+    public GameObject rightItemPrefab;
+    public Transform leftContent;   // ì™¼ìª½ ìŠ¤í¬ë¡¤ë·°ì˜ Content
+    public Transform rightContent;  // ì˜¤ë¥¸ìª½ ìŠ¤í¬ë¡¤ë·°ì˜ Content
+
+    // ê¸°ì¡´ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¶”ì í•˜ê¸° ìœ„í•œ ë¦¬ìŠ¤íŠ¸ (ë‚˜ì¤‘ì— ì§€ìš°ê¸° ìœ„í•¨)
     private List<GameObject> leftSpawnedItems = new List<GameObject>();
     private List<GameObject> rightSpawnedItems = new List<GameObject>();
 
-    // 1. Å¬¸¯ ½Ã È£ÃâµÇ¾î µ¥ÀÌÅÍ¸¦ Ã¤¿ì´Â ÇÔ¼ö
-    /*
+    // 1. í´ë¦­ ì‹œ í˜¸ì¶œë˜ì–´ ë°ì´í„°ë¥¼ ì±„ìš°ëŠ” í•¨ìˆ˜
     public void OpenStorage(int id)
     {
-        gameObject.SetActive(true); // ÆĞ³Î ÄÑ±â
+        gameObject.SetActive(true); // íŒ¨ë„ ì¼œê¸°
 
-        // ÀÌÀü µ¥ÀÌÅÍ »èÁ¦
+        // ì´ì „ ë°ì´í„° ì‚­ì œ
         ClearList();
-        
-        //µ¥ÀÌÅÍ ¸®½ºÆ® ÀÌºÒÀå id·Î °¡Á®¿À±â.(¹Ì¸® ¾À ·Îµå ½Ã ºÒ·¯¿È,)
 
-        // Àü´Ş¹ŞÀº µ¥ÀÌÅÍ·Î ¿ŞÂÊ ¸®½ºÆ® Ã¤¿ì±â
-        foreach (var data in dataList)
+        if(ShopStorageDataManager.Instance.GetTableClass(id, out TableClass blanketList))
         {
-            GameObject go = Instantiate(itemPrefab, leftContent);
-            leftSpawnedItems.Add(go);
+            for(int i = 0; i < blanketList.itemName.Length; i++)
+            {
+                GameObject go = Instantiate(leftItemPrefab, leftContent);
+                leftSpawnedItems.Add(go);
 
-            var item = go.GetComponent<BlanketItem>();
-   
-            item.Setup(data, data.currentCount);
-            item.OnItemSelected = OnLeftItemSelected;
+                var item = go.GetComponent<BlanketItem>();
+
+                item.SetupItem(id, i, blanketList.itemName[i], blanketList.count[i], blanketList.itemImage[i]);
+                item.OnItemSelected = OnLeftItemSelected;
+            }
         }
 
-        // ¿À¸¥ÂÊ(Àç°íÇÔ) ¸®½ºÆ®µµ ¿©±â¼­ Ã¤¿ò. ÀÌ°Ç ´Ù¸¥ ÀÌºÒÀå°ú µ¿ÀÏÇÑ Á¤º¸¸¦ °¡Á®¿È. ¾À ·Îµå ½Ã ºÒ·¯¿Â µ¥ÀÌÅÍ »ç¿ë
-        // ¸ÕÀú µ¥ÀÌÅÍ °¡Á®¿À±â
 
-        foreach (var data in dataList)
+        // ì˜¤ë¥¸ìª½(ì¬ê³ í•¨) ë¦¬ìŠ¤íŠ¸ë„ ì—¬ê¸°ì„œ ì±„ì›€. ì´ê±´ ë‹¤ë¥¸ ì´ë¶ˆì¥ê³¼ ë™ì¼í•œ ì •ë³´ë¥¼ ê°€ì ¸ì˜´. ì”¬ ë¡œë“œ ì‹œ ë¶ˆëŸ¬ì˜¨ ë°ì´í„° ì‚¬ìš©
+        // ë¨¼ì € ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
+        int j = 0;
+        foreach (StorageClass s in ShopStorageDataManager.Instance.storageClasses)
         {
-            GameObject go = Instantiate(itemPrefab, leftContent);
+            GameObject go = Instantiate(rightItemPrefab, leftContent);
             rightSpawnedItems.Add(go);
 
             var item = go.GetComponent<BlanketItem>();
-   
-            item.Setup(data, data.currentCount, data.ÃÖ´ë½½·Ô¹¹½Ã±â);
+
+            item.SetupBlanketItem(id, j, s.count, s.max);
             item.OnItemSelected = OnRightItemSelected;
+            j++;
         }
 
     }
 
-    // ¸®½ºÆ® ÃÊ±âÈ­ ÇÔ¼ö
+    // ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™” í•¨ìˆ˜
     private void ClearList()
     {
-        foreach (var item in leftspawnedItems)
+        foreach (var item in leftSpawnedItems)
         {
             Destroy(item);
         }
-        leftspawnedItems.Clear();
+        leftSpawnedItems.Clear();
 
-        foreach (var item in rightspawnedItems)
+        foreach (var item in rightSpawnedItems)
         {
             Destroy(item);
         }
-        rightspawnedItems.Clear();
+        rightSpawnedItems.Clear();
 
-        // ¼±ÅÃ Á¤º¸µµ ÃÊ±âÈ­
+        // ì„ íƒ ì •ë³´ë„ ì´ˆê¸°í™”
         selectedLeft = null;
         selectedRight = null;
         RefreshButtonState();
-    }*/
+    }
 
     [Header("Selection")]
     private BlanketItem selectedLeft;
@@ -86,7 +89,7 @@ public class ShopStoragePanel : MonoBehaviour
 
     int currentTransferCount = 1;
 
-    // ¿ŞÂÊ ¾ÆÀÌÅÛ ¼±ÅÃ ½Ã È£Ãâ
+    // ì™¼ìª½ ì•„ì´í…œ ì„ íƒ ì‹œ í˜¸ì¶œ
     void OnLeftItemSelected(BlanketItem item)
     {
         if (selectedLeft != null) selectedLeft.SetHighlight(false);
@@ -95,7 +98,7 @@ public class ShopStoragePanel : MonoBehaviour
         RefreshButtonState();
     }
 
-    // ¿À¸¥ÂÊ Àç°íÇÔ ¼±ÅÃ ½Ã È£Ãâ
+    // ì˜¤ë¥¸ìª½ ì¬ê³ í•¨ ì„ íƒ ì‹œ í˜¸ì¶œ
     void OnRightItemSelected(BlanketItem item)
     {
         if (selectedRight != null) selectedRight.SetHighlight(false);
@@ -104,12 +107,12 @@ public class ShopStoragePanel : MonoBehaviour
         RefreshButtonState();
     }
 
-    // ¹öÆ° È°¼ºÈ­ ¿©ºÎ °áÁ¤
+    // ë²„íŠ¼ í™œì„±í™” ì—¬ë¶€ ê²°ì •
     void RefreshButtonState()
     {
         bool isBothSelected = (selectedLeft != null && selectedRight != null);
 
-        // ¿¹¿Ü»çÇ×: Àç°íÇÔÀÌ ²Ë Ã¡´ÂÁö Ã¼Å© (¿¹: ÇöÀç »ç¿ëÁßÀÎ ½½·Ô ¼ö È®ÀÎ)
+        // ì˜ˆì™¸ì‚¬í•­: ì¬ê³ í•¨ì´ ê½‰ ì°¼ëŠ”ì§€ ì²´í¬ (ì˜ˆ: í˜„ì¬ ì‚¬ìš©ì¤‘ì¸ ìŠ¬ë¡¯ ìˆ˜ í™•ì¸)
         bool isRightNotFull = CheckIfSpaceAvailable(selectedRight);
 
         sendButton.interactable = isBothSelected && isRightNotFull;
@@ -118,34 +121,38 @@ public class ShopStoragePanel : MonoBehaviour
     bool CheckIfSpaceAvailable(BlanketItem targetSlot)
     {
         if (targetSlot == null) return false;
-        // Àç°íÇÔ ¾ÆÀÌÅÛÀÇ '»ç¿ëÁß ½½·Ô'ÀÌ 'ÃÖ´ë ½½·Ô'º¸´Ù ÀÛÀºÁö È®ÀÎÇÏ´Â ·ÎÁ÷
+        // ì¬ê³ í•¨ ì•„ì´í…œì˜ 'ì‚¬ìš©ì¤‘ ìŠ¬ë¡¯'ì´ 'ìµœëŒ€ ìŠ¬ë¡¯'ë³´ë‹¤ ì‘ì€ì§€ í™•ì¸í•˜ëŠ” ë¡œì§
         return targetSlot.currentAmount < targetSlot.max;
     }
 
-    // +, - ¹öÆ°¿¡ ¿¬°áÇÒ ÇÔ¼öµé
+    // +, - ë²„íŠ¼ì— ì—°ê²°í•  í•¨ìˆ˜ë“¤
     public void ChangeQuantity(int amount)
     {
         if (selectedLeft == null) return;
 
-        // ¼±ÅÃµÈ ¿ŞÂÊ ¾ÆÀÌÅÛÀÇ ½ÇÁ¦ ¼ö·® ¹üÀ§¸¦ ¹ş¾î³ªÁö ¾Ê°Ô Å¬·¥ÇÁ
+        // ì„ íƒëœ ì™¼ìª½ ì•„ì´í…œì˜ ì‹¤ì œ ìˆ˜ëŸ‰ ë²”ìœ„ë¥¼ ë²—ì–´ë‚˜ì§€ ì•Šê²Œ í´ë¨í”„
         currentTransferCount = Mathf.Clamp(currentTransferCount + amount, 1, selectedLeft.currentAmount);
         quantityText.text = currentTransferCount.ToString();
     }
 
-    // º¸³»±â ¹öÆ° Å¬¸¯ ½Ã
+    // ë³´ë‚´ê¸° ë²„íŠ¼ í´ë¦­ ì‹œ
     public void ExecuteTransfer()
     {
         if (selectedLeft == null || selectedRight == null) return;
 
-        // 1. µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
+        // 1. ë°ì´í„° ì—…ë°ì´íŠ¸
         selectedLeft.currentAmount -= currentTransferCount;
         selectedRight.currentAmount += currentTransferCount;
 
-        // 2. UI °»½Å (¾ÆÀÌÅÛ ÇÁ¸®ÆÕ ³»ºÎÀÇ ÅØ½ºÆ®¸¦ »õ·Î°íÄ§ÇÏ´Â ÇÔ¼ö°¡ ¾ÆÀÌÅÛ ½ºÅ©¸³Æ®¿¡ ÀÖ¾î¾ß ÇÔ)
-        //selectedLeft.RefreshUI();
-        //selectedRight.RefreshUI();
+        // ë°ì´í„° ë§¤ë‹ˆì € ë°ì´í„° ì—…ë°ì´íŠ¸
+        ShopStorageDataManager.Instance.UpdateTableData(selectedLeft.parentID, selectedLeft.dataIndex, -currentTransferCount);
+        ShopStorageDataManager.Instance.UpdateStorageData(selectedRight.parentID, currentTransferCount);
 
-        // 3. ¸¸¾à ¼ö·®ÀÌ 0ÀÌ µÇ¸é ¾ÆÀÌÅÛ ÆÄ±«
+        // 2. UI ê°±ì‹  (ì•„ì´í…œ í”„ë¦¬íŒ¹ ë‚´ë¶€ì˜ í…ìŠ¤íŠ¸ë¥¼ ìƒˆë¡œê³ ì¹¨í•˜ëŠ” í•¨ìˆ˜ê°€ ì•„ì´í…œ ìŠ¤í¬ë¦½íŠ¸ì— ìˆì–´ì•¼ í•¨)
+        selectedLeft.RefreshUI(true);
+        selectedRight.RefreshUI(false);
+
+        // 3. ë§Œì•½ ìˆ˜ëŸ‰ì´ 0ì´ ë˜ë©´ ì•„ì´í…œ íŒŒê´´
         if (selectedLeft.currentAmount <= 0)
         {
             leftSpawnedItems.Remove(selectedLeft.gameObject);
@@ -153,18 +160,18 @@ public class ShopStoragePanel : MonoBehaviour
             selectedLeft = null;
         }
 
-        // 4. Àü¼Û ÈÄ ¼ö·® ÃÊ±âÈ­ ¹× ¹öÆ° »óÅÂ ¾÷µ¥ÀÌÆ®
+        // 4. ì „ì†¡ í›„ ìˆ˜ëŸ‰ ì´ˆê¸°í™” ë° ë²„íŠ¼ ìƒíƒœ ì—…ë°ì´íŠ¸
         currentTransferCount = 1;
         quantityText.text = "1";
 
-        Debug.Log($"{currentTransferCount}°³ÀÇ ÀÌºÒÀ» Àü¼ÛÇß½À´Ï´Ù.");
+        Debug.Log($"{currentTransferCount}ê°œì˜ ì´ë¶ˆì„ ì „ì†¡í–ˆìŠµë‹ˆë‹¤.");
         RefreshButtonState();
     }
 
-    //X¹öÆ° ¿¬°á
+    //Xë²„íŠ¼ ì—°ê²°
     public void ClosePanel()
     {
-        // 1. ¼±ÅÃµÈ Á¤º¸ ÃÊ±âÈ­ (´ÙÀ½¿¡ ¿­ ¶§ ±ú²ıÇÏ°Ô)
+        // 1. ì„ íƒëœ ì •ë³´ ì´ˆê¸°í™” (ë‹¤ìŒì— ì—´ ë•Œ ê¹¨ë—í•˜ê²Œ)
         if (selectedLeft != null) selectedLeft.SetHighlight(false);
         if (selectedRight != null) selectedRight.SetHighlight(false);
 
@@ -173,31 +180,31 @@ public class ShopStoragePanel : MonoBehaviour
         currentTransferCount = 1;
         quantityText.text = "1";
 
-        // 2. »ı¼ºµÈ ¾ÆÀÌÅÛµé »èÁ¦ (¸Ş¸ğ¸® °ü¸®)
-        //ClearList();
+        // 2. ìƒì„±ëœ ì•„ì´í…œë“¤ ì‚­ì œ (ë©”ëª¨ë¦¬ ê´€ë¦¬)
+        ClearList();
 
-        // 3. ÆĞ³Î ºñÈ°¼ºÈ­
+        // 3. íŒ¨ë„ ë¹„í™œì„±í™”
         gameObject.SetActive(false);
     }
 
-    // ÀÎ½ºÆåÅÍ¿¡¼­ InputFieldÀÇ On End Edit ¶Ç´Â On Value Changed¿¡ ¿¬°áÇÒ ÇÔ¼ö
+    // ì¸ìŠ¤í™í„°ì—ì„œ InputFieldì˜ On End Edit ë˜ëŠ” On Value Changedì— ì—°ê²°í•  í•¨ìˆ˜
     public void OnInputQuantityChanged(string input)
     {
         if (selectedLeft == null) return;
 
-        // 1. ÀÔ·ÂµÈ ¹®ÀÚ¿­À» ¼ıÀÚ·Î º¯È¯ ½Ãµµ
+        // 1. ì…ë ¥ëœ ë¬¸ìì—´ì„ ìˆ«ìë¡œ ë³€í™˜ ì‹œë„
         if (int.TryParse(input, out int result))
         {
-            // 2. º¸À¯·® ¹üÀ§¸¦ ¹ş¾î³ªÁö ¾Ê°Ô ´Ù½Ã Á¶Á¤
+            // 2. ë³´ìœ ëŸ‰ ë²”ìœ„ë¥¼ ë²—ì–´ë‚˜ì§€ ì•Šê²Œ ë‹¤ì‹œ ì¡°ì •
             currentTransferCount = Mathf.Clamp(result, 1, selectedLeft.currentAmount);
         }
         else
         {
-            // 3. ¼ıÀÚ°¡ ¾Æ´Ï¸é 1·Î ÃÊ±âÈ­
+            // 3. ìˆ«ìê°€ ì•„ë‹ˆë©´ 1ë¡œ ì´ˆê¸°í™”
             currentTransferCount = 1;
         }
 
-        // 4. ÀÔ·Â Ä­À» ÃÖÁ¾ °áÁ¤µÈ ¼ıÀÚ·Î °­Á¦ ¾÷µ¥ÀÌÆ®
+        // 4. ì…ë ¥ ì¹¸ì„ ìµœì¢… ê²°ì •ëœ ìˆ«ìë¡œ ê°•ì œ ì—…ë°ì´íŠ¸
         quantityText.text = currentTransferCount.ToString();
     }
 }

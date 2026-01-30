@@ -4,31 +4,59 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using System;
+using System.Reflection;
 
 public class BlanketItem : MonoBehaviour
 {
-    //public FurnitureData data; // ÀÌ ¾ÆÀÌÅÛÀÇ µ¥ÀÌÅÍ
-    public int currentAmount;  // ÇöÀç ¼ö·®
+    public string itemName;
+    public int currentAmount;  // í˜„ì¬ ìˆ˜ëŸ‰
     public int max;
-    public Image highlightImage; // ¼±ÅÃ ½Ã º¸ÀÏ Å×µÎ¸® ÀÌ¹ÌÁö
 
-    public System.Action<BlanketItem> OnItemSelected; // Å¬¸¯ ½Ã ¸Å´ÏÀú¿¡ ¾Ë¸²¿ë
-    /*
-    public void Setup(FurnitureData newData, int amount)
-    {
-        data = newData;
-        currentAmount = amount;
-        // ÅØ½ºÆ®³ª ÀÌ¹ÌÁö ¾÷µ¥ÀÌÆ® ·ÎÁ÷ Ãß°¡ (¿¹: nameText.text = data.name;)
-    }*/
+    public Image highlightImage; // ì„ íƒ ì‹œ ë³´ì¼ í…Œë‘ë¦¬ ì´ë¯¸ì§€
+    public Image itemImage; // ì•„ì´í…œ ì´ë¯¸ì§€
 
-    /*
-    public void Setup(FurnitureData newData, int amount, int maxCapacity)
+    public Image blanketImage; // ì¬ê³ í•¨ ì´ë¯¸ì§€ ë¯¸ë¦¬ ë„£ì–´ë‘˜ ê²ƒ
+    public TextMeshProUGUI amountText;
+    public TextMeshProUGUI nameText;
+
+    public int dataIndex;   // ë°°ì—´ì—ì„œì˜ ìœ„ì¹˜ (Index)
+    public int parentID;    // ì´ë¶ˆì¥ ID í˜¹ì€ ì¬ê³ í•¨ ID
+
+    public System.Action<BlanketItem> OnItemSelected; // í´ë¦­ ì‹œ ë§¤ë‹ˆì €ì— ì•Œë¦¼ìš©
+
+    public void SetupBlanketItem(int parentID, int index, int amount, int max)
     {
-        data = newData;
-        currentAmount = amount;
-        max = maxCapacity
-        // ÅØ½ºÆ®³ª ÀÌ¹ÌÁö ¾÷µ¥ÀÌÆ® ·ÎÁ÷ Ãß°¡ (¿¹: nameText.text = data.name;)
-    }*/
+        this.parentID = parentID;
+        this.dataIndex = index;
+        this.itemName = name;
+        this.currentAmount = amount;
+        this.itemImage = blanketImage;
+        this.max = max;
+        amountText.text = $"{currentAmount} / {max}";
+    }
+    public void SetupItem(int parentID, int index, string name, int amount, Image itemImage)
+    {
+        this.parentID = parentID;
+        this.dataIndex = index;
+        this.itemName = name;
+        this.currentAmount = amount;
+        this.itemImage = itemImage;
+        nameText.text = itemName;
+        amountText.text = amount.ToString();
+    }
+
+    public void RefreshUI(bool isBlanket)
+    {
+        if (isBlanket)
+        {
+            amountText.text = $"{currentAmount} / {max}";
+        }
+        else
+        {
+            amountText.text = currentAmount.ToString();
+        }
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
