@@ -7,9 +7,15 @@ public class QuestAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<string, QuestBox> questBox = new();
-    private Dictionary<string, SpecialQuestBox> specialQuestBox = new();
-    private List<LetterBox> letterBox = new();
+    private Dictionary<string, QuestBox> questBox;
+    private Dictionary<string, SpecialQuestBox> specialQuestBox;
+    private List<LetterBox> letterBox;
+
+    // === SO 데이터 ===
+
+    private Dictionary<string, QuestSO> questSOs;
+    private Dictionary<string, SpecialQuestSO> specialSOs;
+    private Dictionary<string, LetterSO> letterSOs;
 
     // === 변경 사항 저장소 ===
 
@@ -172,11 +178,16 @@ public class QuestAggregate : IAggregate
 
     }
 
-    public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox, IEnumerable<LetterBox> letterBox)
+    public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox, IEnumerable<LetterBox> letterBox,
+        Dictionary<string, QuestSO> questSOs, Dictionary<string, SpecialQuestSO> specialSOs, Dictionary<string, LetterSO> letterSOs)
     {
         this.questBox = questBox.ToDictionary(qb => qb.questName);
         this.specialQuestBox = specialQuestBox.ToDictionary(sqb => sqb.questName);
         this.letterBox = letterBox.ToList();
+
+        this.questSOs = questSOs;
+        this.specialSOs = specialSOs;
+        this.letterSOs = letterSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)

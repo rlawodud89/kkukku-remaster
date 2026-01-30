@@ -11,11 +11,18 @@ public class ShopStateAggregate : IAggregate
     private Dictionary<int, Dictionary<string, ShopTable>> shopTable;
     private Dictionary<int, WorkerState> workerState;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, BlanketItemSO> blanketSOs;
+    private Dictionary<string, NPCDataSO> customerSOs;
+
     // === 변경 사항 저장소 ===
 
     private Dictionary<(int tableID, string itemName), SaveOperation> shopTableChanges = new();
     private Dictionary<int, SaveOperation> workerStateChanges = new();
 
+
+    // === 저장 시스템 사용 메서드 ===
 
     public bool IsDirty { get; private set; }
 
@@ -157,7 +164,8 @@ public class ShopStateAggregate : IAggregate
         }
     }
 
-    public void LoadShopStateAggregate(IEnumerable<ShopTable> shopTable, IEnumerable<WorkerState> workerState)
+    public void LoadShopStateAggregate(IEnumerable<ShopTable> shopTable, IEnumerable<WorkerState> workerState,
+        Dictionary<string, BlanketItemSO> blanketSOs, Dictionary<string, NPCDataSO> customerSOs)
     {
         this.shopTable = shopTable
         .GroupBy(st => st.tableID)
@@ -166,6 +174,9 @@ public class ShopStateAggregate : IAggregate
             g => g.ToDictionary(st => st.itemName)
         );
         this.workerState = workerState.ToDictionary(ws => ws.workerID);
+
+        this.blanketSOs = blanketSOs;
+        this.customerSOs = customerSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
