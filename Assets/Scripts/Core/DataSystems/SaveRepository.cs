@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using SQLite4Unity3d;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -41,15 +42,15 @@ public class SaveRepository
         materialSOs = Addressables.LoadAssetsAsync<MaterialItemSO>("material", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.itemName);
-        //snackSOs = Addressables.LoadAssetsAsync<SnackItemSO>("snack", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //blanketSOs = Addressables.LoadAssetsAsync<BlanketItemSO>("material", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
+        snackSOs = Addressables.LoadAssetsAsync<SnackItemSO>("snack", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        blanketSOs = Addressables.LoadAssetsAsync<BlanketItemSO>("blanket", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
 
         //questSOs = Addressables.LoadAssetsAsync<QuestSO>("quest", null)
         //        .WaitForCompletion()
@@ -111,6 +112,11 @@ public class SaveRepository
 
     private void ExecuteInsert(SavePayload payload)
     {
+        if (payload.Values == null || payload.Values.Count == 0)
+        {
+            throw new Exception($"INSERT without values is not allowed: {payload.Table}");
+        }
+
         var columns = payload.Values.Keys.ToList();
         var parameters = string.Join(", ", columns.Select(_ => "?"));
 
@@ -128,6 +134,16 @@ public class SaveRepository
 
     private void ExecuteUpdate(SavePayload payload)
     {
+        if (payload.Values == null || payload.Values.Count == 0)
+        {
+            throw new Exception($"UPDATE without SET values is not allowed: {payload.Table}");
+        }
+
+        if (payload.Conditions == null || payload.Conditions.Count == 0)
+        {
+            throw new Exception($"UPDATE without WHERE is not allowed: {payload.Table}");
+        }
+
         var setKeys = payload.Values.Keys.ToList();
         var whereKeys = payload.Conditions.Keys.ToList();
 
@@ -150,20 +166,30 @@ public class SaveRepository
 
     private void ExecuteDelete(SavePayload payload)
     {
+        // 전체 삭제
+        if (payload.Conditions == null || payload.Conditions.Count == 0)
+        {
+            string sql = $"DELETE FROM {payload.Table}";
+            connection.Execute(sql);
+            return;
+        }
+
+        // 조건부 삭제
         var whereKeys = payload.Conditions.Keys.ToList();
 
         var whereClause = string.Join(" AND ",
             whereKeys.Select(k => $"{k} = ?"));
 
-        string sql =
+        string sqlWithWhere =
             $"DELETE FROM {payload.Table} WHERE {whereClause}";
 
         var values = whereKeys
             .Select(k => payload.Conditions[k])
             .ToArray();
 
-        connection.Execute(sql, values);
+        connection.Execute(sqlWithWhere, values);
     }
+
 
 
     // === 첫 로딩 시 SELECT 메서드 ===
