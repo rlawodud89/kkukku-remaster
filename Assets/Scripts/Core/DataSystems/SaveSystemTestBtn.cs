@@ -14,7 +14,9 @@ public class SaveSystemTestBtn : MonoBehaviour
 
     public void OnClickTestBtn()
     {
-        Debug.Log(ServiceLocator.Get<GameData>().User.GetVolumeData());
-        ServiceLocator.Get<GameData>().User.SetVolumeData(60, 50);
+        var userData = ServiceLocator.Get<GameData>().User.GetUserData();
+        Debug.Log("사용자 이름: " + userData.shopName);
+        Debug.Log("래벨: " + userData.level);
+        Debug.Log("경험치: " + userData.energy);
     }
 }
