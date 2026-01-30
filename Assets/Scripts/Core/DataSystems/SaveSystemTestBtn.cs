@@ -14,13 +14,7 @@ public class SaveSystemTestBtn : MonoBehaviour
 
     public void OnClickTestBtn()
     {
-        List<string> list = new List<string>();
-        list.Add("기본이불");
-        ServiceLocator.Get<GameData>().BlanketCraft.AddBlanketRecipes(list);
-
-        foreach (var i in ServiceLocator.Get<GameData>().BlanketCraft.GetCurrentRecipes())
-        {
-            Debug.Log(i.itemName);
-        }
+        Debug.Log(ServiceLocator.Get<GameData>().User.GetVolumeData());
+        ServiceLocator.Get<GameData>().User.SetVolumeData(60, 50);
     }
 }

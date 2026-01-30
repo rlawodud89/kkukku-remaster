@@ -5,7 +5,7 @@ public class SaveService
     private readonly SaveRepository repository;
     private readonly DirtyDataRegistry dirtyRegistry;
 
-    private float saveInterval = 30f;
+    private float saveInterval = 15f;
     private float timer;
 
     public SaveService(
