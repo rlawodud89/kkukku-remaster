@@ -4,17 +4,17 @@ using UnityEngine.EventSystems;
 
 public class ShopStorageClick : MonoBehaviour
 {
-    public ShopStoragePanel storagePanel; // ÆĞ³Î ½ºÅ©¸³Æ® Á÷Á¢ ¿¬°á
+    public ShopStoragePanel storagePanel; // íŒ¨ë„ ìŠ¤í¬ë¦½íŠ¸ ì§ì ‘ ì—°ê²°
     public int storageID;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // UI°¡ ¾Õ¿¡ ÀÖ´Ù¸é(¿¹: ÀÌ¹Ì ¿­¸° ÆĞ³Î µî) µÚÀÇ ¿ÀºêÁ§Æ® Å¬¸¯ ¹æÁö
+        // UIê°€ ì•ì— ìˆë‹¤ë©´(ì˜ˆ: ì´ë¯¸ ì—´ë¦° íŒ¨ë„ ë“±) ë’¤ì˜ ì˜¤ë¸Œì íŠ¸ í´ë¦­ ë°©ì§€
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
         if (storagePanel != null)
         {
-            //storagePanel.OpenStorageByID(storageID);
+            storagePanel.OpenStorage(storageID);
         }
     }
 }
