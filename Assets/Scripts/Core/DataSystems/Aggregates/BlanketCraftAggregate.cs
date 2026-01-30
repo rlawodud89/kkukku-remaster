@@ -5,13 +5,23 @@ using UnityEngine;
 
 public class BlanketCraftAggregate : IAggregate
 {
+    // === 런타임 데이터 ===
+
     private List<BlanketRecipe> blanketRecipe;
     private Queue<BlanketRecord> blanketRecord;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, MaterialItemSO> materialSOs;
+    private Dictionary<string, BlanketItemSO> blanketSOs;
+
+    // === 변경 사항 저장소 ===
 
     private HashSet<string> insertedBlanketRecipe = new();
     private static int maxRecordCount = 5;
 
+
+    // === 저장 시스템 사용 메서드 ===
 
     public bool IsDirty { get; private set; }
 
@@ -72,10 +82,14 @@ public class BlanketCraftAggregate : IAggregate
 
     }
 
-    public void LoadBlanketCraftAggregate(IEnumerable<BlanketRecipe> blanketRecipe, IEnumerable<BlanketRecord> blanketRecord)
+    public void LoadBlanketCraftAggregate(IEnumerable<BlanketRecipe> blanketRecipe, IEnumerable<BlanketRecord> blanketRecord,
+        Dictionary<string, MaterialItemSO> materialSOs, Dictionary<string, BlanketItemSO> blanketSOs)
     {
         this.blanketRecipe = blanketRecipe.ToList();
         this.blanketRecord = new Queue<BlanketRecord>(blanketRecord);
+
+        this.materialSOs = materialSOs;
+        this.blanketSOs = blanketSOs;
     }
 
 

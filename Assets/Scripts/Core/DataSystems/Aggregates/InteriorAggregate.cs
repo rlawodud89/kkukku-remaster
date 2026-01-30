@@ -14,6 +14,12 @@ public class InteriorAggregate : IAggregate
     private Dictionary<(float x, float y), RoomInteriorPlaced> roomPlaced;
     private Dictionary<TilePositionType, TileInteriorPlaced> tilePlaced;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, ShopInteriorItemSO> shopInteriorSOs;
+    private Dictionary<string, RoomInteriorItemSO> roomInteriorSOs;
+    private Dictionary<string, TileInteriorItemSO> tileInteriorSOs;
+
     // === 변경 사항 저장소 ===
 
     private Dictionary<(float x, float y), SaveOperation> shopPlacedChanges = new();
@@ -195,11 +201,16 @@ public class InteriorAggregate : IAggregate
     }
 
     public void LoadInteriorAggregate(IEnumerable<ShopInteriorPlaced> shopPlaced, IEnumerable<RoomInteriorPlaced> roomPlaced,
-        IEnumerable<TileInteriorPlaced> tilePlaced)
+        IEnumerable<TileInteriorPlaced> tilePlaced, Dictionary<string, ShopInteriorItemSO> shopInteriorSOs,
+        Dictionary<string, RoomInteriorItemSO> roomInteriorSOs, Dictionary<string, TileInteriorItemSO> tileInteriorSOs)
     {
         this.shopPlaced = shopPlaced.ToDictionary(sp => (sp.x, sp.y));
         this.roomPlaced = roomPlaced.ToDictionary(rp => (rp.x, rp.y));
         this.tilePlaced = tilePlaced.ToDictionary(tp => tp.tilePosition);
+
+        this.shopInteriorSOs = shopInteriorSOs;
+        this.roomInteriorSOs = roomInteriorSOs;
+        this.tileInteriorSOs = tileInteriorSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)

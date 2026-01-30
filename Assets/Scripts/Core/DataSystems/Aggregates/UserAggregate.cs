@@ -5,10 +5,21 @@ using UnityEngine;
 
 public class UserAggregate : IAggregate
 {
+    // === 런타임 데이터 ===
+
     private User user;
     private Dictionary<ToolType, ToolUsed> toolUsed;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, ToolItemSO> toolSOs;
+
+    // === 변경 사항 저장소 ===
+
     private HashSet<ToolType> updateToolTypes = new();
+
+
+    // === 저장 시스템 사용 메서드 ===
 
     public bool IsDirty { get; private set; }
 
@@ -75,10 +86,12 @@ public class UserAggregate : IAggregate
 
     }
 
-    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed)
+    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed, Dictionary<string, ToolItemSO> toolSOs)
     {
         this.user = user;
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
+
+        this.toolSOs = toolSOs;
     }
 
 

@@ -1,14 +1,67 @@
 using SQLite4Unity3d;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SaveRepository
 {
     private SQLiteConnection connection;
 
+    private Dictionary<string, ShopInteriorItemSO> shopInteriorSOs;
+    private Dictionary<string, RoomInteriorItemSO> roomInteriorSOs;
+    private Dictionary<string, TileInteriorItemSO> tileInteriorSOs;
+    private Dictionary<string, MaterialItemSO> materialSOs;
+    private Dictionary<string, SnackItemSO> snackSOs;
+    private Dictionary<string, BlanketItemSO> blanketSOs;
+    private Dictionary<string, ToolItemSO> toolSOs;
+    private Dictionary<string, QuestSO> questSOs;
+    private Dictionary<string, SpecialQuestSO> specialQuestSOs;
+    private Dictionary<string, LetterSO> letterSOs;
+    private Dictionary<string, NPCDataSO> customerSOs;
+
+
     public SaveRepository(SQLiteConnection connection)
     {
         this.connection = connection;
+
+        //shopInteriorSOs = Addressables.LoadAssetsAsync<ShopInteriorItemSO>("shopInterior", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+        //roomInteriorSOs = Addressables.LoadAssetsAsync<RoomInteriorItemSO>("roomInterior", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+        //tileInteriorSOs = Addressables.LoadAssetsAsync<TileInteriorItemSO>("tileInterior", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+
+        materialSOs = Addressables.LoadAssetsAsync<MaterialItemSO>("material", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        //snackSOs = Addressables.LoadAssetsAsync<SnackItemSO>("snack", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+        //blanketSOs = Addressables.LoadAssetsAsync<BlanketItemSO>("material", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+        //toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.itemName);
+
+        //questSOs = Addressables.LoadAssetsAsync<QuestSO>("quest", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.questName);
+        //specialQuestSOs = Addressables.LoadAssetsAsync<SpecialQuestSO>("specialQuest", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.questName);
+        //letterSOs = Addressables.LoadAssetsAsync<LetterSO>("letter", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.letterName);
+
+        //customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
+        //        .WaitForCompletion()
+        //        .ToDictionary(i => i.npcID);
     }
 
     public void BeginTransaction() => connection.BeginTransaction();
@@ -119,7 +172,7 @@ public class SaveRepository
         List<ToolUsed> toolUsed = connection.Table<ToolUsed>().ToList();
 
         var aggregate = new UserAggregate();
-        aggregate.LoadUserAggregate(user, toolUsed);
+        aggregate.LoadUserAggregate(user, toolUsed, toolSOs);
 
         return aggregate;
     }
@@ -136,7 +189,8 @@ public class SaveRepository
 
         var aggregate = new InventoryAggregate();
         aggregate.LoadInventoryAggregate(shopInteriorInventory, roomInteriorInventory, tileInventory,
-            materialInventory, snackInventory, blanketInventory, toolInventory);
+            materialInventory, snackInventory, blanketInventory, toolInventory,
+            shopInteriorSOs, roomInteriorSOs, tileInteriorSOs, materialSOs, snackSOs, blanketSOs, toolSOs);
 
         return aggregate;
     }
@@ -148,7 +202,8 @@ public class SaveRepository
         List<TileInteriorPlaced> tilePlaced = connection.Table<TileInteriorPlaced>().ToList();
 
         var aggregate = new InteriorAggregate();
-        aggregate.LoadInteriorAggregate(shopPlaced, roomPlaced, tilePlaced);
+        aggregate.LoadInteriorAggregate(shopPlaced, roomPlaced, tilePlaced,
+            shopInteriorSOs, roomInteriorSOs, tileInteriorSOs);
 
         return aggregate;
     }
@@ -160,7 +215,8 @@ public class SaveRepository
         List<LetterBox> letterBox = connection.Table<LetterBox>().ToList();
 
         var aggregate = new QuestAggregate();
-        aggregate.LoadQuestAggregate(questBox, specialQuestBox, letterBox);
+        aggregate.LoadQuestAggregate(questBox, specialQuestBox, letterBox,
+            questSOs, specialQuestSOs, letterSOs);
 
         return aggregate;
     }
@@ -171,7 +227,7 @@ public class SaveRepository
         List<WorkerState> workerState = connection.Table<WorkerState>().ToList();
 
         var aggregate = new ShopStateAggregate();
-        aggregate.LoadShopStateAggregate(shopTable, workerState);
+        aggregate.LoadShopStateAggregate(shopTable, workerState, blanketSOs, customerSOs);
 
         return aggregate;
     }
@@ -182,7 +238,7 @@ public class SaveRepository
         List<BlanketRecipe> blanketRecipe = connection.Table<BlanketRecipe>().ToList();
 
         var aggregate = new BlanketCraftAggregate();
-        aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord);
+        aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord, materialSOs, blanketSOs);
 
         return aggregate;
     }

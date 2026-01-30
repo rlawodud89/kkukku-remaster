@@ -17,6 +17,16 @@ public class InventoryAggregate : IAggregate
 
     private Dictionary<ToolType, Dictionary<string, ToolInventory>> toolInventory;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, ShopInteriorItemSO> shopInteriorSOs;
+    private Dictionary<string, RoomInteriorItemSO> roomInteriorSOs;
+    private Dictionary<string, TileInteriorItemSO> tileInteriorSOs;
+    private Dictionary<string, MaterialItemSO> materialSOs;
+    private Dictionary<string, SnackItemSO> snackSOs;
+    private Dictionary<string, BlanketItemSO> blanketSOs;
+    private Dictionary<string, ToolItemSO> toolSOs;
+
     // === 변경 사항 저장소 ===
 
     private Dictionary<string, SaveOperation> shopInteriorInventoryChanges = new();
@@ -381,7 +391,10 @@ public class InventoryAggregate : IAggregate
 
     public void LoadInventoryAggregate(IEnumerable<ShopInteriorInventory> shopInteriorInventory, IEnumerable<RoomInteriorInventory> roomInteriorInventory,
         IEnumerable<TileInteriorInventory> tileInventory, IEnumerable<MaterialInventory> materialInventory,
-        IEnumerable<SnackInventory> snackInventory, IEnumerable<BlanketInventory> blanketInventory, IEnumerable<ToolInventory> toolInventory)
+        IEnumerable<SnackInventory> snackInventory, IEnumerable<BlanketInventory> blanketInventory, IEnumerable<ToolInventory> toolInventory,
+        Dictionary<string, ShopInteriorItemSO> shopInteriorSOs, Dictionary<string, RoomInteriorItemSO> roomInteriorSOs,
+        Dictionary<string, TileInteriorItemSO> tileInteriorSOs, Dictionary<string, MaterialItemSO> materialSOs,
+        Dictionary<string, SnackItemSO> snackSOs, Dictionary<string, BlanketItemSO> blanketSOs, Dictionary<string, ToolItemSO> toolSOs)
     {
         this.shopInteriorInventory = shopInteriorInventory.ToDictionary(sii => sii.itemName);
         this.roomInteriorInventory = roomInteriorInventory.ToDictionary(rii => rii.itemName);
@@ -417,6 +430,14 @@ public class InventoryAggregate : IAggregate
             g => g.Key,
             g => g.ToDictionary(ti => ti.toolName)
         );
+
+        this.shopInteriorSOs = shopInteriorSOs;
+        this.roomInteriorSOs = roomInteriorSOs;
+        this.tileInteriorSOs = tileInteriorSOs;
+        this.materialSOs = materialSOs;
+        this.snackSOs = snackSOs;
+        this.blanketSOs = blanketSOs;
+        this.toolSOs = toolSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
