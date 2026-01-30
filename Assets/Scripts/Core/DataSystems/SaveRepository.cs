@@ -29,6 +29,8 @@ public class SaveRepository
     {
         this.connection = connection;
 
+        // MakeDefaultDB();
+
         //shopInteriorSOs = Addressables.LoadAssetsAsync<ShopInteriorItemSO>("shopInterior", null)
         //        .WaitForCompletion()
         //        .ToDictionary(i => i.itemName);
@@ -58,9 +60,9 @@ public class SaveRepository
         //specialQuestSOs = Addressables.LoadAssetsAsync<SpecialQuestSO>("specialQuest", null)
         //        .WaitForCompletion()
         //        .ToDictionary(i => i.questName);
-        //letterSOs = Addressables.LoadAssetsAsync<LetterSO>("letter", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.letterName);
+        letterSOs = Addressables.LoadAssetsAsync<LetterSO>("letter", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.letterName);
 
         //customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
         //        .WaitForCompletion()

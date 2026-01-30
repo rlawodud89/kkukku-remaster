@@ -63,6 +63,10 @@ public class UserAggregate : IAggregate
                 { "shopLevel", user.shopLevel },
                 { "bgmVol", user.bgmVol },
                 { "sfxVol", user.sfxVol },
+            },
+            Conditions = new Dictionary<string, object>
+            {
+                { "id", 1 }
             }
         };
 
