@@ -17,6 +17,21 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: e8f00f022f4061c49bb7041774fc577f
   m_SerializeEntries:
+  - m_GUID: 057a23c1cc442664db9d1ea21a4d0602
+    m_Address: Assets/ScriptableObjects/Customer/Koala.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 083078898cec2214c8141e86f0a41cb0
+    m_Address: Assets/ScriptableObjects/Customer/Otter.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08c1ee96ae817c749aba77a6c5f20851
+    m_Address: Assets/ScriptableObjects/Customer/Bear.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d5eacc4d61b3254f9a06fa190b89c48
     m_Address: "Assets/ScriptableObjects/Item/Tool/Gathering/\uAE30\uBCF8\uCC44.asset"
     m_ReadOnly: 0
@@ -46,6 +61,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d26c0f8c2e3ed74c93d4773dea2dd1d
+    m_Address: Assets/ScriptableObjects/Customer/Flamingo.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2691f4f84176b224db1d174bb384a6bc
+    m_Address: Assets/ScriptableObjects/Customer/Fox.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3154f620c76df684d98ee384cbe110b9
+    m_Address: Assets/ScriptableObjects/Customer/Hedgehog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 32305ab4686839a419f3967ce399945a
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uD1A1\uD1A1 \uD0C4\uC0B0
       \uB77C\uC784.asset"
@@ -64,6 +94,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42215d9702cfd974886604c0e1852248
+    m_Address: Assets/ScriptableObjects/Customer/Capybara.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4813aec0d0a3a4a44baf523c9cd80abe
+    m_Address: Assets/ScriptableObjects/Customer/Frog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48687224fc21b2a4ca57092725663828
     m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uAFC8\uC2E4.asset"
@@ -84,11 +124,26 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e8cb6f95bcca854bbc10d36fbf28a10
+    m_Address: Assets/ScriptableObjects/Customer/Platypus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 699e4c073a344964e8735e17dcb6f5ae
     m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uC740\uBE5B\uB2EC\uC870\uAC01.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c30c9bf27deb5343b8012e4f10bb727
+    m_Address: Assets/ScriptableObjects/Customer/Reindeer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77955dafc1b415d4c98527479ccc5927
+    m_Address: Assets/ScriptableObjects/Customer/Kangaroo.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 783cc1a7562b7bb45bdb37fdf9d2a444
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uC640\uC791 \uCFE0\uD0A4
@@ -109,6 +164,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b55606d5c8f53f4481c1e462352b73f
+    m_Address: Assets/ScriptableObjects/Customer/Cat.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7baadcca69b92e64f82ca92c0c6f3b84
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 1/\uC0AC\uD0D5\uADE4.asset"
@@ -149,11 +209,56 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6b8e44e70578bb4190e64649c22610a
+    m_Address: Assets/ScriptableObjects/Customer/Swallow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad897f8b85c54d647ab1e91bf183a790
+    m_Address: Assets/ScriptableObjects/Customer/Parrot.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae9fbc63817866441baed2889ca87216
+    m_Address: Assets/ScriptableObjects/Customer/Sheep.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c58a6d9a51c9bba4291ed175cefd640d
+    m_Address: Assets/ScriptableObjects/Customer/Mole.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6e200176d4f5f347838dee81358e1b1
+    m_Address: Assets/ScriptableObjects/Customer/Bat.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca9cc440e4dfd1d4ca960be7d1399160
+    m_Address: Assets/ScriptableObjects/Customer/Owl.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d129595d257ad8b40a16e660bfa0eee4
+    m_Address: Assets/ScriptableObjects/Customer/Alpaca.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfc186803c4e055428a143f667d3e491
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uCC9C\uACF5\uC6B4\uBB34\uC19C.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1d2cedaf9a975940a21bb702b1f4ef6
+    m_Address: Assets/ScriptableObjects/Customer/RedPanda.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed4648b151803af4e8eead68cb29952a
+    m_Address: Assets/ScriptableObjects/Customer/Lion.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff525bb32dbde504f951f6722076cfdd
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uC6B4\uBB34\uC19C.asset"
