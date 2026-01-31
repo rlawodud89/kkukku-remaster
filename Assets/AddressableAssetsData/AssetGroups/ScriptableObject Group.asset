@@ -72,12 +72,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 270661f7484d15c458f302c81b61e3da
-    m_Address: "Assets/ScriptableObjects/Quest/Letter/\uC5D0\uB7EC\uBC29\uC9C0\uD3B8\uC9C0\uC5D0\uC14B.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - letter
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3154f620c76df684d98ee384cbe110b9
     m_Address: Assets/ScriptableObjects/Customer/Hedgehog.asset
     m_ReadOnly: 0
