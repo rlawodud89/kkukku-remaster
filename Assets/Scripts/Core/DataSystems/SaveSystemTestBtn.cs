@@ -14,9 +14,7 @@ public class SaveSystemTestBtn : MonoBehaviour
 
     public void OnClickTestBtn()
     {
-        var userData = ServiceLocator.Get<GameData>().User.GetUserData();
-        Debug.Log("사용자 이름: " + userData.shopName);
-        Debug.Log("래벨: " + userData.level);
-        Debug.Log("경험치: " + userData.energy);
+        ServiceLocator.Get<GameData>().Quest.AddQuest(1);
+        ServiceLocator.Get<GameData>().Quest.SaveQuest(1, 1, true, true);
     }
 }

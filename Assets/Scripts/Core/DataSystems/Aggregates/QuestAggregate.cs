@@ -1,27 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class QuestAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<string, QuestBox> questBox;
+    private Dictionary<int, QuestBox> questBox;
     private Dictionary<string, SpecialQuestBox> specialQuestBox;
     private List<LetterBox> letterBox;
 
-    // === SO 데이터 ===
-
-    private Dictionary<string, QuestSO> questSOs;
-    private Dictionary<string, SpecialQuestSO> specialSOs;
-    private Dictionary<string, LetterSO> letterSOs;
-
     // === 변경 사항 저장소 ===
 
-    private Dictionary<string, SaveOperation> questChanges = new();
+    private Dictionary<int, SaveOperation> questChanges = new();
     private Dictionary<string, SaveOperation> specialQuestChanges = new();
-    private HashSet<string> insertedLetter = new();
+    private HashSet<int> insertedLetter = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -49,12 +44,12 @@ public class QuestAggregate : IAggregate
             yield break;
 
         // 퀘스트 변경 사항
-        foreach (var (questName, change) in questChanges)
+        foreach (var (questID, change) in questChanges)
         {
             switch (change)
             {
                 case SaveOperation.INSERT:
-                    QuestBox insertQuest = questBox[questName];
+                    QuestBox insertQuest = questBox[questID];
 
                     yield return new SavePayload
                     {
@@ -62,16 +57,17 @@ public class QuestAggregate : IAggregate
                         Table = "QuestBox",
                         Values = new Dictionary<string, object>
                         {
-                            { "questName", insertQuest.questName},
+                            { "questID", insertQuest.questID},
                             { "progress", insertQuest.progress },
-                            { "isComplete", insertQuest.isComplete }
+                            { "isComplete", insertQuest.isComplete },
+                            { "isReward", insertQuest.isReward }
                         }
                     };
 
                     break;
 
                 case SaveOperation.UPDATE:
-                    QuestBox updateQuest = questBox[questName];
+                    QuestBox updateQuest = questBox[questID];
 
                     yield return new SavePayload
                     {
@@ -80,11 +76,12 @@ public class QuestAggregate : IAggregate
                         Values = new Dictionary<string, object>
                         {
                             { "progress", updateQuest.progress },
-                            { "isComplete", updateQuest.isComplete }
+                            { "isComplete", updateQuest.isComplete },
+                            { "isReward", updateQuest.isReward }
                         },
                         Conditions = new Dictionary<string, object>
                         {
-                            { "questName", updateQuest.questName }
+                            { "questID" , updateQuest.questID }
                         }
                     };
 
@@ -97,7 +94,7 @@ public class QuestAggregate : IAggregate
                         Table = "QuestBox",
                         Conditions = new Dictionary<string, object>
                         {
-                            { "questName", questName }
+                            { "questID", questID }
                         }
                     };
 
@@ -163,7 +160,7 @@ public class QuestAggregate : IAggregate
         }
 
         // 편지 변경 사항
-        foreach (var il in insertedLetter)
+        foreach (var letterID in insertedLetter)
         {
             yield return new SavePayload
             {
@@ -171,23 +168,19 @@ public class QuestAggregate : IAggregate
                 Table = "LetterBox",
                 Values = new Dictionary<string, object>
                 {
-                    { "letterName", il }
+                    { "letterID", letterID }
                 }
             };
         }
 
     }
 
-    public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox, IEnumerable<LetterBox> letterBox,
-        Dictionary<string, QuestSO> questSOs, Dictionary<string, SpecialQuestSO> specialSOs, Dictionary<string, LetterSO> letterSOs)
+    public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox,
+        IEnumerable<LetterBox> letterBox)
     {
-        this.questBox = questBox.ToDictionary(qb => qb.questName);
+        this.questBox = questBox.ToDictionary(qb => qb.questID);
         this.specialQuestBox = specialQuestBox.ToDictionary(sqb => sqb.questName);
         this.letterBox = letterBox.ToList();
-
-        this.questSOs = questSOs;
-        this.specialSOs = specialSOs;
-        this.letterSOs = letterSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -228,5 +221,74 @@ public class QuestAggregate : IAggregate
         }
     }
 
+
     // === 게임 플레이 메서드 ===
+
+    public List<int> GetCurrentLetters()
+    {
+        List<int> letterList = new List<int>();
+        foreach (LetterBox letter in letterBox)
+        {
+            letterList.Add(letter.letterID);
+        }
+
+        return letterList;
+    }
+
+    public void AddLetters(List<int> letterIDlist)
+    {
+        foreach (int letterID in letterIDlist)
+        {
+            LetterBox letter = new LetterBox();
+            letter.letterID = letterID;
+            letterBox.Add(letter);
+
+            insertedLetter.Add(letterID);
+        }
+
+        MarkDirty();
+    }
+
+    public List<QuestBox> GetCurrentQuests()
+    {
+        return questBox.Values.ToList();
+    }
+
+    public bool AddQuest(int questID)
+    {
+        if (questBox.ContainsKey(questID)) return false;
+
+        questBox.Add(questID, new QuestBox
+        {
+            questID = questID,
+            progress = 0,
+            isComplete = false,
+            isReward = false
+        });
+
+        MergeChange(questChanges,
+            questID,
+            SaveOperation.INSERT);
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool SaveQuest(int questID, int progress, bool isComplete, bool isReward)
+    {
+        if (!questBox.ContainsKey(questID)) return false;
+
+        questBox[questID].progress = progress;
+        questBox[questID].isComplete = isComplete;
+        questBox[questID].isReward = isReward;
+
+        MergeChange(questChanges,
+            questID,
+            SaveOperation.UPDATE);
+
+        MarkDirty();
+
+        return true;
+    }
 }
