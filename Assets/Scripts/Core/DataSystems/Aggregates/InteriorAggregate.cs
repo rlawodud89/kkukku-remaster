@@ -10,8 +10,8 @@ public class InteriorAggregate : IAggregate
 
     // === 런타임 데이터 ===
 
-    private Dictionary<(float x, float y), ShopInteriorPlaced> shopPlaced;
-    private Dictionary<(float x, float y), RoomInteriorPlaced> roomPlaced;
+    private Dictionary<int, ShopInteriorPlaced> shopPlaced;
+    private Dictionary<int, RoomInteriorPlaced> roomPlaced;
     private Dictionary<TilePositionType, TileInteriorPlaced> tilePlaced;
 
     // === SO 데이터 ===
@@ -22,8 +22,8 @@ public class InteriorAggregate : IAggregate
 
     // === 변경 사항 저장소 ===
 
-    private Dictionary<(float x, float y), SaveOperation> shopPlacedChanges = new();
-    private Dictionary<(float x, float y), SaveOperation> roomPlacedChanges = new();
+    private Dictionary<int, SaveOperation> shopPlacedChanges = new();
+    private Dictionary<int, SaveOperation> roomPlacedChanges = new();
     private HashSet<TilePositionType> updatedTilePlaced = new();
 
 
@@ -52,12 +52,12 @@ public class InteriorAggregate : IAggregate
             yield break;
 
         // 가게 인테리어
-        foreach (var ((x, y), change) in shopPlacedChanges)
+        foreach (var (gridNumber, change) in shopPlacedChanges)
         {
             switch (change)
             {
                 case SaveOperation.INSERT:
-                    ShopInteriorPlaced insertInterior = shopPlaced[(x, y)];
+                    ShopInteriorPlaced insertInterior = shopPlaced[gridNumber];
 
                     yield return new SavePayload
                     {
@@ -65,10 +65,9 @@ public class InteriorAggregate : IAggregate
                         Table = "ShopInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
+                            { "gridNumber", insertInterior.gridNumber },
                             { "itemName", insertInterior.itemName },
                             { "interiorType", insertInterior.interiorType },
-                            { "x", insertInterior.x },
-                            { "y", insertInterior.y },
                             { "ID", insertInterior.ID }
                         }
                     };
@@ -76,7 +75,7 @@ public class InteriorAggregate : IAggregate
                     break;
 
                 case SaveOperation.UPDATE:
-                    ShopInteriorPlaced updateInterior = shopPlaced[(x, y)];
+                    ShopInteriorPlaced updateInterior = shopPlaced[gridNumber];
 
                     yield return new SavePayload
                     {
@@ -90,8 +89,7 @@ public class InteriorAggregate : IAggregate
                         },
                         Conditions = new Dictionary<string, object>
                         {
-                            { "x", updateInterior.x },
-                            { "y", updateInterior.y }
+                            { "gridNumber", updateInterior.gridNumber }
                         }
                     };
 
@@ -104,8 +102,7 @@ public class InteriorAggregate : IAggregate
                         Table = "ShopInteriorPlaced",
                         Conditions = new Dictionary<string, object>
                         {
-                            { "x", x },
-                            { "y", y }
+                            { "gridNumber", gridNumber }
                         }
                     };
 
@@ -116,12 +113,12 @@ public class InteriorAggregate : IAggregate
 
 
         // 작업실 인테리어
-        foreach (var ((x, y), change) in roomPlacedChanges)
+        foreach (var (gridNumber, change) in roomPlacedChanges)
         {
             switch (change)
             {
                 case SaveOperation.INSERT:
-                    RoomInteriorPlaced insertInterior = roomPlaced[(x, y)];
+                    RoomInteriorPlaced insertInterior = roomPlaced[gridNumber];
 
                     yield return new SavePayload
                     {
@@ -129,10 +126,9 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
+                            { "gridNumber", insertInterior.gridNumber },
                             { "itemName", insertInterior.itemName },
                             { "interiorType", insertInterior.interiorType },
-                            { "x", insertInterior.x },
-                            { "y", insertInterior.y },
                             { "ID", insertInterior.ID }
                         }
                     };
@@ -140,7 +136,7 @@ public class InteriorAggregate : IAggregate
                     break;
 
                 case SaveOperation.UPDATE:
-                    RoomInteriorPlaced updateInterior = roomPlaced[(x, y)];
+                    RoomInteriorPlaced updateInterior = roomPlaced[gridNumber];
 
                     yield return new SavePayload
                     {
@@ -154,8 +150,7 @@ public class InteriorAggregate : IAggregate
                         },
                         Conditions = new Dictionary<string, object>
                         {
-                            { "x", updateInterior.x },
-                            { "y", updateInterior.y }
+                            { "gridNumber", updateInterior.gridNumber }
                         }
                     };
 
@@ -168,8 +163,7 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Conditions = new Dictionary<string, object>
                         {
-                            { "x", x },
-                            { "y", y }
+                            { "gridNumber", gridNumber }
                         }
                     };
 
@@ -204,8 +198,8 @@ public class InteriorAggregate : IAggregate
         IEnumerable<TileInteriorPlaced> tilePlaced, Dictionary<string, ShopInteriorItemSO> shopInteriorSOs,
         Dictionary<string, RoomInteriorItemSO> roomInteriorSOs, Dictionary<string, TileInteriorItemSO> tileInteriorSOs)
     {
-        this.shopPlaced = shopPlaced.ToDictionary(sp => (sp.x, sp.y));
-        this.roomPlaced = roomPlaced.ToDictionary(rp => (rp.x, rp.y));
+        this.shopPlaced = shopPlaced.ToDictionary(sp => sp.gridNumber);
+        this.roomPlaced = roomPlaced.ToDictionary(rp => rp.gridNumber);
         this.tilePlaced = tilePlaced.ToDictionary(tp => tp.tilePosition);
 
         this.shopInteriorSOs = shopInteriorSOs;
@@ -251,6 +245,49 @@ public class InteriorAggregate : IAggregate
         }
     }
 
+
     // === 게임 플레이 메서드 ===
 
+    public RoomInteriorItemSO GetRoomInteriorInRoom(int ID)
+    {
+        RoomInteriorPlaced placed = roomPlaced.Values.FirstOrDefault(i => i.ID == ID);
+
+        if (placed == null) return null;
+        else return roomInteriorSOs[placed.itemName];
+    }
+
+    public List<RoomInteriorPlaced> GetCurrentRoomInterior()
+    {
+        return roomPlaced.Values.ToList();
+    }
+
+    public List<(RoomInteriorItemSO boxSO, int ID)> GetCurrentRoomBlanketBoxData()
+    {
+        List<RoomInteriorPlaced> roomBlanketBoxes = roomPlaced.Values
+            .Where(i => i.interiorType == RoomInteriorType.BLANKET_BOX)
+            .ToList();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> list = new();
+        foreach (var box in roomBlanketBoxes)
+        {
+            list.Add((roomInteriorSOs[box.itemName], box.ID));
+        }
+
+        return list;
+    }
+
+    public List<(ShopInteriorItemSO tableSO, int ID)> GetCurrentShopTableData()
+    {
+        List<ShopInteriorPlaced> shopTables = shopPlaced.Values
+            .Where(i => i.interiorType == ShopInteriorType.TABLE)
+            .ToList();
+
+        List<(ShopInteriorItemSO tableSO, int ID)> list = new();
+        foreach (var table in shopTables)
+        {
+            list.Add((shopInteriorSOs[table.itemName], table.ID));
+        }
+
+        return list;
+    }
 }

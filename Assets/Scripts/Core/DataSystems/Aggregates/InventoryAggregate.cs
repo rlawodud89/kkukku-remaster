@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryAggregate : IAggregate
@@ -480,5 +481,199 @@ public class InventoryAggregate : IAggregate
 
 
     // === 게임 플레이 메서드 ===
+
+    public void AdjustMaterialCount(int inventoryID, string itemName, int amount)
+    {
+        if (amount == 0) return;
+
+        if (!materialInventory.TryGetValue(inventoryID, out var dict))
+        {
+            dict = new Dictionary<string, MaterialInventory>();
+            materialInventory[inventoryID] = dict;
+        }
+
+        if (dict.TryGetValue(itemName, out var inven))
+        {
+            inven.count += amount;
+
+            if (inven.count <= 0)
+            {
+                dict.Remove(itemName);
+
+                MergeChange(materialInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.DELETE);
+            }
+            else
+            {
+                MergeChange(materialInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.UPDATE);
+            }
+
+        }
+        else
+        {
+            if (amount < 0) return;
+
+            dict[itemName] = new MaterialInventory
+            {
+                inventoryID = inventoryID,
+                itemName = itemName,
+                count = amount
+            };
+
+            MergeChange(materialInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.INSERT);
+        }
+
+        MarkDirty();
+    }
+
+    public List<MaterialInventory> GetMaterialItems(int targetInventoryID)
+    {
+        if (!materialInventory.ContainsKey(targetInventoryID)) return null;
+
+        return materialInventory[targetInventoryID].Values.ToList();
+    }
+
+    public void AdjustSnackCount(int inventoryID, string itemName, int amount)
+    {
+        if (amount == 0) return;
+
+        if (!snackInventory.TryGetValue(inventoryID, out var dict))
+        {
+            dict = new Dictionary<string, SnackInventory>();
+            snackInventory[inventoryID] = dict;
+        }
+
+        if (dict.TryGetValue(itemName, out var inven))
+        {
+            inven.count += amount;
+
+            if (inven.count <= 0)
+            {
+                dict.Remove(itemName);
+
+                MergeChange(snackInventoryChagnes,
+                (inventoryID, itemName),
+                SaveOperation.DELETE);
+            }
+            else
+            {
+                MergeChange(snackInventoryChagnes,
+                (inventoryID, itemName),
+                SaveOperation.UPDATE);
+            }
+        }
+        else
+        {
+            if (amount < 0) return;
+
+            dict[itemName] = new SnackInventory
+            {
+                inventoryID = inventoryID,
+                itemName = itemName,
+                count = amount
+            };
+
+            MergeChange(snackInventoryChagnes,
+                (inventoryID, itemName),
+                SaveOperation.INSERT);
+        }
+
+        MarkDirty();
+    }
+
+    public List<SnackInventory> GetSnackItems(int targetInventoryID)
+    {
+        if (!snackInventory.ContainsKey(targetInventoryID)) return null;
+
+        return snackInventory[targetInventoryID].Values.ToList();
+    }
+
+    public void AdjustBlanketCount(int inventoryID, string itemName, int amount)
+    {
+        if (amount == 0) return;
+
+        if (!blanketInventory.TryGetValue(inventoryID, out var dict))
+        {
+            dict = new Dictionary<string, BlanketInventory>();
+            blanketInventory[inventoryID] = dict;
+        }
+
+        if (dict.TryGetValue(itemName, out var inven))
+        {
+            inven.count += amount;
+
+            if (inven.count <= 0)
+            {
+                dict.Remove(itemName);
+
+                MergeChange(blanketInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.DELETE);
+            }
+            else
+            {
+                MergeChange(blanketInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.UPDATE);
+            }
+        }
+        else
+        {
+            if (amount < 0) return;
+
+            dict[itemName] = new BlanketInventory
+            {
+                inventoryID = inventoryID,
+                itemName = itemName,
+                count = amount
+            };
+
+            MergeChange(blanketInventoryChanges,
+                (inventoryID, itemName),
+                SaveOperation.INSERT);
+        }
+
+        MarkDirty();
+    }
+
+    public List<BlanketInventory> GetBlanketsInBox(int targetinventoryID)
+    {
+        if (!blanketInventory.ContainsKey(targetinventoryID)) return null;
+
+        return blanketInventory[targetinventoryID].Values.ToList();
+    }
+
+    public List<StorageClass> GetCurrentRoomBlanketBoxData()
+    {
+        List<StorageClass> list = new List<StorageClass>();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> boxData = ServiceLocator.Get<GameData>().Interior.GetCurrentRoomBlanketBoxData();
+
+        foreach (var box in boxData)
+        {
+            StorageClass storeClass = new StorageClass();
+            storeClass.storageID = box.ID;
+            storeClass.max = box.boxSO.slotCount;
+
+            storeClass.count = 0;
+            if (blanketInventory.TryGetValue(box.ID, out var dict))
+            {
+                foreach (var (itemName, inven) in dict)
+                {
+                    storeClass.count += inven.count;
+                }
+            }
+
+            list.Add(storeClass);
+        }
+
+        return list;
+    }
+
 
 }
