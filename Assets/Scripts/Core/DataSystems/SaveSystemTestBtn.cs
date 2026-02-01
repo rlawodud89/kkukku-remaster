@@ -14,7 +14,6 @@ public class SaveSystemTestBtn : MonoBehaviour
 
     public void OnClickTestBtn()
     {
-        ServiceLocator.Get<GameData>().Quest.AddQuest(1);
-        ServiceLocator.Get<GameData>().Quest.SaveQuest(1, 1, true, true);
+
     }
 }

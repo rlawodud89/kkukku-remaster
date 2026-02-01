@@ -27,7 +27,7 @@ public class ShopStoragePanel : MonoBehaviour
 
         if(ShopStorageDataManager.Instance.GetTableClass(id, out TableClass blanketList))
         {
-            for(int i = 0; i < blanketList.itemName.Length; i++)
+            for(int i = 0; i < blanketList.itemName.Count; i++)
             {
                 GameObject go = Instantiate(leftItemPrefab, leftContent);
                 leftSpawnedItems.Add(go);

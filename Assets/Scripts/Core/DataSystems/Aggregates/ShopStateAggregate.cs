@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class ShopStateAggregate : IAggregate
@@ -217,6 +219,85 @@ public class ShopStateAggregate : IAggregate
         }
     }
 
+
     // === 게임 플레이 메서드 ===
 
+    public void AdjustShopTableBlanketCount(int tableID, string itemName, int amount)
+    {
+        if (amount == 0) return;
+
+        if (!shopTable.TryGetValue(tableID, out var dict))
+        {
+            dict = new Dictionary<string, ShopTable>();
+            shopTable[tableID] = dict;
+        }
+
+        if (dict.TryGetValue(itemName, out var table))
+        {
+            table.count += amount;
+
+            if (table.count <= 0)
+            {
+                dict.Remove(itemName);
+
+                MergeChange(shopTableChanges,
+                (tableID, itemName),
+                SaveOperation.DELETE);
+            }
+            else
+            {
+                MergeChange(shopTableChanges,
+                (tableID, itemName),
+                SaveOperation.UPDATE);
+            }
+        }
+        else
+        {
+            if (amount < 0) return;
+
+            dict[itemName] = new ShopTable
+            {
+                tableID = tableID,
+                itemName = itemName,
+                count = amount
+            };
+
+            MergeChange(shopTableChanges,
+                (tableID, itemName),
+                SaveOperation.INSERT);
+        }
+
+        MarkDirty();
+    }
+
+    public List<TableClass> GetCurrentShopTables()
+    {
+        var list = new List<TableClass>();
+
+        List<(ShopInteriorItemSO tableSO, int ID)> shopTableData = ServiceLocator.Get<GameData>().Interior.GetCurrentShopTableData();
+
+        foreach (var table in shopTableData)
+        {
+            TableClass tableClass = new TableClass();
+            tableClass.tableID = table.ID;
+
+            if (shopTable.TryGetValue(table.ID, out var dict))
+            {
+                foreach (var (itemName, item) in dict)
+                {
+                    tableClass.itemName.Add(item.itemName);
+                    tableClass.count.Add(item.count);
+
+                    GameObject gameObject = new GameObject();
+                    Image image = gameObject.AddComponent<Image>();
+                    image.sprite = blanketSOs[itemName].image;
+                    tableClass.itemImage.Add(image);
+                }
+            }
+
+            list.Add(tableClass);
+        }
+
+        return list;
+    }
 }
