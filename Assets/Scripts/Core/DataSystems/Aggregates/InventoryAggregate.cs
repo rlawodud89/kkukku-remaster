@@ -15,7 +15,6 @@ public class InventoryAggregate : IAggregate
     private Dictionary<int, Dictionary<string, MaterialInventory>> materialInventory;
     private Dictionary<int, Dictionary<string, SnackInventory>> snackInventory;
     private Dictionary<int, Dictionary<string, BlanketInventory>> blanketInventory;
-
     private Dictionary<ToolType, Dictionary<string, ToolInventory>> toolInventory;
 
     // === SO 데이터 ===
