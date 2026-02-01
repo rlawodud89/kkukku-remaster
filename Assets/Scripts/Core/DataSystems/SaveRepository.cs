@@ -28,16 +28,15 @@ public class SaveRepository
 
         // MakeDefaultDB();
 
-        //shopInteriorSOs = Addressables.LoadAssetsAsync<ShopInteriorItemSO>("shopInterior", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //roomInteriorSOs = Addressables.LoadAssetsAsync<RoomInteriorItemSO>("roomInterior", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-        //tileInteriorSOs = Addressables.LoadAssetsAsync<TileInteriorItemSO>("tileInterior", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.itemName);
-
+        shopInteriorSOs = Addressables.LoadAssetsAsync<ShopInteriorItemSO>("shopInterior", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        roomInteriorSOs = Addressables.LoadAssetsAsync<RoomInteriorItemSO>("roomInterior", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
+        tileInteriorSOs = Addressables.LoadAssetsAsync<TileInteriorItemSO>("tileInterior", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.itemName);
         materialSOs = Addressables.LoadAssetsAsync<MaterialItemSO>("material", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.itemName);
@@ -50,10 +49,10 @@ public class SaveRepository
         toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.itemName);
+        customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.npcID);
 
-        //customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
-        //        .WaitForCompletion()
-        //        .ToDictionary(i => i.npcID);
     }
 
     public void BeginTransaction() => connection.BeginTransaction();
