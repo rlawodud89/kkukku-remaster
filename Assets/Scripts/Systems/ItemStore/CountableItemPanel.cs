@@ -20,7 +20,9 @@ public class CountableItemPanel : MonoBehaviour
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
-    //private ItemSo item;
+    private string itemName;
+    private Sprite itemSprite;
+    private int price;
     private bool isGold;
     private int count;
 
@@ -32,17 +34,19 @@ public class CountableItemPanel : MonoBehaviour
     }
 
 
-    /*public void SetItem(ItemSO itemSO, bool isGold, BuyPopup buyPopup)
+    public void SetItem(string itemName, Sprite itemSprite, int price, bool isGold, BuyPopup buyPopup)
     {
-        item = itemSO;
-        ItemImg.sprite = itemSO.image;
-        NameText.text = itemSO.name;
-        PriceText.text = itemSO.price.ToString();
-
+        this.itemName = itemName;
+        this.itemSprite = itemSprite;
+        this.price = price;
         this.isGold = isGold;
-        PriceImg.sprite = isGold ? goldSprite : moonrockSprite;
         this.buyPopup = buyPopup;
-    }*/
+
+        itemImg.sprite = itemSprite;
+        nameText.text = itemName;
+        priceText.text = price.ToString();
+        priceImg.sprite = isGold ? goldSprite : moonrockSprite;
+    }
 
 
     public void OnClickPlusBtn()
@@ -50,7 +54,7 @@ public class CountableItemPanel : MonoBehaviour
         count++;
         countText.text = count.ToString();
     }
- 
+
     public void OnClickMinusBtn()
     {
         if (count != 1)

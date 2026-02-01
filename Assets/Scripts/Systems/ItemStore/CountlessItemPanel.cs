@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CountlessItemPanel : MonoBehaviour
 {
@@ -19,21 +20,26 @@ public class CountlessItemPanel : MonoBehaviour
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
-    //private ItemSo item;
+    private string itemName;
+    private Sprite itemSprite;
+    private int price;
     private bool isGold;
     private static int count = 1;
 
-    /*public void SetItem(ItemSO itemSO, bool isGold, BuyPopup buyPopup)
-    {
-        item = itemSO;
-        ItemImg.sprite = itemSO.image;
-        NameText.text = itemSO.name;
-        PriceText.text = itemSO.price.ToString();
 
+    public void SetItem(string itemName, Sprite itemSprite, int price, bool isGold, BuyPopup buyPopup)
+    {
+        this.itemName = itemName;
+        this.itemSprite = itemSprite;
+        this.price = price;
         this.isGold = isGold;
-        PriceImg.sprite = isGold ? goldSprite : moonrockSprite;
         this.buyPopup = buyPopup;
-    }*/
+
+        itemImg.sprite = itemSprite;
+        nameText.text = itemName;
+        priceText.text = price.ToString();
+        priceImg.sprite = isGold ? goldSprite : moonrockSprite;
+    }
 
     public void OnClickBuyBtn()
     {

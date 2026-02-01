@@ -1,0 +1,28 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GatheringToolStoreProvider : IStoreItemProvider
+{
+    public bool isCountable { get; private set; } = false;
+    public bool isGold { get; private set; } = true;
+
+    private List<ToolItemSO> tools = new List<ToolItemSO>();
+
+    public GatheringToolStoreProvider()
+    {
+        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("기본채집망"));
+    }
+
+    public List<(string itemName, Sprite itemSprite, int price)> LoadData()
+    {
+        List<(string itemName, Sprite itemSprite, int price)> data = new();
+
+        foreach (var item in tools)
+        {
+            data.Add((item.itemName, item.image, item.price));
+        }
+
+        return data;
+    }
+}
