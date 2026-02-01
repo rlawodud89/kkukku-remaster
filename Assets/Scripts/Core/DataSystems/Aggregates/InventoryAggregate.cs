@@ -482,6 +482,51 @@ public class InventoryAggregate : IAggregate
 
     // === 게임 플레이 메서드 ===
 
+
+    public ShopInteriorItemSO GetShopInteriorItemSO(string itemName)
+    {
+        if (shopInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public RoomInteriorItemSO GetRoomInteriorItemSO(string itemName)
+    {
+        if (roomInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public TileInteriorItemSO GetTileInteriorItemSO(string itemName)
+    {
+        if (tileInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public MaterialItemSO GetMaterialItemSO(string itemName)
+    {
+        if (materialSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public SnackItemSO GetSnackItemSO(string itemName)
+    {
+        if (snackSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public BlanketItemSO GetBlanketItemSO(string itemName)
+    {
+        if (blanketSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public ToolItemSO GetToolItemSO(string itemName)
+    {
+        if (toolSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+
+
     public void AdjustMaterialCount(int inventoryID, string itemName, int amount)
     {
         if (amount == 0) return;
