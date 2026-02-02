@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,10 +21,10 @@ public class CountableItemPanel : MonoBehaviour
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
+    private IStoreItemProvider storeItemProvider;
     private string itemName;
     private Sprite itemSprite;
     private int price;
-    private bool isGold;
     private int count;
 
 
@@ -34,18 +35,18 @@ public class CountableItemPanel : MonoBehaviour
     }
 
 
-    public void SetItem(string itemName, Sprite itemSprite, int price, bool isGold, BuyPopup buyPopup)
+    public void SetItem(IStoreItemProvider storeItemProvider, string itemName, Sprite itemSprite, int price, BuyPopup buyPopup)
     {
+        this.storeItemProvider = storeItemProvider;
         this.itemName = itemName;
         this.itemSprite = itemSprite;
         this.price = price;
-        this.isGold = isGold;
         this.buyPopup = buyPopup;
 
         itemImg.sprite = itemSprite;
         nameText.text = itemName;
         priceText.text = price.ToString();
-        priceImg.sprite = isGold ? goldSprite : moonrockSprite;
+        priceImg.sprite = storeItemProvider.isGold ? goldSprite : moonrockSprite;
     }
 
 
@@ -66,7 +67,7 @@ public class CountableItemPanel : MonoBehaviour
 
     public void OnClickBuyBtn()
     {
-        //buyPopup.SetItem();
-        //buyPopup.gameObject.SetActive(true);
+        buyPopup.SetItem(storeItemProvider, itemName, price, count);
+        buyPopup.gameObject.SetActive(true);
     }
 }

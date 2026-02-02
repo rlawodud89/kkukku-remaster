@@ -20,20 +20,20 @@ public class StoreItemLoader : MonoBehaviour
         // 스크롤뷰에 아이템 추가
         if (storeItemProvider.isCountable)
         {
-            foreach (var data in storeItemProvider.LoadData())
+            foreach (var data in storeItemProvider.LoadItemData())
             {
                 GameObject item = Instantiate(countablePrefab, content);
                 CountableItemPanel ui = item.GetComponent<CountableItemPanel>();
-                ui.SetItem(data.itemName, data.itemSprite, data.price, storeItemProvider.isGold, popup);
+                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price, popup);
             }
         }
         else
         {
-            foreach (var data in storeItemProvider.LoadData())
+            foreach (var data in storeItemProvider.LoadItemData())
             {
                 GameObject item = Instantiate(countlessPrefab, content);
                 CountlessItemPanel ui = item.GetComponent<CountlessItemPanel>();
-                ui.SetItem(data.itemName, data.itemSprite, data.price, storeItemProvider.isGold, popup);
+                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price, popup);
             }
         }
 

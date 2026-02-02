@@ -20,6 +20,7 @@ public class CountlessItemPanel : MonoBehaviour
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
+    private IStoreItemProvider storeItemProvider;
     private string itemName;
     private Sprite itemSprite;
     private int price;
@@ -27,12 +28,12 @@ public class CountlessItemPanel : MonoBehaviour
     private static int count = 1;
 
 
-    public void SetItem(string itemName, Sprite itemSprite, int price, bool isGold, BuyPopup buyPopup)
+    public void SetItem(IStoreItemProvider storeItemProvider, string itemName, Sprite itemSprite, int price, BuyPopup buyPopup)
     {
+        this.storeItemProvider = storeItemProvider;
         this.itemName = itemName;
         this.itemSprite = itemSprite;
         this.price = price;
-        this.isGold = isGold;
         this.buyPopup = buyPopup;
 
         itemImg.sprite = itemSprite;
@@ -43,7 +44,7 @@ public class CountlessItemPanel : MonoBehaviour
 
     public void OnClickBuyBtn()
     {
-        //buyPopup.SetItem();
-        //buyPopup.gameObject.SetActive(true);
+        buyPopup.SetItem(storeItemProvider, itemName, price, count);
+        buyPopup.gameObject.SetActive(true);
     }
 }

@@ -14,7 +14,7 @@ public class FishingToolStoreProvider : IStoreItemProvider
         tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("기본낚시대"));
     }
 
-    public List<(string itemName, Sprite itemSprite, int price)> LoadData()
+    public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()
     {
         List<(string itemName, Sprite itemSprite, int price)> data = new();
 
@@ -24,5 +24,12 @@ public class FishingToolStoreProvider : IStoreItemProvider
         }
 
         return data;
+    }
+
+    public bool BuyItem(string itemName, int price, int count)
+    {
+        // TODO: 이미 존재하는 경우 return false
+
+        return true;
     }
 }
