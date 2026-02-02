@@ -32,6 +32,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cd5dd36975c30a48a2c212cb8cc7d9b
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/SnackBox/SnackBox.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d5eacc4d61b3254f9a06fa190b89c48
     m_Address: "Assets/ScriptableObjects/Item/Tool/Gathering/\uAE30\uBCF8\uCC44.asset"
     m_ReadOnly: 0
@@ -67,6 +73,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d7cf8d24461a5a41ab7cadd4564f980
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/Worker/FoxEmployee.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2691f4f84176b224db1d174bb384a6bc
     m_Address: Assets/ScriptableObjects/Customer/Fox.asset
     m_ReadOnly: 0
@@ -77,6 +89,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - letter
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30e1c0089e4e4c94c864ceea14dfa449
+    m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD22C\uBA85\uD558\uACE0
+      \uBE5B\uB098\uB294 \uBB3C\uBC29\uC6B8.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3154f620c76df684d98ee384cbe110b9
     m_Address: Assets/ScriptableObjects/Customer/Hedgehog.asset
@@ -124,6 +143,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 593bdd9c17011b34f9ff336079bb3b95
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/CraftingTable/PersonalCraftBox.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5da662b5fe9aaf6498fb77068a368ab4
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uCD08\uCF54 \uD401\uB4C0
       \uC194\uBC29\uC6B8.asset"
@@ -135,6 +160,13 @@ MonoBehaviour:
     m_Address: Assets/ScriptableObjects/Customer/Platypus.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 614dcdf391d2e9a47b647d43c007df88
+    m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uBD80\uB4DC\uB7EC\uC6B4
+      \uC2E4\uD06C \uB9E4\uB4ED.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 699e4c073a344964e8735e17dcb6f5ae
     m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uC740\uBE5B\uB2EC\uC870\uAC01.asset"
@@ -183,6 +215,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80aafc7c48da6034084228e659b66c37
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/Worker/CatEmployee.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80e32fb8a908d7b429aac303a0e5c1cf
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uAD6C\uB984 \uC19C\uC0AC\uD0D5
       \uBC84\uC12F.asset"
@@ -203,6 +241,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - snack
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 991ed990c15b94d4d8d5b9126d427fac
+    m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uC559\uC99D\uB9DE\uC740
+      \uCCB4\uD06C \uB9AC\uBCF8.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9a100572970e0064cb5a58bf7fc89cb2
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uD587\uBE5B\uC6B4\uBB34\uC19C.asset"
@@ -230,6 +275,12 @@ MonoBehaviour:
     m_Address: Assets/ScriptableObjects/Customer/Sheep.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c58363f7efb60c54e8c9d3d14878a611
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/Worker/LeopardEmployee.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c58a6d9a51c9bba4291ed175cefd640d
     m_Address: Assets/ScriptableObjects/Customer/Mole.asset
@@ -261,6 +312,13 @@ MonoBehaviour:
     m_Address: Assets/ScriptableObjects/Customer/RedPanda.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e746450314ca6fa409dd69d1f80fcc2c
+    m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD560\uBA38\uB2C8\uC758
+      \uAF43\uBC14\uB298.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - material
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed4648b151803af4e8eead68cb29952a
     m_Address: Assets/ScriptableObjects/Customer/Lion.asset

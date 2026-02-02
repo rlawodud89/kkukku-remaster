@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 597560bb54ffe624cbfb7ffe9fc08a0d, type: 3}
+  m_Name: "\uBD80\uB4DC\uB7EC\uC6B4 \uC2E4\uD06C \uB9E4\uB4ED"
+  m_EditorClassIdentifier: 
+  itemName: "\uBD80\uB4DC\uB7EC\uC6B4 \uC2E4\uD06C \uB9E4\uB4ED"
+  materialType: 3
+  image: {fileID: -1196290304, guid: 726a23508dfaa5d4fb99004c54523600, type: 3}
+  level: 1
+  price: 0
+  decoMaterialType: 0
