@@ -18,9 +18,9 @@ public class ShopInteriorStoreProvider : IStoreItemProvider
 
     public bool AddItem(string itemName, int count)
     {
-        // TODO: 인테리어 재고 확인 후 추가
+        // 인테리어 재고 확인 후 추가
         // 남는 재고함이 없는 경우, false return
 
-        return true;
+        return ServiceLocator.Get<GameData>().Inventory.AddShopInteriorItem(itemName, count);
     }
 }

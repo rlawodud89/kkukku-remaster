@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BuyPopup : MonoBehaviour
 {
     [Header("UI 요소")]
     public TMP_Text InfoText;
+    public WarningUI warningUI;
 
     private IStoreItemProvider storeItemProvider;
     private string itemName;
@@ -41,7 +43,7 @@ public class BuyPopup : MonoBehaviour
             if (ServiceLocator.Get<GameData>().User.GetCurrentGold() < price * count)
             {
                 // 잔액 부족
-
+                warningUI.Show($"재화가 부족합니다.");
 
                 gameObject.SetActive(false);
                 return;
@@ -52,7 +54,7 @@ public class BuyPopup : MonoBehaviour
             if (ServiceLocator.Get<GameData>().User.GetCurrentMoonrock() < price * count)
             {
                 // 잔액 부족
-
+                warningUI.Show($"월석이 부족합니다.");
 
                 gameObject.SetActive(false);
                 return;
@@ -69,12 +71,12 @@ public class BuyPopup : MonoBehaviour
             if (storeItemProvider.isCountable)
             {
                 // 재고함 자리가 부족한 경우
-
+                warningUI.Show($"아이템을 넣을 재고함 자리가 부족합니다.");
             }
             else
             {
                 // 이미 존재하는 아이템이라 살 수 없는 경우
-
+                warningUI.Show($"이미 소유하고 있는 아이템입니다.");
             }
         }
 

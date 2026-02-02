@@ -32,9 +32,9 @@ public class CottonStoreProvider : IStoreItemProvider
 
     public bool AddItem(string itemName, int count)
     {
-        // TODO: 재고함 현황 보고, 자리 남는 곳에 추가
+        // 재고함 현황 보고, 자리 남는 곳에 추가
         // 남는 재고함이 없는 경우, false return
 
-        return true;
+        return ServiceLocator.Get<GameData>().Inventory.AddMaterialFromEntire(itemName, count);
     }
 }

@@ -28,8 +28,8 @@ public class GatheringToolStoreProvider : IStoreItemProvider
 
     public bool AddItem(string itemName, int count)
     {
-        // TODO: 이미 존재하는 경우 return false
+        // 이미 존재하는 경우 return false
 
-        return true;
+        return ServiceLocator.Get<GameData>().Inventory.AddToolItem(itemName);
     }
 }
