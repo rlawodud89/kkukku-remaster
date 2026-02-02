@@ -1,49 +1,63 @@
 using UnityEngine;
-using UnityEngine.UI; // UI 관련 기능 필수
+using UnityEngine.UI;
 
 public class FallingFishUI : MonoBehaviour
 {
-    private float fallSpeed;
-    private FishingManagerUI gameManager;
-    private RectTransform rectTransform; // UI 위치 제어용
+    [Header("UI 연결")]
+    public Image myImage;
 
-    private float startY;
+    [Header("Growing Effect (커지는 효과)")]
+    [SerializeField] private float growDuration = 0.5f; // 커지는 데 걸리는 시간 (초)
+    [SerializeField] private Vector3 startScale = new Vector3(0.1f, 0.1f, 1f); // 시작 크기 (아주 작게)
+    
+    private Vector3 targetScale = Vector3.one; // 최종 크기 (1,1,1)
+    private float growTimer = 0f; // 타이머
+
+    private float speed;
+    private FishingManagerUI manager;
     private float targetY;
+    private RectTransform myRect; // 매번 GetComponent 하면 느리니까 캐싱
 
-    [Header("Perspective Settings")]
-    [SerializeField] private float startScale = 0.5f; // 시작 크기
-    [SerializeField] private float endScale = 1.5f;   // 도착 크기
-
-    public void Setup(float speed, FishingManagerUI manager, float targetHeight)
+    public void Setup(float fallSpeed, FishingManagerUI uiManager, float barY, Sprite sprite)
     {
-        rectTransform = GetComponent<RectTransform>();
-        fallSpeed = speed;
-        gameManager = manager;
-        
-        // UI 좌표 기준 시작/목표 높이 설정
-        startY = rectTransform.anchoredPosition.y;
-        targetY = targetHeight;
+        speed = fallSpeed;
+        manager = uiManager;
+        targetY = barY;
+        myRect = GetComponent<RectTransform>();
 
-        // 초기 크기 설정
-        transform.localScale = Vector3.one * startScale;
+        if (myImage != null && sprite != null)
+        {
+            myImage.sprite = sprite;
+            myImage.preserveAspect = true; // 비율 유지
+            
+            // ★ 중요: 시작할 때 크기를 아주 작게 설정
+            myRect.localScale = startScale;
+            growTimer = 0f; // 타이머 초기화
+            
+            // (선택사항) 만약 기본 크기가 너무 크다면 여기서 고정해주세요.
+            // myRect.sizeDelta = new Vector2(100f, 100f); 
+        }
     }
 
     void Update()
     {
-        // 1. 아래로 떨어지기 (UI 좌표계인 anchoredPosition 사용)
-        rectTransform.anchoredPosition += Vector2.down * fallSpeed * Time.deltaTime;
+        // 1. 아래로 떨어지기
+        transform.Translate(Vector3.down * speed * Time.deltaTime);
 
-        // 2. 원근감 (크기 변화)
-        float currentY = rectTransform.anchoredPosition.y;
-        float progress = Mathf.InverseLerp(startY, targetY, currentY);
-        float currentScale = Mathf.Lerp(startScale, endScale, progress);
-        
-        transform.localScale = Vector3.one * currentScale;
-
-        // 3. 화면 밖으로 나가면 삭제 (Target보다 더 아래로 200픽셀 정도 갔을 때)
-        if (currentY < targetY - 200f)
+        // ★ 2. 시간 경과에 따라 크기 키우기 (Lerp)
+        if (growTimer < growDuration)
         {
-            gameManager.OnFishMiss(this);
+            growTimer += Time.deltaTime;
+            // 진행률 계산 (0% -> 100%)
+            float progress = growTimer / growDuration; 
+            // 부드럽게 크기 변경 (시작크기 -> 목표크기)
+            myRect.localScale = Vector3.Lerp(startScale, targetScale, progress);
+        }
+
+        // 3. 화면 밖 Miss 처리
+        if (myRect.anchoredPosition.y < targetY - 200f)
+        {
+            manager.OnFishMiss(this);
             Destroy(gameObject);
         }
     }

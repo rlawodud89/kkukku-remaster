@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1802405833c8c5a48bd35c071d97917e
+guid: 8a7d64f749080644cab803c014f24260
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_4ayoxn4ayoxn4ayo-Photoroom_0
+      name: "\uB2EC\uC870\uAC01_0"
       rect:
         serializedVersion: 2
-        x: 479
-        y: 184
-        width: 319
-        height: 332
+        x: 467
+        y: 945
+        width: 348
+        height: 286
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6038f9b294a5d5a4e884d29836ebed21
-      internalID: -1799820878
+      spriteID: 3e5ce3f7cb70d6846a168033860aa2e0
+      internalID: 473874541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uB2EC\uC870\uAC01_1"
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 551
+        width: 341
+        height: 303
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 893b75df5fb63624997f1251ad4c002f
+      internalID: 632698858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uB2EC\uC870\uAC01_2"
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 79
+        width: 603
+        height: 402
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98847066b48d6c041b25a41a56875f44
+      internalID: -652484530
       vertices: []
       indices: 
       edges: []
@@ -128,7 +170,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Gemini_Generated_Image_4ayoxn4ayoxn4ayo-Photoroom_0: -1799820878
+      "\uB2EC\uC870\uAC01_0": 473874541
+      "\uB2EC\uC870\uAC01_1": 632698858
+      "\uB2EC\uC870\uAC01_2": -652484530
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
