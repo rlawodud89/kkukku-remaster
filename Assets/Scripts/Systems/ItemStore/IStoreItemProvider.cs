@@ -7,5 +7,5 @@ public interface IStoreItemProvider
     public bool isGold { get; }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData();
-    public bool BuyItem(string itemName, int price, int count);
+    public bool AddItem(string itemName, int count);
 }

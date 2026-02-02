@@ -26,7 +26,7 @@ public class GatheringToolStoreProvider : IStoreItemProvider
         return data;
     }
 
-    public bool BuyItem(string itemName, int price, int count)
+    public bool AddItem(string itemName, int count)
     {
         // TODO: 이미 존재하는 경우 return false
 

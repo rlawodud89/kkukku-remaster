@@ -30,7 +30,7 @@ public class YarnStoreProvider : IStoreItemProvider
         return data;
     }
 
-    public bool BuyItem(string itemName, int price, int count)
+    public bool AddItem(string itemName, int count)
     {
         // TODO: 재고함 현황 보고, 자리 남는 곳에 추가
         // 남는 재고함이 없는 경우, false return

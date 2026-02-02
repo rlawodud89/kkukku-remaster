@@ -4,5 +4,5 @@ public class ShopTable
 {
     public int tableID { get; set; }
     public string itemName { get; set; }
-    public int count { get; set; }
+    public int count { get; set; } = 0;
 }

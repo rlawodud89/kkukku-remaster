@@ -290,4 +290,36 @@ public class InteriorAggregate : IAggregate
 
         return list;
     }
+
+    public List<(RoomInteriorItemSO boxSO, int ID)> GetCurrentRoomMaterialBoxData()
+    {
+        List<RoomInteriorPlaced> roomMaterialBoxes = roomPlaced.Values
+            .Where(i => i.interiorType == RoomInteriorType.MATERIAL_BOX)
+            .ToList();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> list = new();
+        foreach (var box in roomMaterialBoxes)
+        {
+            list.Add((roomInteriorSOs[box.itemName], box.ID));
+        }
+
+        return list;
+    }
+
+    public List<(RoomInteriorItemSO boxSO, int ID)> GetCurrentRoomSnackBoxData()
+    {
+        List<RoomInteriorPlaced> roomSnackBoxes = roomPlaced.Values
+            .Where(i => i.interiorType == RoomInteriorType.SNACK_BOX)
+            .ToList();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> list = new();
+        foreach (var box in roomSnackBoxes)
+        {
+            list.Add((roomInteriorSOs[box.itemName], box.ID));
+        }
+
+        return list;
+    }
+
+    
 }

@@ -9,6 +9,8 @@ public class UserAggregate : IAggregate
 
     private User user;
     private Dictionary<ToolType, ToolUsed> toolUsed;
+    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
+    private Dictionary<int, int> shopLevelSize = new Dictionary<int, int>();
 
     // === SO 데이터 ===
 
@@ -96,6 +98,10 @@ public class UserAggregate : IAggregate
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
 
         this.toolSOs = toolSOs;
+
+        interiorLevelInventoryCount.Add(1, 20);
+        interiorLevelInventoryCount.Add(2, 30);
+        interiorLevelInventoryCount.Add(3, 40);
     }
 
 
@@ -132,6 +138,16 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetCurrentGold()
+    {
+        return user.gold;
+    }
+
+    public int GetCurrentMoonrock()
+    {
+        return user.moonrock;
+    }
+
     public void ChangeGold(int amount)
     {
         user.gold += amount;
@@ -144,6 +160,8 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
-
-
+    public (int level, int invenCount) GetInteriorInventoryLevel()
+    {
+        return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+    }
 }
