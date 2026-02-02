@@ -20,9 +20,8 @@ public class YarnStoreProvider : IStoreItemProvider
     {
         List<(string itemName, Sprite itemSprite, int price)> data = new();
 
-        // int itemStoreLevel = ServiceLocator.Get<GameData>().User.
-        int itemStoreLevel = 3;
-        for (int i = 0; i < itemStoreLevel; i++)
+        int itemShopLevel = ServiceLocator.Get<GameData>().User.GetItemShopLevel();
+        for (int i = 0; i < itemShopLevel; i++)
         {
             data.Add((items[i].itemName, items[i].image, items[i].price));
         }

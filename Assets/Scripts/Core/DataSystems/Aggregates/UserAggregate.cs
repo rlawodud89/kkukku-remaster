@@ -102,6 +102,10 @@ public class UserAggregate : IAggregate
         interiorLevelInventoryCount.Add(1, 20);
         interiorLevelInventoryCount.Add(2, 30);
         interiorLevelInventoryCount.Add(3, 40);
+
+        shopLevelSize.Add(1, 20);
+        shopLevelSize.Add(2, 30);
+        shopLevelSize.Add(3, 40);
     }
 
 
@@ -160,8 +164,43 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetItemShopLevel()
+    {
+        return user.itemShopLevel;
+    }
+
     public (int level, int invenCount) GetInteriorInventoryLevel()
     {
         return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+    }
+
+
+    public (int level, int size) GetShopLevel()
+    {
+        return (user.shopLevel, shopLevelSize[user.shopLevel]);
+    }
+
+    public void ChangeItemShopLevel(int amount)
+    {
+        if (user.itemShopLevel + amount <= 0) return;
+
+        user.itemShopLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeInteriorInventoryLevel(int amount)
+    {
+        if (user.interiorInventoryLevel + amount <= 0) return;
+
+        user.interiorInventoryLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeShopLevel(int amount)
+    {
+        if (user.shopLevel + amount <= 0) return;
+
+        user.shopLevel += amount;
+        MarkDirty();
     }
 }

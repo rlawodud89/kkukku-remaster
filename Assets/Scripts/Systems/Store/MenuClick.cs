@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,19 +16,12 @@ public class MenuClick : MonoBehaviour
     public GameObject toolPurcahsePanel;
     public GameObject facilityUpgradePanel;
 
-    [Header("구매 팝업창")]
-    public BuyPopup buyPopup;
 
     // 달빛 언덕
     public void OnClickMaterialBtn()
     {
         mainMenuPanel.SetActive(false);
         materialPurchasePanel.SetActive(true);
-    }
-
-    public void OnClickLevelBtn()
-    {
-        buyPopup.gameObject.SetActive(true);
     }
 
     public void OnClickWorkerBtn()
@@ -87,16 +80,6 @@ public class MenuClick : MonoBehaviour
     {
         toolPurcahsePanel.SetActive(false);
         craftStorePanel.SetActive(true);
-    }
-
-    public void OnClickInteriorBoxBtn()
-    {
-        buyPopup.gameObject.SetActive(true);
-    }
-
-    public void OnClickExpansionBtn()
-    {
-        buyPopup.gameObject.SetActive(true);
     }
 
     public void OnClickFacilityUpgradeBackBtn()
