@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,8 +21,10 @@ public class CountableItemPanel : MonoBehaviour
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
-    //private ItemSo item;
-    private bool isGold;
+    private IStoreItemProvider storeItemProvider;
+    private string itemName;
+    private Sprite itemSprite;
+    private int price;
     private int count;
 
 
@@ -32,17 +35,19 @@ public class CountableItemPanel : MonoBehaviour
     }
 
 
-    /*public void SetItem(ItemSO itemSO, bool isGold, BuyPopup buyPopup)
+    public void SetItem(IStoreItemProvider storeItemProvider, string itemName, Sprite itemSprite, int price, BuyPopup buyPopup)
     {
-        item = itemSO;
-        ItemImg.sprite = itemSO.image;
-        NameText.text = itemSO.name;
-        PriceText.text = itemSO.price.ToString();
-
-        this.isGold = isGold;
-        PriceImg.sprite = isGold ? goldSprite : moonrockSprite;
+        this.storeItemProvider = storeItemProvider;
+        this.itemName = itemName;
+        this.itemSprite = itemSprite;
+        this.price = price;
         this.buyPopup = buyPopup;
-    }*/
+
+        itemImg.sprite = itemSprite;
+        nameText.text = itemName;
+        priceText.text = price.ToString();
+        priceImg.sprite = storeItemProvider.isGold ? goldSprite : moonrockSprite;
+    }
 
 
     public void OnClickPlusBtn()
@@ -50,7 +55,7 @@ public class CountableItemPanel : MonoBehaviour
         count++;
         countText.text = count.ToString();
     }
- 
+
     public void OnClickMinusBtn()
     {
         if (count != 1)
@@ -62,7 +67,7 @@ public class CountableItemPanel : MonoBehaviour
 
     public void OnClickBuyBtn()
     {
-        //buyPopup.SetItem();
-        //buyPopup.gameObject.SetActive(true);
+        buyPopup.SetItem(storeItemProvider, itemName, price, count);
+        buyPopup.gameObject.SetActive(true);
     }
 }
