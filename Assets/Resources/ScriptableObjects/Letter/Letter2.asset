@@ -9,17 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20d4734ddfab8c04184bfc89d9228533, type: 3}
-  m_Name: Quest3
+  m_Script: {fileID: 11500000, guid: f87219cebf4db604b96d2b237fd4caa7, type: 3}
+  m_Name: Letter2
   m_EditorClassIdentifier: 
-  questID: 3
-  title: "\uB09A\uC2DC\uD558\uAE30"
-  requiredLevel: 0
-  type: 1
-  goalCount: 1
-  reward1:
-    type: 0
-    amount: 100
-  reward2:
-    type: 1
-    amount: 100
+  letterID: 2
+  senderName: "\uACE0\uC591"
+  title: "\uD558\uC774\uC5FC"
+  content: "\uB798\u314F\uB354\uB7F3"
+  senderProfile: {fileID: 0}
