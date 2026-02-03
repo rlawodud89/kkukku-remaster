@@ -186,14 +186,8 @@ public class ShopManager : MonoBehaviour
         // 5. 선택된 이불 이름 가져오기
         string selectedItemName = randomTable.itemName[selectedIndex];
 
-        
-        
-        
         //이름으로 SO 찾아서 가격 가져오기 ---
-        int price = 0;
-
-
-
+        int price = ServiceLocator.Get<GameData>().Inventory.GetBlanketPrice(selectedItemName);
 
         // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
         ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
@@ -212,7 +206,7 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        // 7. 플레이어 지갑에 돈 추가 (현재 지갑 시스템에 맞게 수정해주세요)
+        // 7. 플레이어 지갑에 돈 추가
         ServiceLocator.Get<GameData>().User.ChangeGold(price);
         Debug.Log($"오프라인 판매: {selectedItemName} 판매 완료! (+{price}G)");
     }
