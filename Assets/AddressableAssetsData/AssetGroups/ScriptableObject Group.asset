@@ -254,6 +254,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 824f49b9e73b3c84aa8005c05afe3407
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/Table/\uAE30\uBCF8 \uC9C4\uC5F4\uC7A5.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 991ed990c15b94d4d8d5b9126d427fac
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uC559\uC99D\uB9DE\uC740
       \uCCB4\uD06C \uB9AC\uBCF8.asset"
@@ -296,6 +301,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0b74ef7019d419428ca1f2ddb840da5
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/Table/\uAE30\uBCF8 \uBCBD\uC7A5.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c58363f7efb60c54e8c9d3d14878a611
     m_Address: Assets/ScriptableObjects/InteriorItem/Room/Worker/LeopardEmployee.asset

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 //DontDestroyOnLoad 사용
 public class ShopManager : MonoBehaviour
@@ -10,7 +10,6 @@ public class ShopManager : MonoBehaviour
     public static ShopManager Instance;
 
     public List<CustomerData> activeCustomers = new List<CustomerData>();
-    public List<ItemData> itemDatabase; // 전체 아이템 리스트
     private DateTime lastExitTime;
     private int totalCustomerCount = 0;
 
@@ -19,17 +18,68 @@ public class ShopManager : MonoBehaviour
     public float maxSpawnTime = 8f;  // 최대 대기 시간
     public int maxCustomers = 10;    // 가게 최대 수용 인원
 
+    [Header("Scene Settings")]
+    public string shopSceneName;
+
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); }
     }
 
-    // 씬이 로드될 때 실행되는 Start 함수 등에 추가
-    void Start()
+    void OnEnable()
     {
-        // 만약 다른 씬에서 돌아온 것이라면 시뮬레이션 실행
-        SimulateOfflineProgress();
+        // 씬이 '로드'될 때 실행되는 이벤트
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // 💡 추가: 씬이 '바뀌는 순간' 실행되는 이벤트
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.activeSceneChanged -= OnSceneChanged; // 이벤트 해제
+    }
+
+    void OnSceneChanged(Scene current, Scene next)
+    {
+        // current: 방금 떠난 씬 / next: 새로 들어간 씬
+
+        // 1. 방금 떠난 씬이 "가게 씬"이라면? -> 시간 저장!
+        if (current.name == shopSceneName)
+        {
+            SaveExitTime();
+            Debug.Log($"가게 씬을 떠났습니다. 현재 시간 저장됨! (이동하는 곳: {next.name})");
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 현재 로드된 씬이 "가게 씬"일 경우
+        if (scene.name == shopSceneName)
+        {
+            Debug.Log("가게 씬 진입! 오프라인 계산 및 NPC 배치 시작");
+            SimulateOfflineProgress();
+
+            // 가게에 돌아왔으니 기존 손님들을 다시 화면에 소환
+            foreach (var customer in activeCustomers)
+            {
+                NPCSpawner.Instance?.SpawnNPC(customer);
+            }
+
+            // 문이 열려있다면 다시 손님 생성 코루틴 시작
+            if (isStoreOpen)
+            {
+                StartCoroutine(SpawnCustomerRoutine());
+            }
+        }
+        // "가게 씬"이 아닌 다른 씬(미니게임, 맵 등)일 경우
+        else
+        {
+            Debug.Log($"다른 씬({scene.name}) 진입. 가게 로직 일시정지");
+            StopAllCoroutines(); // 다른 씬에서는 손님이 더 이상 생성되지 않도록 중지
+        }
     }
 
     // 가게 문을 열 때 호출 (유저 버튼 클릭)
@@ -108,19 +158,49 @@ public class ShopManager : MonoBehaviour
 
     void CompletePurchase(CustomerData data)
     {
-        // 골드 추가 로직 등
-        Debug.Log("오프라인 수익 발생!");
+        // 1. ShopStorageDataManager에서 현재 가게에 있는 테이블 정보 가져오기
+        var allTables = ShopStorageDataManager.Instance.tableClasses;
+
+        // 2. 이불이 하나라도 남아있는 테이블만 추려내기
+        List<TableClass> availableTables = allTables.FindAll(t => t.count.Exists(c => c > 0));
+
+        // 팔 이불이 없으면 그냥 리턴 (손님이 못 사고 감)
+        if (availableTables.Count == 0)
+        {
+            Debug.Log("가게에 팔 이불이 없습니다!");
+            return;
+        }
+
+        // 3. 랜덤으로 테이블 하나 선택
+        TableClass randomTable = availableTables[UnityEngine.Random.Range(0, availableTables.Count)];
+
+        // 4. 해당 테이블에서 재고가 있는 이불의 인덱스(몇 번째 칸인지) 찾기
+        List<int> availableIndices = new List<int>();
+        for (int i = 0; i < randomTable.count.Count; i++)
+        {
+            if (randomTable.count[i] > 0)
+                availableIndices.Add(i);
+        }
+        int selectedIndex = availableIndices[UnityEngine.Random.Range(0, availableIndices.Count)];
+
+        // 5. 선택된 이불 이름 가져오기
+        string selectedItemName = randomTable.itemName[selectedIndex];
+
+        
+        
+        
+        //이름으로 SO 찾아서 가격 가져오기 ---
+        int price = 0;
+
+
+
+
+        // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
+        ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
+
+        // 7. 플레이어 지갑에 돈 추가 (현재 지갑 시스템에 맞게 수정해주세요)
+        // 예시: ServiceLocator.Get<GameData>().Wallet.AddGold(price);
+        Debug.Log($"오프라인 판매: {selectedItemName} 판매 완료! (+{price}G)");
     }
 
-
-    
-
-    // 가게 문을 열 때 호출 (유저 버튼 클릭)
-   
-
-    /*
-     추가해야 할 부분: 언제 시간을 저장할 것인가?
-지금 코드에는 SaveExitTime() 함수는 있지만, 언제 이 함수를 실행할지가 정해져 있지 않습니다. 유저가 버튼을 눌러 씬을 이동하거나 게임을 끌 때 이 함수가 실행되어야 오프라인 수익이 계산됩니다.
-     ShopManager.Instance.SaveExitTime(); // 시간 저장
-     */
 }

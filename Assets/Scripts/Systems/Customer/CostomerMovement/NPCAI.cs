@@ -213,7 +213,10 @@ public class NPCAI : MonoBehaviour
     Vector3 GetRandomWardrobePos()
     {
         // 실제로는 이불장 오브젝트들의 위치 리스트 중 하나를 랜덤으로 반환하게 수정하세요.
-        return new Vector3(2, 3, 0);
+
+
+
+        return new Vector3(0.48f, -0.98f, 0);
     }
 
   
