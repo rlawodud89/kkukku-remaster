@@ -10,12 +10,12 @@ public class InventoryAggregate : IAggregate
 
     private Dictionary<string, ShopInteriorInventory> shopInteriorInventory;
     private Dictionary<string, RoomInteriorInventory> roomInteriorInventory;
-    private Dictionary<TileInteriorType, Dictionary<string, TileInteriorInventory>> tileInventory;
+    private Dictionary<string, TileInteriorInventory> tileInventory;
 
     private Dictionary<int, Dictionary<string, MaterialInventory>> materialInventory;
     private Dictionary<int, Dictionary<string, SnackInventory>> snackInventory;
     private Dictionary<int, Dictionary<string, BlanketInventory>> blanketInventory;
-    private Dictionary<ToolType, Dictionary<string, ToolInventory>> toolInventory;
+    private Dictionary<string, ToolInventory> toolInventory;
 
     // === SO 데이터 ===
 
@@ -31,13 +31,13 @@ public class InventoryAggregate : IAggregate
 
     private Dictionary<string, SaveOperation> shopInteriorInventoryChanges = new();
     private Dictionary<string, SaveOperation> roomInteriorInventoryChanges = new();
-    private HashSet<(TileInteriorType tileType, string itemName)> insertedTileInventory = new();
+    private HashSet<(string itemName, TileInteriorType tileType)> insertedTileInventory = new();
 
     private Dictionary<(int inventoryID, string itemName), SaveOperation> materialInventoryChanges = new();
     private Dictionary<(int inventoryID, string itemName), SaveOperation> snackInventoryChagnes = new();
     private Dictionary<(int inventoryID, string itemName), SaveOperation> blanketInventoryChanges = new();
 
-    private HashSet<(ToolType toolType, string toolName)> insertedToolInventory = new();
+    private HashSet<(string toolName, ToolType toolType)> insertedToolInventory = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -185,7 +185,7 @@ public class InventoryAggregate : IAggregate
         }
 
         // 타일 인벤토리
-        foreach (var (tileType, itemName) in insertedTileInventory)
+        foreach (var (itemName, tileType) in insertedTileInventory)
         {
             yield return new SavePayload
             {
@@ -374,7 +374,7 @@ public class InventoryAggregate : IAggregate
         }
 
         // 도구 인벤토리
-        foreach (var (toolType, toolName) in insertedToolInventory)
+        foreach (var (toolName, toolType) in insertedToolInventory)
         {
             yield return new SavePayload
             {
@@ -398,12 +398,7 @@ public class InventoryAggregate : IAggregate
     {
         this.shopInteriorInventory = shopInteriorInventory.ToDictionary(sii => sii.itemName);
         this.roomInteriorInventory = roomInteriorInventory.ToDictionary(rii => rii.itemName);
-        this.tileInventory = tileInventory
-        .GroupBy(ti => ti.tileType)
-        .ToDictionary(
-            g => g.Key,
-            g => g.ToDictionary(ti => ti.itemName)
-        );
+        this.tileInventory = tileInventory.ToDictionary(ti => ti.itemName);
 
         this.materialInventory = materialInventory
         .GroupBy(mi => mi.inventoryID)
@@ -424,12 +419,7 @@ public class InventoryAggregate : IAggregate
             g => g.ToDictionary(bi => bi.itemName)
         );
 
-        this.toolInventory = toolInventory
-        .GroupBy(ti => ti.toolType)
-        .ToDictionary(
-            g => g.Key,
-            g => g.ToDictionary(ti => ti.toolName)
-        );
+        this.toolInventory = toolInventory.ToDictionary(ti => ti.toolName);
 
         this.shopInteriorSOs = shopInteriorSOs;
         this.roomInteriorSOs = roomInteriorSOs;
@@ -480,6 +470,56 @@ public class InventoryAggregate : IAggregate
 
 
     // === 게임 플레이 메서드 ===
+
+
+    public ShopInteriorItemSO GetShopInteriorItemSO(string itemName)
+    {
+        if (shopInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public RoomInteriorItemSO GetRoomInteriorItemSO(string itemName)
+    {
+        if (roomInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public TileInteriorItemSO GetTileInteriorItemSO(string itemName)
+    {
+        if (tileInteriorSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public MaterialItemSO GetMaterialItemSO(string itemName)
+    {
+        if (materialSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public SnackItemSO GetSnackItemSO(string itemName)
+    {
+        if (snackSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public BlanketItemSO GetBlanketItemSO(string itemName)
+    {
+        if (blanketSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public ToolItemSO GetToolItemSO(string itemName)
+    {
+        if (toolSOs.TryGetValue(itemName, out var item)) return item;
+        else return null;
+    }
+
+    public int GetBlanketPrice(string itemName)
+    {
+        if (blanketSOs.TryGetValue(itemName, out var item)) return item.price;
+        else return -1;
+    }
+
 
     public void AdjustMaterialCount(int inventoryID, string itemName, int amount)
     {
@@ -674,5 +714,352 @@ public class InventoryAggregate : IAggregate
         return list;
     }
 
+
+    public bool AddMaterialFromEntire(string itemName, int count)
+    {
+        var boxData = ServiceLocator.Get<GameData>().Interior.GetCurrentRoomMaterialBoxData();
+
+        // 각 박스에 얼마를 넣을지 임시 저장
+        Dictionary<int, int> plan = new();
+
+        int remainCount = count;
+
+        // 수용 가능 여부 계산
+        foreach (var box in boxData)
+        {
+            int current = 0;
+
+            if (materialInventory.TryGetValue(box.ID, out var dict))
+            {
+                foreach (var item in dict.Values)
+                {
+                    current += item.count;
+                }
+            }
+
+            int capacity = box.boxSO.slotCount - current;
+            if (capacity <= 0)
+                continue;
+
+            int toAdd = Mathf.Min(capacity, remainCount);
+            // capacity가 더 커서 다 들어가는 경우, 남은 remainCount 선택돼서 다 들어감
+            // ramainCount가 더 커서 다 들어가지 못하는 경우, capacity 선택돼서 남은 슬롯 개수만큼만 들어감
+            plan[box.ID] = toAdd;
+            remainCount -= toAdd;
+
+            if (remainCount <= 0)
+                break;
+        }
+
+
+        // 전부 못 넣는 경우, 아무 것도 안 넣음
+        if (remainCount > 0)
+            return false;
+
+
+        // 실제 반영
+        foreach (var (boxID, addCount) in plan)
+        {
+            if (!materialInventory.TryGetValue(boxID, out var dict))
+            {
+                dict = new Dictionary<string, MaterialInventory>();
+                materialInventory[boxID] = dict;
+            }
+
+            if (dict.TryGetValue(itemName, out var inven))
+            {
+                inven.count += addCount;
+
+                MergeChange(materialInventoryChanges,
+                    (boxID, itemName),
+                    SaveOperation.UPDATE);
+            }
+            else
+            {
+                inven = new MaterialInventory
+                {
+                    inventoryID = boxID,
+                    itemName = itemName,
+                    count = addCount,
+                };
+                dict[itemName] = inven;
+
+                MergeChange(materialInventoryChanges,
+                    (boxID, itemName),
+                    SaveOperation.INSERT);
+            }
+        }
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool AddSnackFromEntire(string itemName, int count)
+    {
+        var boxData = ServiceLocator.Get<GameData>().Interior.GetCurrentRoomSnackBoxData();
+
+        // 각 박스에 얼마를 넣을지 임시 저장
+        Dictionary<int, int> plan = new();
+
+        int remainCount = count;
+
+        // 수용 가능 여부 계산
+        foreach (var box in boxData)
+        {
+            int current = 0;
+
+            if (snackInventory.TryGetValue(box.ID, out var dict))
+            {
+                foreach (var item in dict.Values)
+                {
+                    current += item.count;
+                }
+            }
+
+            int capacity = box.boxSO.slotCount - current;
+            if (capacity <= 0)
+                continue;
+
+            int toAdd = Mathf.Min(capacity, remainCount);
+            // capacity가 더 커서 다 들어가는 경우, 남은 remainCount 선택돼서 다 들어감
+            // ramainCount가 더 커서 다 들어가지 못하는 경우, capacity 선택돼서 남은 슬롯 개수만큼만 들어감
+            plan[box.ID] = toAdd;
+            remainCount -= toAdd;
+
+            if (remainCount <= 0)
+                break;
+        }
+
+
+        // 전부 못 넣는 경우, 아무 것도 안 넣음
+        if (remainCount > 0)
+            return false;
+
+
+        // 실제 반영
+        foreach (var (boxID, addCount) in plan)
+        {
+            if (!snackInventory.TryGetValue(boxID, out var dict))
+            {
+                dict = new Dictionary<string, SnackInventory>();
+                snackInventory[boxID] = dict;
+            }
+
+            if (dict.TryGetValue(itemName, out var inven))
+            {
+                inven.count += addCount;
+
+                MergeChange(snackInventoryChagnes,
+                    (boxID, itemName),
+                    SaveOperation.UPDATE);
+            }
+            else
+            {
+                inven = new SnackInventory
+                {
+                    inventoryID = boxID,
+                    itemName = itemName,
+                    count = addCount,
+                };
+                dict[itemName] = inven;
+
+                MergeChange(snackInventoryChagnes,
+                    (boxID, itemName),
+                    SaveOperation.INSERT);
+            }
+        }
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool AddBlanketFromEntire(string itemName, int count)
+    {
+        var boxData = ServiceLocator.Get<GameData>().Interior.GetCurrentRoomBlanketBoxData();
+
+        // 각 박스에 얼마를 넣을지 임시 저장
+        Dictionary<int, int> plan = new();
+
+        int remainCount = count;
+
+        // 수용 가능 여부 계산
+        foreach (var box in boxData)
+        {
+            int current = 0;
+
+            if (blanketInventory.TryGetValue(box.ID, out var dict))
+            {
+                foreach (var item in dict.Values)
+                {
+                    current += item.count;
+                }
+            }
+
+            int capacity = box.boxSO.slotCount - current;
+            if (capacity <= 0)
+                continue;
+
+            int toAdd = Mathf.Min(capacity, remainCount);
+            // capacity가 더 커서 다 들어가는 경우, 남은 remainCount 선택돼서 다 들어감
+            // ramainCount가 더 커서 다 들어가지 못하는 경우, capacity 선택돼서 남은 슬롯 개수만큼만 들어감
+            plan[box.ID] = toAdd;
+            remainCount -= toAdd;
+
+            if (remainCount <= 0)
+                break;
+        }
+
+
+        // 전부 못 넣는 경우, 아무 것도 안 넣음
+        if (remainCount > 0)
+            return false;
+
+
+        // 실제 반영
+        foreach (var (boxID, addCount) in plan)
+        {
+            if (!blanketInventory.TryGetValue(boxID, out var dict))
+            {
+                dict = new Dictionary<string, BlanketInventory>();
+                blanketInventory[boxID] = dict;
+            }
+
+            if (dict.TryGetValue(itemName, out var inven))
+            {
+                inven.count += addCount;
+
+                MergeChange(blanketInventoryChanges,
+                    (boxID, itemName),
+                    SaveOperation.UPDATE);
+            }
+            else
+            {
+                inven = new BlanketInventory
+                {
+                    inventoryID = boxID,
+                    itemName = itemName,
+                    count = addCount,
+                };
+                dict[itemName] = inven;
+
+                MergeChange(blanketInventoryChanges,
+                    (boxID, itemName),
+                    SaveOperation.INSERT);
+            }
+        }
+
+        MarkDirty();
+
+        return true;
+    }
+
+
+    public bool AddToolItem(string itemName)
+    {
+        if (toolInventory.ContainsKey(itemName)) return false;
+
+        ToolInventory tool = new ToolInventory();
+        tool.toolName = itemName;
+        tool.toolType = toolSOs[itemName].toolType;
+        toolInventory.Add(itemName, tool);
+
+        insertedToolInventory.Add((itemName, tool.toolType));
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool AddShopInteriorItem(string itemName, int count)
+    {
+        int currentCount = 0;
+        foreach (var (name, item) in shopInteriorInventory)
+        {
+            currentCount += item.count;
+        }
+
+        if (ServiceLocator.Get<GameData>().User.GetInteriorInventoryLevel().invenCount < (currentCount + count))
+            return false;
+
+
+        bool isInsert = false;
+        if (!shopInteriorInventory.TryGetValue(itemName, out var inven))
+        {
+            inven = new ShopInteriorInventory
+            {
+                itemName = itemName,
+                count = 0
+            };
+            shopInteriorInventory[itemName] = inven;
+            isInsert = true;
+        }
+
+        inven.count += count;
+
+        MergeChange(shopInteriorInventoryChanges,
+            itemName,
+            isInsert ? SaveOperation.INSERT : SaveOperation.UPDATE);
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool AddRoomInteriorItem(string itemName, int count)
+    {
+        if (count <= 0)
+            return false;
+
+        int currentCount = 0;
+        foreach (var item in roomInteriorInventory.Values)
+        {
+            currentCount += item.count;
+        }
+
+        int maxCount = ServiceLocator.Get<GameData>().User.GetInteriorInventoryLevel().invenCount;
+
+        if (maxCount < currentCount + count)
+            return false;
+
+
+        bool isInsert = false;
+        if (!roomInteriorInventory.TryGetValue(itemName, out var inven))
+        {
+            inven = new RoomInteriorInventory
+            {
+                itemName = itemName,
+                count = 0
+            };
+            roomInteriorInventory[itemName] = inven;
+            isInsert = true;
+        }
+
+        inven.count += count;
+
+        MergeChange(shopInteriorInventoryChanges,
+            itemName,
+            isInsert ? SaveOperation.INSERT : SaveOperation.UPDATE);
+
+        MarkDirty();
+
+        return true;
+    }
+
+
+    public bool AddTileInteriorItem(string itemName)
+    {
+        if (tileInventory.ContainsKey(itemName)) return false;
+
+        TileInteriorInventory tile = new TileInteriorInventory();
+        tile.itemName = itemName;
+        tile.tileType = tileInteriorSOs[itemName].tileType;
+        tileInventory.Add(itemName, tile);
+
+        insertedTileInventory.Add((itemName, tile.tileType));
+        MarkDirty();
+
+        return true;
+    }
 
 }

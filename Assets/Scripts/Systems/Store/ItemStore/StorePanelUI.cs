@@ -3,51 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StoreItemLoader : MonoBehaviour
+public class StorePanelUI : MonoBehaviour
 {
     [Header("아이템 띄울 스크롤뷰")]
-    public ScrollRect scrollView;
-    public GameObject countablePrefab;
-    public GameObject countlessPrefab;
-
-    [Header("구매 팝업창")]
-    public BuyPopup buyPopup;
+    [SerializeField] private ScrollRect scrollView;
 
     [Header("신성 재료")]
-    public RectTransform yarnContent;
-    public RectTransform cottonContent;
-    public RectTransform moonContent;
+    [SerializeField] private RectTransform yarnContent;
+    [SerializeField] private RectTransform cottonContent;
+    [SerializeField] private RectTransform moonpieceContent;
 
     [Header("직원 고용")]
-    public RectTransform workerContent;
+    [SerializeField] private RectTransform workerContent;
 
     [Header("인테리어")]
-    public RectTransform shopContent;
-    public RectTransform roomContent;
-    public RectTransform tileContent;
+    [SerializeField] private RectTransform shopContent;
+    [SerializeField] private RectTransform roomContent;
+    [SerializeField] private RectTransform tileContent;
 
     [Header("낚시, 채집 도구")]
-    public RectTransform fishingContent;
-    public RectTransform gatheringContent;
+    [SerializeField] private RectTransform fishingContent;
+    [SerializeField] private RectTransform gatheringContent;
 
 
-    void Start()
-    {
-        // 스크롤뷰에 아이템 추가할 때 사용하는 코드
-        //GameObject item = Instantiate(countablePrefab, moonContent);
-        //CountableContent ui = item.GetComponent<CountableContent>();
-        //ui.SetItem();
-    }
+    // === 스크롤뷰에 표시되는 부류 변경 버튼 핸들러 ===
 
-    
-    // 스크롤뷰에 표시되는 부류 변경 버튼 핸들러
     public void OnClickYarnBtn()
     {
         scrollView.content = yarnContent;
 
         yarnContent.gameObject.SetActive(true);
         cottonContent.gameObject.SetActive(false);
-        moonContent.gameObject.SetActive(false);
+        moonpieceContent.gameObject.SetActive(false);
     }
 
     public void OnClickCottonBtn()
@@ -56,16 +43,16 @@ public class StoreItemLoader : MonoBehaviour
 
         yarnContent.gameObject.SetActive(false);
         cottonContent.gameObject.SetActive(true);
-        moonContent.gameObject.SetActive(false);
+        moonpieceContent.gameObject.SetActive(false);
     }
 
     public void OnClickMoonBtn()
     {
-        scrollView.content = moonContent;
+        scrollView.content = moonpieceContent;
 
         yarnContent.gameObject.SetActive(false);
         cottonContent.gameObject.SetActive(false);
-        moonContent.gameObject.SetActive(true);
+        moonpieceContent.gameObject.SetActive(true);
     }
 
     public void OnClickShopBtn()
@@ -97,10 +84,10 @@ public class StoreItemLoader : MonoBehaviour
 
     public void OnClickFishingBtn()
     {
-        scrollView.content= fishingContent;
+        scrollView.content = fishingContent;
 
         fishingContent.gameObject.SetActive(true);
-        gatheringContent.gameObject .SetActive(false);
+        gatheringContent.gameObject.SetActive(false);
     }
 
     public void OnClickGatheringBtn()

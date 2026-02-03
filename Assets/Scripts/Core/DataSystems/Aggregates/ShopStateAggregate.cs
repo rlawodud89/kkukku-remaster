@@ -300,4 +300,52 @@ public class ShopStateAggregate : IAggregate
 
         return list;
     }
+
+    public bool IsBlanketOnShopTable(int tableID)
+    {
+        if (!shopTable.ContainsKey(tableID)) return false;
+
+        return shopTable[tableID].Count > 0;
+    }
+
+    public void AddWorkerState(int workerID)
+    {
+        if (workerState.ContainsKey(workerID)) return;
+
+        workerState.Add(workerID, new WorkerState()
+        {
+            workerID = workerID,
+            stamina = 0,
+            workingItem = null,
+            progress = 0,
+            skill = 0
+        });
+
+        MergeChange(workerStateChanges,
+            workerID,
+            SaveOperation.INSERT);
+
+        MarkDirty();
+    }
+
+    public void SaveAllWorkers(List<WorkerState> workerList)
+    {
+        foreach (WorkerState worker in workerList)
+        {
+            if (!workerState.TryGetValue(worker.workerID, out var workerdata)) continue;
+
+            workerdata.stamina = worker.stamina;
+            workerdata.workingItem = worker.workingItem;
+            workerdata.progress = worker.progress;
+            workerdata.skill = worker.skill;
+
+            MergeChange(workerStateChanges,
+            worker.workerID,
+            SaveOperation.UPDATE);
+        }
+
+        MarkDirty();
+    }
+
+
 }

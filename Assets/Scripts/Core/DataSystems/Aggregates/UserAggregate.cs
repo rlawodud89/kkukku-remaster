@@ -9,6 +9,8 @@ public class UserAggregate : IAggregate
 
     private User user;
     private Dictionary<ToolType, ToolUsed> toolUsed;
+    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
+    private Dictionary<int, int> shopLevelSize = new Dictionary<int, int>();
 
     // === SO 데이터 ===
 
@@ -96,6 +98,14 @@ public class UserAggregate : IAggregate
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
 
         this.toolSOs = toolSOs;
+
+        interiorLevelInventoryCount.Add(1, 20);
+        interiorLevelInventoryCount.Add(2, 30);
+        interiorLevelInventoryCount.Add(3, 40);
+
+        shopLevelSize.Add(1, 20);
+        shopLevelSize.Add(2, 30);
+        shopLevelSize.Add(3, 40);
     }
 
 
@@ -132,6 +142,16 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetCurrentGold()
+    {
+        return user.gold;
+    }
+
+    public int GetCurrentMoonrock()
+    {
+        return user.moonrock;
+    }
+
     public void ChangeGold(int amount)
     {
         user.gold += amount;
@@ -144,6 +164,49 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetItemShopLevel()
+    {
+        return user.itemShopLevel;
+    }
+
+    public (int level, int invenCount) GetInteriorInventoryLevel()
+    {
+        return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+    }
 
 
+    public (int level, int size) GetShopLevel()
+    {
+        return (user.shopLevel, shopLevelSize[user.shopLevel]);
+    }
+
+    public void ChangeItemShopLevel(int amount)
+    {
+        if (user.itemShopLevel + amount <= 0) return;
+
+        user.itemShopLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeInteriorInventoryLevel(int amount)
+    {
+        if (user.interiorInventoryLevel + amount <= 0) return;
+
+        user.interiorInventoryLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeShopLevel(int amount)
+    {
+        if (user.shopLevel + amount <= 0) return;
+
+        user.shopLevel += amount;
+        MarkDirty();
+    }
+
+    public void SetIsOpen(bool isOpen)
+    {
+        user.isOpen = isOpen;
+        MarkDirty();
+    }
 }

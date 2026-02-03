@@ -23,6 +23,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - customer
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 078c40bf589a1204cbb3e3fae38a3841
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/Worker/\uC591.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 083078898cec2214c8141e86f0a41cb0
     m_Address: Assets/ScriptableObjects/Customer/Otter.asset
     m_ReadOnly: 0
@@ -144,6 +150,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d6e22146b64b9a478941b6fd85146c6
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/Worker/\uC5EC\uC6B0.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 574acdd782f222746851b5f690f6d978
     m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uB2EC\uC870\uAC01.asset"
@@ -357,6 +369,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed6797df973957345b5ff170a793e2b0
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/Worker/\uACE0\uC591\uC774.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff525bb32dbde504f951f6722076cfdd
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uC6B4\uBB34\uC19C.asset"
