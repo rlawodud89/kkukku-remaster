@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 795678783904931538}
   - component: {fileID: 6003088105149315223}
   m_Layer: 0
-  m_Name: "\uAC04\uC2DD\uBC15\uC2A4"
+  m_Name: SnackBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

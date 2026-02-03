@@ -278,6 +278,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - shopInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 839bbf301a4fb65419748a0f484a41ee
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/BlanketBox/RoomInteriorItem.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 991ed990c15b94d4d8d5b9126d427fac
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uC559\uC99D\uB9DE\uC740
       \uCCB4\uD06C \uB9AC\uBCF8.asset"
