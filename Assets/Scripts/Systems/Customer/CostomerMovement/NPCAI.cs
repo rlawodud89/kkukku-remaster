@@ -69,7 +69,11 @@ public class NPCAI : MonoBehaviour
         lastPosition = transform.position;
 
         // 씬에 있는 Pathfinding 스크립트를 자동으로 찾거나 인스펙터에서 할당하세요.
-        if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
+        if (pathfinding == null)
+        {
+            pathfinding = FindObjectOfType<Pathfinding>();
+            walkTilemap = pathfinding.walkTilemap;
+        }
 
         if (npcBaseData != null)
         {

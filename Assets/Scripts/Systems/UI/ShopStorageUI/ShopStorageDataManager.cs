@@ -7,22 +7,22 @@ public class ShopStorageDataManager : MonoBehaviour
 {
     // Start is called before the first frame update
     public static ShopStorageDataManager Instance { get; private set; }
-    TableClass[] tableClasses;
-    public StorageClass[] storageClasses { get; set; }
+    public List<TableClass> tableClasses;
+    public List <StorageClass> storageClasses { get; set; }
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // 매번 가게 돌아올때마다 처음부터 모두 가져오면 부하가 심할것
-        // 꺼지지 않는 씬에 데이터 올려두고, 바뀌는 것들만 체크하는게 나을 것 같음.
-
-        //0. 현재 가게의 인테리어 정보 파악 및 이불장에 이불장 본인 id 적어두기.(shopStorageClick)
+        //0. 현재 가게의 인테리어 정보 파악 및 불러오기. 이불장에 이불장 본인 id 적어두기.(shopStorageClick) => 인테리어 스크립트 따로 만들어서 해야할듯.
 
 
         //1. 이불장 id로 이불 이름, 이불 개수 리스트 가져오기.
+        tableClasses = ServiceLocator.Get<GameData>().ShopState.GetCurrentShopTables();
+
         //2. 작업실에 존재하는 모든 재고함 id 및 count/max 값 가져오기.
+        storageClasses = ServiceLocator.Get<GameData>().Inventory.GetCurrentRoomBlanketBoxData();
     }
 
     public bool GetTableClass(int tableID, out TableClass result)
@@ -45,18 +45,17 @@ public class ShopStorageDataManager : MonoBehaviour
     {
         if (GetTableClass(tableID, out var table))
         {
+            ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(tableID, table.itemName[itemIndex], changeAmount);
             table.count[itemIndex] += changeAmount;
-            // 데베 또한 업뎃
         }
     }
 
     public void UpdateStorageData(int storageID, int changeAmount)
     {
-        var storage = System.Array.Find(storageClasses, s => s.storageID == storageID);
+        var storage = storageClasses.Find(s => s.storageID == storageID);
         if (storage != null)
         {
             storage.count += changeAmount;
-            //데베 또한 업뎃
         }
     }
 

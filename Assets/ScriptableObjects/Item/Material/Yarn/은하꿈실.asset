@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uC740\uD558\uAFC8\uC2E4"
   materialType: 0
-  image: {fileID: 0}
+  image: {fileID: -949140438, guid: a1e25f4d9fa453a47a9b2235e7c4fe0a, type: 3}
   level: 3
   price: 0
   decoMaterialType: 0
