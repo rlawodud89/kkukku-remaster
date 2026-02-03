@@ -4,25 +4,44 @@ using UnityEngine.EventSystems;
 
 public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
 {
-    public ShopStoragePanel storagePanel; // 패널 스크립트 직접 연결
-    public int storageID;
-    public Sprite newSprite;
+    public ShopStoragePanel storagePanel;
+    public int storageID; // 이불장의 고유 ID (인스펙터에서 설정)
 
-    // 이 오브젝트의 스프라이트 렌더러 컴포넌트
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [Header("Sprites")]
+    public Sprite emptySprite;  // 이불이 0개일 때 보여줄 빈 이불장 이미지
+    public Sprite filledSprite; // 이불이 1개 이상일 때 보여줄 채워진 이불장 이미지
 
-    public void ChangeSprite()
+    private SpriteRenderer spriteRenderer;
+
+    void Awake()
     {
-        if (spriteRenderer != null && newSprite != null)
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    void Start()
+    {
+        // 씬이 시작될 때 이불 개수를 확인하고 이미지를 변경합니다.
+        UpdateSpriteState();
+    }
+
+    // 💡 핵심: 데이터에서 이불 개수를 확인하고 스프라이트를 바꾸는 함수
+    public void UpdateSpriteState()
+    {
+        bool hasBlanket = ServiceLocator.Get<GameData>().ShopState.IsBlanketOnShopTable(storageID);
+
+        // 2. 결과에 따라 스프라이트를 변경합니다.
+        if (hasBlanket)
         {
-            spriteRenderer.sprite = newSprite;
+            spriteRenderer.sprite = filledSprite; // 이불 있음
+        }
+        else
+        {
+            spriteRenderer.sprite = emptySprite; // 이불 없음 (품절)
         }
     }
 
-
     public void OnPointerClick(PointerEventData eventData)
     {
-        // UI가 앞에 있다면(예: 이미 열린 패널 등) 뒤의 오브젝트 클릭 방지
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
         if (storagePanel != null)

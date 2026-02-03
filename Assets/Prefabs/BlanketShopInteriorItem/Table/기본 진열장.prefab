@@ -100,8 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 0}
   storageID: 0
-  newSprite: {fileID: 21300000, guid: 781b864baa0ce1d4da04248d77ddaf29, type: 3}
-  spriteRenderer: {fileID: 6779774284227370841}
+  emptySprite: {fileID: 21300000, guid: 8981dd5e188decf4bacc68fabe30df1a, type: 3}
+  filledSprite: {fileID: 21300000, guid: 781b864baa0ce1d4da04248d77ddaf29, type: 3}
 --- !u!61 &5430117401647935652
 BoxCollider2D:
   m_ObjectHideFlags: 0

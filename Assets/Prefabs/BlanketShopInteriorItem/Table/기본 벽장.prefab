@@ -145,5 +145,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 0}
   storageID: 0
-  newSprite: {fileID: 21300000, guid: aab0ad6c431d5c640bd039df79e56732, type: 3}
-  spriteRenderer: {fileID: 1932577003219381865}
+  emptySprite: {fileID: 21300000, guid: 8d9a0a08bc3fccb4db03d1357ae4f353, type: 3}
+  filledSprite: {fileID: 21300000, guid: aab0ad6c431d5c640bd039df79e56732, type: 3}

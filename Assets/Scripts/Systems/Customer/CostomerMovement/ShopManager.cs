@@ -198,8 +198,22 @@ public class ShopManager : MonoBehaviour
         // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
         ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
 
+
+        ShopStorageClick[] allStorages = FindObjectsOfType<ShopStorageClick>();
+
+        foreach (ShopStorageClick storage in allStorages)
+        {
+            // 방금 손님이 이불을 꺼내간 바로 그 이불장을 찾았다면
+            if (storage.storageID == randomTable.tableID)
+            {
+                // 이불장아, 네 재고 상태를 다시 확인하고 이미지를 바꿔라! 라고 명령합니다.
+                storage.UpdateSpriteState();
+                break; // 찾았으니 더 이상 찾을 필요 없음
+            }
+        }
+
         // 7. 플레이어 지갑에 돈 추가 (현재 지갑 시스템에 맞게 수정해주세요)
-        // 예시: ServiceLocator.Get<GameData>().Wallet.AddGold(price);
+        ServiceLocator.Get<GameData>().User.ChangeGold(price);
         Debug.Log($"오프라인 판매: {selectedItemName} 판매 완료! (+{price}G)");
     }
 
