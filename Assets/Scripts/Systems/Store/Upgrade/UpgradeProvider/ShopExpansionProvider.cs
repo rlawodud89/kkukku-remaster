@@ -29,5 +29,7 @@ public class ShopExpansionProvider : IUpgradeProvider
     {
         ServiceLocator.Get<GameData>().User.ChangeShopLevel(1);
         currentLevel++;
+
+        UpgradeEvents.OnUpgradeLevelChanged?.Invoke(this);
     }
 }
