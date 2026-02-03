@@ -1075,7 +1075,7 @@ GameObject:
   - component: {fileID: 532634947}
   - component: {fileID: 532634948}
   m_Layer: 8
-  m_Name: shop_low_cabinet (1)
+  m_Name: "\uAE30\uBCF8 \uC9C4\uC5F4\uC7A5"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1161,7 +1161,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 1210513626}
-  storageID: 2
+  storageID: 0
+  newSprite: {fileID: 21300000, guid: 781b864baa0ce1d4da04248d77ddaf29, type: 3}
+  spriteRenderer: {fileID: 532634946}
 --- !u!61 &532634948
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1616,6 +1618,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 1210513626}
   storageID: 1
+  newSprite: {fileID: 0}
+  spriteRenderer: {fileID: 0}
 --- !u!61 &621131319
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2753,6 +2757,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 1210513626}
   storageID: 3
+  newSprite: {fileID: 0}
+  spriteRenderer: {fileID: 0}
 --- !u!61 &940659323
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3596,7 +3602,7 @@ GameObject:
   - component: {fileID: 1050525430}
   - component: {fileID: 1050525429}
   m_Layer: 8
-  m_Name: shop_cabinet (1)
+  m_Name: "\uAE30\uBCF8 \uBCBD\uC7A5"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3682,7 +3688,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storagePanel: {fileID: 1210513626}
-  storageID: 4
+  storageID: 0
+  newSprite: {fileID: 21300000, guid: aab0ad6c431d5c640bd039df79e56732, type: 3}
+  spriteRenderer: {fileID: 1050525428}
 --- !u!61 &1050525430
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3828,8 +3836,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bf96f79dc78d24585600b8bd09d535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftItemPrefab: {fileID: 0}
-  rightItemPrefab: {fileID: 0}
+  leftItemPrefab: {fileID: 2610945700407304421, guid: 246e7c31aa55a6e4c8481f380cff3957, type: 3}
+  rightItemPrefab: {fileID: 2610945700407304421, guid: af1979660366ae94292d7e4e6052674e, type: 3}
   leftContent: {fileID: 1956565824}
   rightContent: {fileID: 282523836}
   sendButton: {fileID: 2082422720}
@@ -4275,6 +4283,50 @@ MonoBehaviour:
   m_ChildAlignment: 0
   spacingX: 3
   spacingY: 3
+--- !u!1 &1325821600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1325821602}
+  - component: {fileID: 1325821601}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1325821601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325821600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46128fa1dafcbd540a4fb2e7f45a2040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1325821602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325821600}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1391946975
 GameObject:
   m_ObjectHideFlags: 0
@@ -6589,7 +6641,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2082422721}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1210513626}
+        m_TargetAssemblyTypeName: ShopStoragePanel, Assembly-CSharp
+        m_MethodName: ExecuteTransfer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2082422721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7913,6 +7977,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1325821602}
   - {fileID: 677253327}
   - {fileID: 352424929}
   - {fileID: 1266950195}
