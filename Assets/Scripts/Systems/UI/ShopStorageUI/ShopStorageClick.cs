@@ -15,6 +15,7 @@ public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
 
     void Awake()
     {
+        storagePanel = FindObjectOfType<ShopStoragePanel>(true);
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -42,7 +43,7 @@ public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        Debug.Log(storageID + "번 이불장 클릭됨!");
 
         if (storagePanel != null)
         {
