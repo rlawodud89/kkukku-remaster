@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpecialQuestSO : ScriptableObject
 {
     public string questName;
-    public string customerName;
+    public int npcID;
     public string description;
     public DecoMaterialType needType;
     public string hint;

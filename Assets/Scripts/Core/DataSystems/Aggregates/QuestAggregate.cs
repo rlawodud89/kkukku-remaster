@@ -12,6 +12,11 @@ public class QuestAggregate : IAggregate
     private Dictionary<string, SpecialQuestBox> specialQuestBox;
     private List<LetterBox> letterBox;
 
+    // === SO 데이터 ===
+
+    private Dictionary<string, SpecialQuestSO> specialQuestSOs;
+    private Dictionary<string, NPCDataSO> customerSOs;
+
     // === 변경 사항 저장소 ===
 
     private Dictionary<int, SaveOperation> questChanges = new();
@@ -176,11 +181,14 @@ public class QuestAggregate : IAggregate
     }
 
     public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox,
-        IEnumerable<LetterBox> letterBox)
+        IEnumerable<LetterBox> letterBox, Dictionary<string, SpecialQuestSO> specialQuestSOs, Dictionary<string, NPCDataSO> customerSOs)
     {
         this.questBox = questBox.ToDictionary(qb => qb.questID);
         this.specialQuestBox = specialQuestBox.ToDictionary(sqb => sqb.questName);
         this.letterBox = letterBox.ToList();
+
+        this.specialQuestSOs = specialQuestSOs;
+        this.customerSOs = customerSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -290,5 +298,19 @@ public class QuestAggregate : IAggregate
         MarkDirty();
 
         return true;
+    }
+
+    public int GetNPCSpecialQuestState(int npcID)
+    {
+        foreach (var (questName, specialQuest) in specialQuestBox)
+        {
+            if (specialQuestSOs[questName].npcID == npcID)
+            {
+                if (specialQuest.isComplete) return 2;
+                else return 1;
+            }
+        }
+
+        return 0;
     }
 }
