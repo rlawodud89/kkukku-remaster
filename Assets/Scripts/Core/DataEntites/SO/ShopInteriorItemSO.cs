@@ -9,6 +9,11 @@ public class ShopInteriorItemSO : ScriptableObject
     public GameObject prefab;
     public int price;
 
+    [Header("그리드 개수")]
+    public int itemWidth;
+    public int itemHeight;
+
     [Header("이불장인 경우, 슬롯 개수")]
     public int slotCount;
+
 }

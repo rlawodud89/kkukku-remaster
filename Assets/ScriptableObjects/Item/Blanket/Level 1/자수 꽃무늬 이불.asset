@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ee6726ae5beb04aabcd4be02014c9f, type: 3}
+  m_Name: "\uC790\uC218 \uAF43\uBB34\uB2AC \uC774\uBD88"
+  m_EditorClassIdentifier: 
+  itemName: "\uC790\uC218 \uAF43\uBB34\uB2AC \uC774\uBD88"
+  image: {fileID: 1557973648, guid: d5f4d8fe0623e6d4a8560001dad2e51d, type: 3}
+  level: 1
+  price: 100
+  recipe:
+  - itemName: "\uAFC8\uC2E4"
+    count: 3
+  - itemName: "\uC6B4\uBB34\uC19C"
+    count: 3
+  - itemName: "\uB2EC\uC870\uAC01"
+    count: 3
+  - itemName: "\uD560\uBA38\uB2C8\uC758 \uAF43\uBC14\uB298"
+    count: 1
