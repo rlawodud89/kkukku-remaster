@@ -1,35 +1,40 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // UI Image¸¦ ´Ù·ç±â À§ÇØ ÇÊ¿ä
-using UnityEngine.EventSystems; // Å¬¸¯ ÀÌº¥Æ®¸¦ À§ÇØ ÇÊ¿ä
+using UnityEngine.UI; // UI Imageë¥¼ ë‹¤ë£¨ê¸° ìœ„í•´ í•„ìš”
+using UnityEngine.EventSystems; // í´ë¦­ ì´ë²¤íŠ¸ë¥¼ ìœ„í•´ í•„ìš”
 
 public class SignFlipper : MonoBehaviour, IPointerClickHandler
 {
-    [Header("¼³Á¤")]
-    [Tooltip("È¸ÀüÇÏ´Â µ¥ °É¸®´Â ½Ã°£(ÃÊ)")]
+    [Header("ì„¤ì •")]
+    [Tooltip("íšŒì „í•˜ëŠ” ë° ê±¸ë¦¬ëŠ” ì‹œê°„(ì´ˆ)")]
     public float flipDuration = 0.5f;
 
-    [Header("½ºÇÁ¶óÀÌÆ® ÂüÁ¶")]
-    public Sprite openSprite;   // OPEN ÀÌ¹ÌÁö ¿¬°á
-    public Sprite closedSprite; // CLOSED ÀÌ¹ÌÁö ¿¬°á
+    [Header("ìŠ¤í”„ë¼ì´íŠ¸ ì°¸ì¡°")]
+    public Sprite openSprite;   // OPEN ì´ë¯¸ì§€ ì—°ê²°
+    public Sprite closedSprite; // CLOSED ì´ë¯¸ì§€ ì—°ê²°
 
     private Image signImage;
-    private bool isOpen = true; // ÇöÀç »óÅÂ ÃßÀû (true=OPEN, false=CLOSED)
-    private bool isAnimating = false; // ¾Ö´Ï¸ŞÀÌ¼Ç Áßº¹ ½ÇÇà ¹æÁö
+    private bool isAnimating = false; // ì• ë‹ˆë©”ì´ì…˜ ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
 
     void Start()
     {
-        // ÄÄÆ÷³ÍÆ® °¡Á®¿À±â ¹× ÃÊ±âÈ­
+        // ì»´í¬ë„ŒíŠ¸ ê°€ì ¸ì˜¤ê¸° ë° ì´ˆê¸°í™”
         signImage = GetComponent<Image>();
-        // ½ÃÀÛÇÒ ¶§ È®½ÇÇÏ°Ô OPEN »óÅÂ·Î ¼³Á¤
-        signImage.sprite = openSprite;
-        isOpen = true;
+        // ì‹œì‘í•  ë•Œ í™•ì‹¤í•˜ê²Œ OPEN ìƒíƒœë¡œ ì„¤ì •
+        if (ShopManager.Instance.isStoreOpen)
+        {
+            signImage.sprite = openSprite;
+        }
+        else
+        {
+            signImage.sprite = closedSprite;
+        }
     }
 
-    // ¿ÀºêÁ§Æ®¸¦ Å¬¸¯ÇßÀ» ¶§ È£ÃâµÇ´Â ÇÔ¼ö (EventTrigger ÇÊ¿ä ¾øÀ½)
+    // ì˜¤ë¸Œì íŠ¸ë¥¼ í´ë¦­í–ˆì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜ (EventTrigger í•„ìš” ì—†ìŒ)
     public void OnPointerClick(PointerEventData eventData)
     {
-        // ¾Ö´Ï¸ŞÀÌ¼Ç ÁßÀÌ ¾Æ´Ò ¶§¸¸ ½ÇÇà
+        // ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì´ ì•„ë‹ ë•Œë§Œ ì‹¤í–‰
         if (!isAnimating)
         {
             StartCoroutine(FlipAnimation());
@@ -41,20 +46,20 @@ public class SignFlipper : MonoBehaviour, IPointerClickHandler
         isAnimating = true;
         float timer = 0f;
 
-        // 1. Àı¹İ(90µµ)±îÁö È¸Àü (Ãø¸éÀÌ º¸ÀÏ ¶§±îÁö)
+        // 1. ì ˆë°˜(90ë„)ê¹Œì§€ íšŒì „ (ì¸¡ë©´ì´ ë³´ì¼ ë•Œê¹Œì§€)
         while (timer < flipDuration / 2f)
         {
             timer += Time.deltaTime;
-            // 0µµ¿¡¼­ 90µµ »çÀÌ¸¦ ½Ã°£ ºñ·Ê·Î °è»ê
+            // 0ë„ì—ì„œ 90ë„ ì‚¬ì´ë¥¼ ì‹œê°„ ë¹„ë¡€ë¡œ ê³„ì‚°
             float angle = Mathf.Lerp(0f, 90f, timer / (flipDuration / 2f));
-            // YÃà ±âÁØÀ¸·Î È¸Àü Àû¿ë
+            // Yì¶• ê¸°ì¤€ìœ¼ë¡œ íšŒì „ ì ìš©
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
-            yield return null; // ´ÙÀ½ ÇÁ·¹ÀÓ±îÁö ´ë±â
+            yield return null; // ë‹¤ìŒ í”„ë ˆì„ê¹Œì§€ ëŒ€ê¸°
         }
 
-        // --- µü 90µµ°¡ µÇ¾î ¾È º¸ÀÏ ¶§ ÀÌ¹ÌÁö ±³Ã¼ ¹× »óÅÂ Åä±Û ---
-        isOpen = !isOpen; // »óÅÂ ¹İÀü
-        if (isOpen)
+        // --- ë”± 90ë„ê°€ ë˜ì–´ ì•ˆ ë³´ì¼ ë•Œ ì´ë¯¸ì§€ êµì²´ ë° ìƒíƒœ í† ê¸€ ---
+        ShopManager.Instance.ToggleStoreOpen();
+        if (ShopManager.Instance.isStoreOpen)
         {
             signImage.sprite = openSprite;
         }
@@ -64,19 +69,19 @@ public class SignFlipper : MonoBehaviour, IPointerClickHandler
         }
         // -----------------------------------------------------------
 
-        // 2. ³ª¸ÓÁö Àı¹İ(90µµ¿¡¼­ 0µµ) È¸Àü (¹İ´ëÆíÀÌ º¸ÀÌ°Ô)
-        // *ÁÖÀÇ: 180µµ·Î °è¼Ó µ¹¸®´Â °Ô ¾Æ´Ï¶ó, 90µµ¿¡¼­ ´Ù½Ã 0µµ·Î µ¹¾Æ¿À´Â °ÍÃ³·³ º¸¿©¾ß ÀÚ¿¬½º·´½À´Ï´Ù.
+        // 2. ë‚˜ë¨¸ì§€ ì ˆë°˜(90ë„ì—ì„œ 0ë„) íšŒì „ (ë°˜ëŒ€í¸ì´ ë³´ì´ê²Œ)
+        // *ì£¼ì˜: 180ë„ë¡œ ê³„ì† ëŒë¦¬ëŠ” ê²Œ ì•„ë‹ˆë¼, 90ë„ì—ì„œ ë‹¤ì‹œ 0ë„ë¡œ ëŒì•„ì˜¤ëŠ” ê²ƒì²˜ëŸ¼ ë³´ì—¬ì•¼ ìì—°ìŠ¤ëŸ½ìŠµë‹ˆë‹¤.
         timer = 0f;
         while (timer < flipDuration / 2f)
         {
             timer += Time.deltaTime;
-            // 90µµ¿¡¼­ 0µµ »çÀÌ¸¦ ½Ã°£ ºñ·Ê·Î °è»ê
+            // 90ë„ì—ì„œ 0ë„ ì‚¬ì´ë¥¼ ì‹œê°„ ë¹„ë¡€ë¡œ ê³„ì‚°
             float angle = Mathf.Lerp(90f, 0f, timer / (flipDuration / 2f));
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
             yield return null;
         }
 
-        // 3. ¾Ö´Ï¸ŞÀÌ¼Ç Á¾·á ÈÄ °¢µµ È®½ÇÇÏ°Ô 0À¸·Î °íÁ¤
+        // 3. ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ í›„ ê°ë„ í™•ì‹¤í•˜ê²Œ 0ìœ¼ë¡œ ê³ ì •
         transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
         isAnimating = false;
     }

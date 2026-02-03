@@ -38,11 +38,22 @@ public class NPCSpawner : MonoBehaviour
             return;
         }
 
-        // 2. 0부터 배열의 길이(프리팹 개수) 미만까지 랜덤한 숫자(인덱스) 하나를 뽑음
-        int randomIndex = Random.Range(0, npcPrefab.Length);
+        int targetIndex;
 
-        // 3. 뽑힌 랜덤 인덱스에 해당하는 프리팹을 생성
-        GameObject npc = Instantiate(npcPrefab[randomIndex], GetEntrancePosition(), Quaternion.identity);
+        if (data.prefabIndex == -1)
+        {
+            // 랜덤으로 외형을 정하고, 데이터에 영구 저장합니다.
+            targetIndex = Random.Range(0, npcPrefab.Length);
+            data.prefabIndex = targetIndex;
+        }
+        else
+        {
+            // 2. 이미 외형이 정해진 손님(씬 재진입)이라면 저장된 번호를 사용합니다.
+            targetIndex = data.prefabIndex;
+        }
+
+        // 결정된 번호의 프리팹을 소환
+        GameObject npc = Instantiate(npcPrefab[targetIndex], GetEntrancePosition(), Quaternion.identity);
 
         // 4. 생성된 NPC에 데이터 연결
         NPCAI npcAI = npc.GetComponent<NPCAI>();
