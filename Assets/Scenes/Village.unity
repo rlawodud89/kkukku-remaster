@@ -8482,6 +8482,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpgradePopup
       objectReference: {fileID: 0}
+    - target: {fileID: 4383550592316087106, guid: 477ada59b40f3754fa4288d9726bd5e2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7750777097128340826, guid: 477ada59b40f3754fa4288d9726bd5e2, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
