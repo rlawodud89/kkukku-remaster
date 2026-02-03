@@ -514,6 +514,11 @@ public class InventoryAggregate : IAggregate
         else return null;
     }
 
+    public int GetBlanketPrice(string itemName)
+    {
+        if (blanketSOs.TryGetValue(itemName, out var item)) return item.price;
+        else return -1;
+    }
 
 
     public void AdjustMaterialCount(int inventoryID, string itemName, int amount)

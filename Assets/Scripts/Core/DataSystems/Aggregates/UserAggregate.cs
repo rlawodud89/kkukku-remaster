@@ -203,4 +203,10 @@ public class UserAggregate : IAggregate
         user.shopLevel += amount;
         MarkDirty();
     }
+
+    public void SetIsOpen(bool isOpen)
+    {
+        user.isOpen = isOpen;
+        MarkDirty();
+    }
 }
