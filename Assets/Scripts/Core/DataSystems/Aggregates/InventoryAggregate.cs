@@ -1037,7 +1037,7 @@ public class InventoryAggregate : IAggregate
 
         inven.count += count;
 
-        MergeChange(shopInteriorInventoryChanges,
+        MergeChange(roomInteriorInventoryChanges,
             itemName,
             isInsert ? SaveOperation.INSERT : SaveOperation.UPDATE);
 
