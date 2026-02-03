@@ -19,6 +19,7 @@ public class SaveRepository
     private Dictionary<string, SnackItemSO> snackSOs;
     private Dictionary<string, BlanketItemSO> blanketSOs;
     private Dictionary<string, ToolItemSO> toolSOs;
+    private Dictionary<string, SpecialQuestSO> specialQuestSOs;
     private Dictionary<string, NPCDataSO> customerSOs;
 
 
@@ -49,6 +50,9 @@ public class SaveRepository
         toolSOs = Addressables.LoadAssetsAsync<ToolItemSO>("tool", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.itemName);
+        specialQuestSOs = Addressables.LoadAssetsAsync<SpecialQuestSO>("specialQuest", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.questName);
         customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.npcID);
@@ -231,7 +235,8 @@ public class SaveRepository
         List<LetterBox> letterBox = connection.Table<LetterBox>().ToList();
 
         var aggregate = new QuestAggregate();
-        aggregate.LoadQuestAggregate(questBox, specialQuestBox, letterBox);
+        aggregate.LoadQuestAggregate(questBox, specialQuestBox, letterBox,
+            specialQuestSOs, customerSOs);
 
         return aggregate;
     }

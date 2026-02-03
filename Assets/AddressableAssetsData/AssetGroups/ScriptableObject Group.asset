@@ -157,6 +157,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 544214fa7c6b8314a9404ce3cdad835b
+    m_Address: "Assets/ScriptableObjects/SpecialQuest/\uC5D0\uB7EC\uBC29\uC9C0\uC6A9.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - specialQuest
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 574acdd782f222746851b5f690f6d978
     m_Address: "Assets/ScriptableObjects/Item/Material/Moonpiece/\uB2EC\uC870\uAC01.asset"
     m_ReadOnly: 0
