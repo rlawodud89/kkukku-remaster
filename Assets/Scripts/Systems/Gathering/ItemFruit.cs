@@ -52,6 +52,12 @@ public class ItemFruit : MonoBehaviour
         ItemFruitPanel.anchoredPosition = newPos;
     }
 
+    public void SetMaxClickCount(int maxClickCount)
+    {
+        this.maxClickCount = maxClickCount;
+        countText.text = (maxClickCount - currentClickCount).ToString();
+    }
+
     public Rect GetFruitPanelRectAtPosition(Vector2 pos)
     {
         Vector2 size = ItemFruitPanel.rect.size;

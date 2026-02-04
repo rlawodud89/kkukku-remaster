@@ -26,6 +26,14 @@ public class ItemTree : MonoBehaviour
         }
     }
 
+    public void ChangeGatheringTool(int needClickCount)
+    {
+        foreach (var fruit in fruits)
+        {
+            fruit.SetMaxClickCount(needClickCount);
+        }
+    }
+
     private Vector2 GetNewPos(ItemFruit newFruit, List<Rect> fruitRects)
     {
         const int MAX_TRY = 20;
@@ -59,12 +67,12 @@ public class ItemTree : MonoBehaviour
 
             if (!overlap)
             {
-                Debug.Log("UI 겹치지 않음");
+                // Debug.Log("UI 겹치지 않음");
                 return randomNewPos;
             }
         }
 
-        Debug.Log("겹치지 않는 좌표 찾지 못함");
+        // Debug.Log("겹치지 않는 좌표 찾지 못함");
         return Vector2.zero;
     }
 

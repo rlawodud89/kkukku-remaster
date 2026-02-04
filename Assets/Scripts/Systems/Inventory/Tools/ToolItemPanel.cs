@@ -12,22 +12,22 @@ public class ToolItemPanel : MonoBehaviour
     [SerializeField] private TMP_Text infoText;
     [SerializeField] private GameObject UsedImg;
 
-    private ToolInventoryUI toolInventoryUi;
-    //private ToolSO tool;
+    private ToolInventoryUI toolInventoryUI;
+    private ToolItemSO toolSO;
 
 
-    /*public void SetTool(ToolSO toolSO, ToolInventory toolInventory)
+    public void SetTool(ToolItemSO toolSO, ToolInventoryUI toolInventoryUI)
     {
-        tool = toolSO;
-        toolImg = toolSO.image;
-        nameText = toolSO.name;
-        infoText = toolSO.description;
-        this.toolInventory = toolInventory;
-    }*/
+        this.toolSO = toolSO;
+        toolImg.sprite = toolSO.image;
+        nameText.text = toolSO.name;
 
-    public void SetTool(ToolInventoryUI toolInventoryUi)
-    {
-        this.toolInventoryUi = toolInventoryUi;
+        if (toolSO.toolType == ToolType.GATHERING)
+        {
+            infoText.text = $"클릭 필요 횟수: {toolSO.needClickCount}번";
+        }
+
+        this.toolInventoryUI = toolInventoryUI;
     }
 
     public void UsedOn()
@@ -42,6 +42,6 @@ public class ToolItemPanel : MonoBehaviour
 
     public void OnClickToolContent()
     {
-        toolInventoryUi.SelectTool(this);
+        toolInventoryUI.SelectTool(toolSO, this);
     }
 }

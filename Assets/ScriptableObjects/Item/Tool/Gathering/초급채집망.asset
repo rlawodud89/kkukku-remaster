@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c062fc5ac5cf354c96a6573e656b18b, type: 3}
-  m_Name: "\uAE30\uBCF8\uCC44\uC9D1\uB9DD"
+  m_Name: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
   m_EditorClassIdentifier: 
-  itemName: "\uAE30\uBCF8\uCC44\uC9D1\uB9DD"
+  itemName: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
   toolType: 0
   image: {fileID: 0}
   price: 0
-  needClickCount: 6
+  needClickCount: 4

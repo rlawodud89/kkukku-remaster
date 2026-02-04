@@ -24,6 +24,9 @@ public class GatheringManager : MonoBehaviour
 
     void Start()
     {
+        ToolItemSO currentTool = ServiceLocator.Get<GameData>().User.GetCurrentUsedTool(ToolType.GATHERING);
+        ChangeGatheringTool(currentTool.needClickCount);
+
         ResetAllButtons();
         StartTimer();
     }
@@ -95,6 +98,14 @@ public class GatheringManager : MonoBehaviour
     {
         if (!trees.Contains(itemTree))
             trees.Add(itemTree);
+    }
+
+    public void ChangeGatheringTool(int needClickCount)
+    {
+        foreach (var itemTree in trees)
+        {
+            itemTree.ChangeGatheringTool(needClickCount);
+        }
     }
 
     private void ResetAllButtons()
