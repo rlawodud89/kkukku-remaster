@@ -111,6 +111,7 @@ public class UserAggregate : IAggregate
 
     // === 게임 플레이 메서드 ===
 
+
     public (string shopName, int level, float energy) GetUserData()
     {
         return (user.shopName, user.level, user.energy);
@@ -204,9 +205,26 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public bool GetIsOpen()
+    {
+        return user.isOpen;
+    }
+
     public void SetIsOpen(bool isOpen)
     {
         user.isOpen = isOpen;
         MarkDirty();
     }
+
+    public ToolItemSO GetCurrentUsedTool(ToolType toolType)
+    {
+        return toolSOs[toolUsed[toolType].toolName];
+    }
+
+    public void SetCurrentUsedTool(ToolType toolType, string toolName)
+    {
+        toolUsed[toolType].toolName = toolName;
+        MarkDirty();
+    }
+
 }

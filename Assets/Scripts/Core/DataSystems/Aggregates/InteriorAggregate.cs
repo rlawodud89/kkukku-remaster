@@ -255,12 +255,18 @@ public class InteriorAggregate : IAggregate
 
     // === 게임 플레이 메서드 ===
 
+
     public RoomInteriorItemSO GetRoomInteriorInRoom(int ID)
     {
         RoomInteriorPlaced placed = roomPlaced.Values.FirstOrDefault(i => i.ID == ID);
 
         if (placed == null) return null;
         else return roomInteriorSOs[placed.itemName];
+    }
+
+    public List<ShopInteriorPlaced> GetCurrentShopInterior()
+    {
+        return shopPlaced.Values.ToList();
     }
 
     public List<RoomInteriorPlaced> GetCurrentRoomInterior()
@@ -386,5 +392,63 @@ public class InteriorAggregate : IAggregate
         return newroomInterior.ID;
     }
 
+    public void RemoveShopInterior(int targetID)
+    {
+        if (shopPlaced.ContainsKey(targetID))
+        {
+            shopPlaced.Remove(targetID);
 
+            MergeChange(shopPlacedChanges,
+                targetID,
+                SaveOperation.DELETE);
+
+            MarkDirty();
+        }
+    }
+
+    public void RemoveRoomInterior(int targetID)
+    {
+        if (roomPlaced.ContainsKey(targetID))
+        {
+            RoomInteriorItemSO interiorSO = roomInteriorSOs[roomPlaced[targetID].itemName];
+            if (interiorSO.roomInteriorType == RoomInteriorType.WORKER)
+                ServiceLocator.Get<GameData>().ShopState.RemoveWorkerState(targetID);
+
+            roomPlaced.Remove(targetID);
+
+            MergeChange(roomPlacedChanges,
+                targetID,
+                SaveOperation.DELETE);
+
+            MarkDirty();
+        }
+    }
+
+    public void TransferShopInterior(int targetID, int newGirdNumber)
+    {
+        if (shopPlaced.TryGetValue(targetID, out var shopInterior))
+        {
+            shopInterior.gridNumber = newGirdNumber;
+
+            MergeChange(shopPlacedChanges,
+                targetID,
+                SaveOperation.UPDATE);
+
+            MarkDirty();
+        }
+    }
+
+    public void TransferRoomInterior(int targetID, int newGirdNumber)
+    {
+        if (roomPlaced.TryGetValue(targetID, out var roomInterior))
+        {
+            roomInterior.gridNumber = newGirdNumber;
+
+            MergeChange(roomPlacedChanges,
+                targetID,
+                SaveOperation.UPDATE);
+
+            MarkDirty();
+        }
+    }
 }

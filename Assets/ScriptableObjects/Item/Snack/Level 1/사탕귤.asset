@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: "\uC0AC\uD0D5\uADE4"
   m_EditorClassIdentifier: 
   itemName: "\uC0AC\uD0D5\uADE4"
-  image: {fileID: 0}
+  image: {fileID: 151816174, guid: f37ab81a7177b1d4c9aa3210b2a0f60d, type: 3}
   level: 1
   stamina: 3
