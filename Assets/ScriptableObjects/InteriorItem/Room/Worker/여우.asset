@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uC5EC\uC6B0"
   roomInteriorType: 3
-  image: {fileID: 0}
+  image: {fileID: 2102060231, guid: 14154b646aac86945bd7b2fc341038fa, type: 3}
   prefab: {fileID: 0}
-  price: 1000
+  price: 1500
+  itemWidth: 0
+  itemHeight: 0
   slotCount: 0
-  maxStamina: 70
-  workingTime: 30
+  maxStamina: 80
+  workingTime: 20

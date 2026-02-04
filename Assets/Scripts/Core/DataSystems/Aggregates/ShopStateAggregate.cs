@@ -328,6 +328,19 @@ public class ShopStateAggregate : IAggregate
         MarkDirty();
     }
 
+    public void RemoveWorkerState(int workerID)
+    {
+        if (!workerState.ContainsKey(workerID)) return;
+
+        workerState.Remove(workerID);
+
+        MergeChange(workerStateChanges,
+            workerID,
+            SaveOperation.DELETE);
+
+        MarkDirty();
+    }
+
     public void SaveAllWorkers(List<WorkerState> workerList)
     {
         foreach (WorkerState worker in workerList)
