@@ -7,7 +7,7 @@ public class GatheringManager : MonoBehaviour
     public static GatheringManager Instance;
 
     [Header("전체 제한시간")]
-    [SerializeField] private float timeLimit = 2f;
+    [SerializeField] private float timeLimit;
 
     private List<ItemTree> trees = new List<ItemTree>();
     private Coroutine timerCoroutine;

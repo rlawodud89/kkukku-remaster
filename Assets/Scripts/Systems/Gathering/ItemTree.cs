@@ -28,7 +28,7 @@ public class ItemTree : MonoBehaviour
 
     private Vector2 GetNewPos(ItemFruit newFruit, List<Rect> fruitRects)
     {
-        const int MAX_TRY = 30;
+        const int MAX_TRY = 20;
 
         Vector2 fieldSize = fruitField.rect.size;
         Vector2 fruitSize = newFruit.GetFruitPanelRect().size;
