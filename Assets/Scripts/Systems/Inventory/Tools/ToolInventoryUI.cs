@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class ToolInventoryUI : MonoBehaviour
 {
@@ -23,15 +22,20 @@ public class ToolInventoryUI : MonoBehaviour
     private Dictionary<string, ToolItemPanel> toolPanelDictionary = new Dictionary<string, ToolItemPanel>();
     private ToolItemSO selectedTool;
     private ToolItemPanel selectedToolPanel;
+    private IToolPerformer toolPerformer;
+
 
     void Start()
     {
+        toolPerformer = ToolPerformerFactory.Create(toolType);
+
         var tools = ServiceLocator.Get<GameData>().Inventory.GetAllToolItems(toolType);
         foreach (var tool in tools)
         {
             GameObject gameObject = Instantiate(toolPrefab, toolContent);
             ToolItemPanel ui = gameObject.GetComponent<ToolItemPanel>();
-            ui.SetTool(tool, this);
+            ui.SetTool(tool, this, toolPerformer);
+
             toolPanelDictionary.Add(tool.itemName, ui);
         }
 
@@ -39,6 +43,7 @@ public class ToolInventoryUI : MonoBehaviour
         selectedToolPanel = toolPanelDictionary[selectedTool.itemName];
         selectedToolPanel.UsedOn();
     }
+
 
     public void SelectTool(ToolItemSO selectedTool, ToolItemPanel selectedToolPanel)
     {
@@ -52,31 +57,21 @@ public class ToolInventoryUI : MonoBehaviour
 
         ServiceLocator.Get<GameData>().User.SetCurrentUsedTool(toolType, selectedTool.itemName);
 
-        if (GatheringManager.Instance != null)
-        {
-            GatheringManager.Instance.ChangeGatheringTool(selectedTool.needClickCount);
-        }
+        toolPerformer.ChangeTool(selectedTool);
     }
+
 
     public void OnClickToolBtn()
     {
         toolPanel.SetActive(true);
 
-        // 수면정원인 경우, 채집 제한시간 타이머 멈춰둠
-        if (GatheringManager.Instance != null)
-        {
-            GatheringManager.Instance.StopTimer();
-        }
+        toolPerformer.ToolUIOn();
     }
 
     public void OnClickToolBackBtn()
     {
         toolPanel.SetActive(false);
 
-        // 수면정원인 경우, 채집 제한시간 타이머 다시 시작
-        if (GatheringManager.Instance != null)
-        {
-            GatheringManager.Instance.StartTimer();
-        }
+        toolPerformer.ToolUIOff();
     }
 }

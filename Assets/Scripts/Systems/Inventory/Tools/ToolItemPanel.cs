@@ -14,18 +14,15 @@ public class ToolItemPanel : MonoBehaviour
 
     private ToolInventoryUI toolInventoryUI;
     private ToolItemSO toolSO;
+    private IToolPerformer toolPerformer;
 
 
-    public void SetTool(ToolItemSO toolSO, ToolInventoryUI toolInventoryUI)
+    public void SetTool(ToolItemSO toolSO, ToolInventoryUI toolInventoryUI, IToolPerformer toolPerformer)
     {
         this.toolSO = toolSO;
         toolImg.sprite = toolSO.image;
         nameText.text = toolSO.name;
-
-        if (toolSO.toolType == ToolType.GATHERING)
-        {
-            infoText.text = $"클릭 필요 횟수: {toolSO.needClickCount}번";
-        }
+        infoText.text = toolPerformer.GetDescription(toolSO);
 
         this.toolInventoryUI = toolInventoryUI;
     }
