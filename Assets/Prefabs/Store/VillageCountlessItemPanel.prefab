@@ -440,8 +440,8 @@ MonoBehaviour:
   priceImg: {fileID: 1646905735606561201}
   priceText: {fileID: 4568858544290602913}
   buyPopup: {fileID: 0}
-  goldSprite: {fileID: 0}
-  moonrockSprite: {fileID: 0}
+  goldSprite: {fileID: 21300000, guid: 2aa0069e60d476d49bd9b3ffd7365e96, type: 3}
+  moonrockSprite: {fileID: 21300000, guid: f74694d56aa4cb04f85ed7d377e13710, type: 3}
 --- !u!1 &7527169739633900029
 GameObject:
   m_ObjectHideFlags: 0

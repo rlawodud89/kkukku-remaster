@@ -24,7 +24,6 @@ public class CountlessItemPanel : MonoBehaviour
     private string itemName;
     private Sprite itemSprite;
     private int price;
-    private bool isGold;
     private static int count = 1;
 
 
@@ -39,7 +38,7 @@ public class CountlessItemPanel : MonoBehaviour
         itemImg.sprite = itemSprite;
         nameText.text = itemName;
         priceText.text = price.ToString();
-        priceImg.sprite = isGold ? goldSprite : moonrockSprite;
+        priceImg.sprite = storeItemProvider.isGold ? goldSprite : moonrockSprite;
     }
 
     public void OnClickBuyBtn()
