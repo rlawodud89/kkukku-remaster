@@ -10,8 +10,9 @@ public class GatheringManager : MonoBehaviour
     [Header("전체 제한시간")]
     [SerializeField] private float timeLimit;
 
-    [Header("경고 메시지 UI")]
+    [Header("UI")]
     [SerializeField] private WarningUI warningUI;
+    [SerializeField] private GatheringRecord gatheringRecord;
 
     private List<ItemTree> trees = new List<ItemTree>();
     private Coroutine timerCoroutine;
@@ -155,6 +156,8 @@ public class GatheringManager : MonoBehaviour
             snack.itemName,
             1
         );
+
+        gatheringRecord.AddGatheredItem(snack.image);
 
 
         if (snackBoxData[currentSnackBoxIndex].count >= snackBoxData[currentSnackBoxIndex].max)
