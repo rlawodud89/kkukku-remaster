@@ -631,7 +631,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &352424929
 RectTransform:
@@ -2670,7 +2670,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1216580024}
         m_TargetAssemblyTypeName: SignFlipper, Assembly-CSharp
-        m_MethodName: ToggleSignImage
+        m_MethodName: MouseDown
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2694,7 +2694,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3046,6 +3046,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46128fa1dafcbd540a4fb2e7f45a2040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathfinding: {fileID: 0}
 --- !u!4 &1325821602
 Transform:
   m_ObjectHideFlags: 0
@@ -3112,6 +3113,8 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
+  totalGridWidth: 0
+  totalGridHeight: 0
 --- !u!114 &1325821605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5248,10 +5251,10 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 352424929}
+  - {fileID: 947979105}
   - {fileID: 677253327}
   - {fileID: 1325821602}
-  - {fileID: 352424929}
   - {fileID: 1266950195}
-  - {fileID: 947979105}
   - {fileID: 1874903651}
   - {fileID: 1921193516}

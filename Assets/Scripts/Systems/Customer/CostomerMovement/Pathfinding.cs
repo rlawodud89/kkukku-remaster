@@ -3,11 +3,66 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System.Linq;
 
+public static class GridSystem
+{
+    public static Vector3Int IndexToPos(int index, int totalWidth, int totalHeight)
+    {
+        int x = index % totalWidth;
+        int y = index / totalWidth;
+        int offsetX = totalWidth / 2;
+        int offsetY = totalHeight / 2;
+        return new Vector3Int(x - offsetX, offsetY - y, 0);
+    }
+}
+
 public class Pathfinding : MonoBehaviour
 {
 
     public Tilemap walkTilemap; // 바닥 타일맵
     public LayerMask obstacleLayer; // 유니티 인스펙터에서 'Obstacle' 레이어를 선택해주세요.
+
+
+    public int totalGridWidth; // 인스펙터에서 설정
+    public int totalGridHeight;
+
+    private HashSet<Vector3Int> obstacleTiles = new HashSet<Vector3Int>();
+
+    public void BuildObstacleMap(ShopInteriorData data)
+    {
+        obstacleTiles.Clear();
+
+        // 1. 모든 가구 리스트 합치기
+        var allItems = new List<Interiorinfo>();
+        if (data.Casher != null) allItems.Add(data.Casher);
+        allItems.AddRange(data.Interior);
+        allItems.AddRange(data.Table);
+
+        foreach (var item in allItems)
+        {
+            // 가구의 시작점(왼쪽 위)
+            Vector3Int startPos = IndexToPos(item.placement);
+
+            // 가구 크기만큼 점유 처리
+            for (int w = 0; w < item.Width; w++)
+            {
+                for (int h = 0; h < item.Height; h++)
+                {
+                    // 왼쪽 위 기준이므로 x는 +, y는 - 방향으로 확장
+                    Vector3Int occupied = startPos + new Vector3Int(w, -h, 0);
+                    obstacleTiles.Add(occupied);
+                }
+            }
+        }
+    }
+
+    private Vector3Int IndexToPos(int index) => new Vector3Int(index % totalGridWidth, -(index / totalGridWidth), 0);
+
+    // 이제 IsWalkable은 물리 체크 없이 데이터만 봅니다.
+    public bool IsWalkable(Vector3Int pos)
+    {
+        if (!walkTilemap.HasTile(pos)) return false;
+        return !obstacleTiles.Contains(pos);
+    }
 
     public List<Vector3Int> FindPath(Vector3Int startPos, Vector3Int targetPos)
     {
@@ -58,24 +113,7 @@ public class Pathfinding : MonoBehaviour
         return null; // 경로 없음
     }
 
-    // 장애물 체크: 바닥은 있고, 가구는 없는지 확인
 
-    bool IsWalkable(Vector3Int pos)
-    {
-        // 1. 우선 바닥 타일 자체가 있는지 확인 (길이 없는 곳은 못 가니까요)
-        if (!walkTilemap.HasTile(pos)) return false;
-
-        // 2. 타일의 중앙 월드 좌표를 가져옵니다.
-        Vector3 worldPos = walkTilemap.GetCellCenterWorld(pos);
-
-        // 3. 해당 위치에 장애물 오브젝트(Collider2D)가 있는지 확인합니다.
-        // new Vector2(0.8f, 0.8f)는 체크할 박스의 크기입니다. 
-        // 타일 크기(1.0)보다 살짝 작게 잡아야 옆 타일에 있는 장애물과 간섭이 생기지 않습니다.
-        Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(0.8f, 0.8f), 0, obstacleLayer);
-
-        // 4. 장애물(hit)이 아무것도 검출되지 않았다면(null) 갈 수 있는 길(true)입니다.
-        return hit == null;
-    }
 
     // 상하좌우 이웃 타일 가져오기
     List<Vector3Int> GetNeighbors(Vector3Int pos)
@@ -103,5 +141,16 @@ public class Pathfinding : MonoBehaviour
     int GetDistance(Vector3Int a, Vector3Int b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+    }
+
+    ///////////////
+    void OnDrawGizmos()
+    {
+        if (obstacleTiles == null) return;
+        Gizmos.color = Color.red;
+        foreach (var tile in obstacleTiles)
+        {
+            Gizmos.DrawSphere(walkTilemap.GetCellCenterWorld(tile), 0.2f);
+        }
     }
 }

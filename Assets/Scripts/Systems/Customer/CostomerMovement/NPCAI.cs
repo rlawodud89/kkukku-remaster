@@ -212,14 +212,23 @@ public class NPCAI : MonoBehaviour
 
     Vector3 GetRandomWardrobePos()
     {
-        // 실제로는 이불장 오브젝트들의 위치 리스트 중 하나를 랜덤으로 반환하게 수정하세요.
+        // 1. 매니저에서 이불장 리스트를 가져옵니다.
+        var tables = ShopStorageDataManager.Instance.interiorData.Table;
 
+        if (tables != null && tables.Count > 0)
+        {
+            // 2. 그 중 랜덤으로 하나를 선택합니다.
+            Interiorinfo targetTable = tables[Random.Range(0, tables.Count)];
 
+            // 3. 이미 만들어두신 함수를 사용해 가구 앞 '입구' 좌표를 계산합니다.
+            return GetFurnitureFrontPos(targetTable);
+        }
 
-        return new Vector3(0.48f, -0.98f, 0);
+        // 이불장이 없을 경우 대비한 기본 좌표
+        return new Vector3(0, 0, 0);
     }
 
-  
+
     public void MoveToQueuePoint()
     {
         // CashierManager에게 내가 서야 할 월드 좌표를 물어봄
@@ -241,4 +250,32 @@ public class NPCAI : MonoBehaviour
         }
         animator.SetFloat("Speed", 0f);
     }
+
+    // NPCAI.cs 내부 수정
+    public Vector3 GetFurnitureFrontPos(Interiorinfo targetItem)
+    {
+        // 1. 가구의 왼쪽 위 타일 좌표를 가져옵니다 (Pathfinding의 보정된 함수 사용)
+        Vector3Int startTile = GridSystem.IndexToPos(targetItem.placement, pathfinding.totalGridWidth, pathfinding.totalGridHeight);
+
+        // 2. 가구 너비 중 랜덤 위치 선정
+        int randomXOffset = Random.Range(0, targetItem.Width);
+
+        // 3. 최종 목적지 타일 계산
+        // x는 오른쪽으로 더하고, y는 아래쪽(앞쪽)으로 가야 하므로 Height만큼 뺍니다.
+        int targetX = startTile.x + randomXOffset;
+        int targetY = startTile.y - targetItem.Height; // 유니티 좌표계에서 아래는 -Y
+
+        Vector3Int targetTile = new Vector3Int(targetX, targetY, 0);
+
+        // 4. 장애물 체크 및 월드 좌표 반환
+        if (!pathfinding.IsWalkable(targetTile))
+        {
+            targetX = startTile.x + (targetItem.Width / 2);
+            targetTile = new Vector3Int(targetX, targetY, 0);
+        }
+
+        return walkTilemap.GetCellCenterWorld(targetTile);
+    }
+
+
 }
