@@ -3,29 +3,35 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class GridSystem
-{
-    public static Vector3Int IndexToPos(int index, int totalWidth, int totalHeight)
-    {
-        int x = index % totalWidth;
-        int y = index / totalWidth;
-        int offsetX = totalWidth / 2;
-        int offsetY = totalHeight / 2;
-        return new Vector3Int(x - offsetX, offsetY - y, 0);
-    }
-}
 
 public class Pathfinding : MonoBehaviour
 {
-
+    [Header("Tilemaps")]
     public Tilemap walkTilemap; // 바닥 타일맵
-    public LayerMask obstacleLayer; // 유니티 인스펙터에서 'Obstacle' 레이어를 선택해주세요.
+    public Tilemap wallTilemap;
 
+
+    public LayerMask obstacleLayer; // 유니티 인스펙터에서 'Obstacle' 레이어를 선택해주세요.
 
     public int totalGridWidth; // 인스펙터에서 설정
     public int totalGridHeight;
 
     private HashSet<Vector3Int> obstacleTiles = new HashSet<Vector3Int>();
+
+    private Vector3Int gridOrigin;
+
+    public void CalculateGridOrigin()
+    {
+        // 게임 시작 시, 타일맵이 실제로 그려진 영역의 '왼쪽 위' 좌표를 찾아냅니다.
+        // xMin: 가장 왼쪽, yMax: 가장 위쪽 (Bounds는 Max가 +1 된 값이므로 1을 빼야 함)
+        if (walkTilemap != null)
+        {
+            walkTilemap.CompressBounds(); // 빈 공간 정리
+            gridOrigin = new Vector3Int(walkTilemap.cellBounds.xMin, walkTilemap.cellBounds.yMax - 1, 0);
+
+            Debug.Log($"[Pathfinding] 맵 기준점 설정 완료: {gridOrigin}. 이제 인덱스 0은 여기입니다.");
+        }
+    }
 
     public void BuildObstacleMap(ShopInteriorData data)
     {
@@ -55,13 +61,32 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    private Vector3Int IndexToPos(int index) => new Vector3Int(index % totalGridWidth, -(index / totalGridWidth), 0);
+    public Vector3Int IndexToPos(int index)
+    {
+        int x = index % totalGridWidth;
+        int y = index / totalGridWidth;
+
+        // 기준점(왼쪽 위)에서 
+        // x는 오른쪽(+)으로, y는 아래쪽(-)으로 이동
+        int finalX = gridOrigin.x + x;
+        int finalY = gridOrigin.y - y;
+
+        return new Vector3Int(finalX, finalY, 0);
+    }
 
     // 이제 IsWalkable은 물리 체크 없이 데이터만 봅니다.
     public bool IsWalkable(Vector3Int pos)
     {
+        // 1. 바닥 타일이 없으면 낙낭
         if (!walkTilemap.HasTile(pos)) return false;
-        return !obstacleTiles.Contains(pos);
+
+        // 2. 가구(Obstacle)가 있으면 통과 불가
+        if (obstacleTiles.Contains(pos)) return false;
+
+        // 3. 💡 벽 타일이 있으면 통과 불가 (이게 없어서 벽을 뚫음)
+        if (wallTilemap != null && wallTilemap.HasTile(pos)) return false;
+
+        return true;
     }
 
     public List<Vector3Int> FindPath(Vector3Int startPos, Vector3Int targetPos)
