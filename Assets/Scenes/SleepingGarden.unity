@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884045b9e76369548afe21764f93523f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 7
+  timeLimit: 6
   warningUI: {fileID: 2100527640}
   gatheringRecord: {fileID: 1977088434}
 --- !u!4 &739842492
