@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5647066352750211063}
   - component: {fileID: 3113572673350368789}
   m_Layer: 0
-  m_Name: "\uAC1C\uC778\uC81C\uC791\uB300"
+  m_Name: PersonalCraftBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

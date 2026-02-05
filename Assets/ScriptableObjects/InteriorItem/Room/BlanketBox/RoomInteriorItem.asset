@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 092c2b9dbfcfbd344a0be5b17ee606a5, type: 3}
-  m_Name: LeopardEmployee
+  m_Name: RoomInteriorItem
   m_EditorClassIdentifier: 
-  itemName: LeopardEmployee
-  roomInteriorType: 3
-  image: {fileID: 2011545879, guid: 14154b646aac86945bd7b2fc341038fa, type: 3}
-  prefab: {fileID: 0}
+  itemName: BlanketStorage
+  roomInteriorType: 0
+  image: {fileID: 1728949260, guid: de10bb3958e3cd04ea86e4a739d73334, type: 3}
+  prefab: {fileID: 3864369894231655348, guid: ccaf84251b1b68346b6dbf9ebe4b1fa5, type: 3}
   price: 0
+  itemWidth: 2
+  itemHeight: 2
   slotCount: 0
-  maxStamina: 100
-  workingTime: 10
+  maxStamina: 0
+  workingTime: 0

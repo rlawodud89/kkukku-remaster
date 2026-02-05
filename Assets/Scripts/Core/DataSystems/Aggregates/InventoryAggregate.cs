@@ -520,6 +520,12 @@ public class InventoryAggregate : IAggregate
         else return -1;
     }
 
+    public SnackItemSO GetRandomSnackItemSO()
+    {
+        int randomIdx = UnityEngine.Random.Range(0, snackSOs.Count);
+        return snackSOs.ElementAt(randomIdx).Value;
+    }
+
 
     public void AdjustMaterialCount(int inventoryID, string itemName, int amount)
     {
@@ -1037,7 +1043,7 @@ public class InventoryAggregate : IAggregate
 
         inven.count += count;
 
-        MergeChange(shopInteriorInventoryChanges,
+        MergeChange(roomInteriorInventoryChanges,
             itemName,
             isInsert ? SaveOperation.INSERT : SaveOperation.UPDATE);
 
@@ -1062,4 +1068,77 @@ public class InventoryAggregate : IAggregate
         return true;
     }
 
+    public bool RemoveShopInteriorItem(string itemName, int removeCount)
+    {
+        if (removeCount <= 0) return false;
+
+        if (!shopInteriorInventory.TryGetValue(itemName, out var currentItem))
+            return false;
+
+        if (currentItem.count < removeCount) return false;
+
+        currentItem.count -= removeCount;
+        if (currentItem.count == 0)
+        {
+            shopInteriorInventory.Remove(itemName);
+
+            MergeChange(shopInteriorInventoryChanges,
+                itemName,
+                SaveOperation.DELETE);
+        }
+        else
+        {
+            MergeChange(shopInteriorInventoryChanges,
+                itemName,
+                SaveOperation.UPDATE);
+        }
+
+        MarkDirty();
+        return true;
+    }
+
+    public bool RemoveRoomInteriorItem(string itemName, int removeCount)
+    {
+        if (removeCount <= 0) return false;
+
+        if (!roomInteriorInventory.TryGetValue(itemName, out var currentItem))
+            return false;
+
+        if (currentItem.count < removeCount) return false;
+
+        currentItem.count -= removeCount;
+        if (currentItem.count == 0)
+        {
+            roomInteriorInventory.Remove(itemName);
+
+            MergeChange(roomInteriorInventoryChanges,
+                itemName,
+                SaveOperation.DELETE);
+        }
+        else
+        {
+            MergeChange(roomInteriorInventoryChanges,
+                itemName,
+                SaveOperation.UPDATE);
+        }
+
+        MarkDirty();
+        return true;
+    }
+
+
+    public List<ToolItemSO> GetAllToolItems(ToolType toolType)
+    {
+        var toolList = toolInventory.Values.Where(i => i.toolType == toolType).ToList();
+
+        var result = new List<ToolItemSO>();
+        foreach (var tool in toolList)
+        {
+            result.Add(toolSOs[tool.toolName]);
+        }
+
+        return result;
+    }
+
+    
 }

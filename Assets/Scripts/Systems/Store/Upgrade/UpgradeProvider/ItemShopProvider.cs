@@ -30,5 +30,7 @@ public class ItemShopProvider : IUpgradeProvider
     {
         ServiceLocator.Get<GameData>().User.ChangeItemShopLevel(1);
         currentLevel++;
+
+        UpgradeEvents.OnUpgradeLevelChanged?.Invoke(this);
     }
 }

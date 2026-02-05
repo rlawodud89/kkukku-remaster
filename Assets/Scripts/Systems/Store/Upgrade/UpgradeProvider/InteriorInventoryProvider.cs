@@ -29,5 +29,7 @@ public class InteriorInventoryProvider : IUpgradeProvider
     {
         ServiceLocator.Get<GameData>().User.ChangeInteriorInventoryLevel(1);
         currentLevel++;
+
+        UpgradeEvents.OnUpgradeLevelChanged?.Invoke(this);
     }
 }

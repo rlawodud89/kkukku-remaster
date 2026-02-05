@@ -19,6 +19,17 @@ public class UpgradeLoader : MonoBehaviour
         LevelTextUpdate();
     }
 
+    void OnEnable()
+    {
+        UpgradeEvents.OnUpgradeLevelChanged += HandleUpgradeChanged;
+    }
+
+    void OnDisable()
+    {
+        UpgradeEvents.OnUpgradeLevelChanged -= HandleUpgradeChanged;
+    }
+
+
     public void OnUpgradeClick()
     {
         if (upgradeProvider.maxLevel == upgradeProvider.currentLevel)
@@ -41,5 +52,12 @@ public class UpgradeLoader : MonoBehaviour
         {
             levelText.text = $"lv {upgradeProvider.currentLevel} -> lv {upgradeProvider.currentLevel + 1}";
         }
+    }
+
+    private void HandleUpgradeChanged(IUpgradeProvider provider)
+    {
+        if (provider != upgradeProvider) return;
+
+        LevelTextUpdate();
     }
 }
