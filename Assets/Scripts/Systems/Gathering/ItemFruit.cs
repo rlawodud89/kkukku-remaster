@@ -27,6 +27,7 @@ public class ItemFruit : MonoBehaviour
 
         if (currentClickCount >= maxClickCount)
         {
+            GatheringManager.Instance.AddSnackToInventory(snackItem);
             gameObject.SetActive(false);
         }
         else
