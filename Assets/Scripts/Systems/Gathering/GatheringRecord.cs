@@ -8,7 +8,7 @@ public class GatheringRecord : MonoBehaviour
     public Transform recordContent;
     public GameObject gatherImagePrefab;
 
-    private const int MAX_COUNT = 3;
+    private const int MAX_COUNT = 4;
     private const float SLIDE_DISTANCE = 60f;
     private const float DURATION = 0.2f;
 
