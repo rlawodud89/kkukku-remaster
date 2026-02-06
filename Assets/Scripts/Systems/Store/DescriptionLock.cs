@@ -6,6 +6,12 @@ public static class DescriptionLock
 {
     public static PanelItemImg currentOwner { get; private set; }
 
+    public static void Reset()
+    {
+        currentOwner = null;
+    }
+
+
     public static bool TryAcquire(PanelItemImg requester)
     {
         if (currentOwner != null) return false;

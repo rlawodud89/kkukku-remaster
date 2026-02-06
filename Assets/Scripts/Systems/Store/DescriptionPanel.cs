@@ -10,6 +10,7 @@ public class DescriptionPanel : MonoBehaviour
 
     private void Awake()
     {
+        DescriptionLock.Reset();
         Hide();
     }
 
