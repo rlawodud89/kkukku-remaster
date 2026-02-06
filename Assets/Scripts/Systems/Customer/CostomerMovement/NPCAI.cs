@@ -86,8 +86,24 @@ public class NPCAI : MonoBehaviour
             }
         }
 
+        StartCoroutine(InitAndStartBehavior());
+    }
+
+    IEnumerator InitAndStartBehavior()
+    {
+        // 데이터 매니저가 로딩될 때까지 0.3~0.5초 정도 충분히 대기
+        yield return new WaitForSeconds(0.5f);
+
+        // 데이터가 여전히 비어있다면 에러 방지를 위해 한 번 더 체크
+        if (ShopStorageDataManager.Instance == null || ShopStorageDataManager.Instance.interiorData == null)
+        {
+            Debug.LogError("가구 데이터가 로드되지 않았습니다! NPC 행동을 중지합니다.");
+            yield break;
+        }
+
         StartCoroutine(MainBehaviorRoutine());
     }
+
     IEnumerator MainBehaviorRoutine()
     {
         if (currentBehavior == NPCBehavior.SpecialQuest)
@@ -111,115 +127,254 @@ public class NPCAI : MonoBehaviour
         }
     }
 
-    void Update()
+    // 기존 UpdateAnimation 함수는 삭제하거나 사용하지 않습니다.
+    // 대신 아래 함수를 새로 만듭니다.
+    void SetDirection(Vector3 dir)
     {
-        // Y축 기반 정렬 (장애물 앞/뒤 처리)
-        sr.sortingOrder = Mathf.RoundToInt(transform.position.y * -100);
+        // 방향 벡터가 너무 작으면 무시 (0일 때 휙 도는 것 방지)
+        if (dir.sqrMagnitude < 0.01f) return;
+
+        lastMoveDir = dir;
+        animator.SetFloat("MoveX", dir.x);
+        animator.SetFloat("MoveY", dir.y);
+        animator.SetFloat("Speed", 1f); // 움직인다고 알림
     }
 
-    void UpdateAnimation(Vector3 currentPosition)
-    {
-        Vector3 delta = currentPosition - lastPosition;
-
-        if (delta.sqrMagnitude > 0.0001f)
-        {
-            Vector2 dir = delta.normalized;
-            lastMoveDir = dir;
-
-            animator.SetFloat("MoveX", dir.x);
-            animator.SetFloat("MoveY", dir.y);
-            animator.SetFloat("Speed", delta.magnitude);
-        }
-        else
-        {
-            // 멈췄을 때는 마지막 방향 유지
-            animator.SetFloat("MoveX", lastMoveDir.x);
-            animator.SetFloat("MoveY", lastMoveDir.y);
-            animator.SetFloat("Speed", 0f);
-        }
-
-        lastPosition = currentPosition;
-    }
-
-
-    IEnumerator NormalShopRoutine()
-    {
-        // 1. 이불장 이동 및 선택
-        Vector3 targetPos = GetRandomWardrobePos();
-        yield return StartCoroutine(MoveWithAStar(targetPos));
-
-        myData.currentState = CustomerData.State.Deciding;
-        yield return new WaitForSeconds(2f);
-
-        // 이불 결정 및 시각화
-        myData.selectedItemID = 0;
-
-        // 2. 캐셔 대기열 합류
-        myData.currentState = CustomerData.State.MovingToCashier;
-        CashierManager.Instance.JoinQueue(this); // 줄서기 등록
-
-        // 내 차례(리스트의 0번)가 될 때까지 대기
-        while (CashierManager.Instance.IsItMyTurn(this) == false)
-        {
-            yield return null; // 한 프레임 대기
-        }
-
-        // 3. 내 차례라면 결제 진행
-        myData.currentState = CustomerData.State.Paying;
-        yield return new WaitForSeconds(1.5f);
-
-        // 결제 완료 후 줄에서 나감
-        CashierManager.Instance.LeaveQueue(this);
-
-        // 4. 퇴장
-        yield return StartCoroutine(MoveWithAStar(new Vector3(-5, -5, 0)));
-        ShopManager.Instance.activeCustomers.Remove(myData);
-        Destroy(gameObject);
-    }
-
-    // --- 여기가 핵심입니다: A* 이동 함수 ---
     IEnumerator MoveWithAStar(Vector3 targetWorldPos)
     {
-        // 1. 현재 내 위치와 목표 위치를 타일 좌표(Vector3Int)로 변환
         Vector3Int startTile = walkTilemap.WorldToCell(transform.position);
         Vector3Int targetTile = walkTilemap.WorldToCell(targetWorldPos);
 
-        // 2. Pathfinding 스크립트에 길찾기 요청 (타일 리스트를 받아옴)
+        if (startTile == targetTile) yield break;
+
         List<Vector3Int> path = pathfinding.FindPath(startTile, targetTile);
 
-        if (path != null) // 경로가 존재할 때만 이동
+        if (path != null && path.Count > 0)
         {
             foreach (Vector3Int nextTile in path)
             {
-                // 3. 다음 타일의 월드 중심 좌표 계산
                 Vector3 worldPos = walkTilemap.GetCellCenterWorld(nextTile);
 
-                // 4. 해당 타일 중심까지 이동
+                // 💡 핵심 변경: 이동하기 전에 "방향"을 먼저 고정합니다.
+                // 덜덜 떨리는 delta 값이 아니라, 명확한 목적지 벡터를 사용합니다.
+                Vector3 direction = (worldPos - transform.position).normalized;
+                SetDirection(direction);
+
+                // 이동 로직
                 while (Vector3.Distance(transform.position, worldPos) > 0.05f)
                 {
                     transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
-                    UpdateAnimation(transform.position);
+
+                    // 이동 중에는 UpdateAnimation을 호출하지 않습니다. 
+                    // 이미 위에서 SetDirection으로 방향을 고정했기 때문입니다.
                     yield return null;
                 }
-                animator.SetFloat("Speed", 0f);
+                transform.position = worldPos;
             }
         }
         else
         {
-            Debug.LogWarning("길을 찾을 수 없습니다!");
+            Debug.LogWarning($"[{name}] 길을 찾을 수 없습니다! 목표: {targetTile}");
+        }
+
+        // 도착 후 멈춤 처리
+        animator.SetFloat("Speed", 0f);
+        animator.SetFloat("MoveX", lastMoveDir.x);
+        animator.SetFloat("MoveY", lastMoveDir.y);
+    }
+
+    IEnumerator NormalShopRoutine()
+    {
+        // 1. 가구 탐색 및 스마트 위치 선정
+        Interiorinfo targetTable = GetAnyTableInfo();
+
+        if (targetTable != null)
+        {
+            // 💡 변경점: 무조건 아래가 아니라, 갈 수 있는 빈 곳을 찾음
+            Vector3 targetPos = GetSmartInteractionPos(targetTable);
+
+            // 만약 갈 수 있는 곳이 아예 없다면(사방이 벽) 스킵
+            if (targetPos != Vector3.zero)
+            {
+                yield return StartCoroutine(MoveWithAStar(targetPos));
+
+                // 도착 후 고민
+                myData.currentState = CustomerData.State.Deciding;
+                animator.SetFloat("Speed", 0f); // 도착하면 멈춤 애니메이션
+                yield return new WaitForSeconds(2f);
+
+                // 재고 확인 및 구매/실망 로직 (기존과 동일)
+                if (HasItemsInTable(targetTable.ID))
+                {
+                    // ... 구매 로직 ...
+                    myData.currentState = CustomerData.State.MovingToCashier;
+                    CashierManager.Instance.JoinQueue(this);
+
+                    while (!CashierManager.Instance.IsItMyTurn(this)) yield return null;
+
+                    myData.currentState = CustomerData.State.Paying;
+                    yield return new WaitForSeconds(1.5f);
+                    CashierManager.Instance.LeaveQueue(this);
+                }
+                else
+                {
+                    ShowSpeechBubble("다 팔렸나보네...");
+                    yield return new WaitForSeconds(1f);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"ID {targetTable.ID} 가구 주변에 설 자리가 없습니다.");
+            }
+        }
+
+        // 4. 퇴장 (입구로)
+        if (NPCSpawner.Instance != null)
+        {
+            yield return StartCoroutine(MoveWithAStar(NPCSpawner.Instance.entranceTransform.position));
+        }
+
+        ShopManager.Instance.activeCustomers.Remove(myData);
+        Destroy(gameObject);
+    }
+
+    // 디버깅용 리스트 (인스펙터에서 볼 필요 없음)
+    private List<Vector3> debugCandidates = new List<Vector3>();
+
+    Vector3 GetSmartInteractionPos(Interiorinfo item)
+    {
+        debugCandidates.Clear(); // 디버깅용 초기화
+
+        // 데이터 좌표 -> 타일 좌표 변환
+        Vector3Int startNode = pathfinding.IndexToPos(item.placement);
+
+        // 가구의 점유 범위 계산
+        int minX = startNode.x;
+        int maxX = startNode.x + item.Width - 1;
+        int topY = startNode.y;                 // 위쪽 끝 (벽 쪽)
+        int bottomY = startNode.y - item.Height + 1; // 아래쪽 끝 (앞 쪽)
+
+        List<Vector3Int> validTiles = new List<Vector3Int>();
+
+        // ====================================================
+        // 1순위: 가구의 '앞쪽' (아래, Y - 1)
+        // ====================================================
+        int frontY = bottomY - 1;
+        for (int x = minX; x <= maxX; x++)
+        {
+            Vector3Int pos = new Vector3Int(x, frontY, 0);
+            if (CheckPos(pos)) validTiles.Add(pos);
+        }
+
+        // 앞쪽에 자리가 있으면 즉시 반환 (옆/뒤 볼 필요 없음)
+        if (validTiles.Count > 0)
+        {
+            Vector3Int chosen = validTiles[Random.Range(0, validTiles.Count)];
+            return walkTilemap.GetCellCenterWorld(chosen);
+        }
+
+        // ====================================================
+        // 2순위: 가구의 '양 옆' (좌/우)
+        // ====================================================
+        // 왼쪽 (minX - 1)
+        for (int y = bottomY; y <= topY; y++)
+        {
+            Vector3Int pos = new Vector3Int(minX - 1, y, 0);
+            if (CheckPos(pos)) validTiles.Add(pos);
+        }
+        // 오른쪽 (maxX + 1)
+        for (int y = bottomY; y <= topY; y++)
+        {
+            Vector3Int pos = new Vector3Int(maxX + 1, y, 0);
+            if (CheckPos(pos)) validTiles.Add(pos);
+        }
+
+        // 옆쪽에 자리가 있으면 반환
+        if (validTiles.Count > 0)
+        {
+            Vector3Int chosen = validTiles[Random.Range(0, validTiles.Count)];
+            return walkTilemap.GetCellCenterWorld(chosen);
+        }
+
+        // ====================================================
+        // 3순위: 가구의 '뒤쪽' (위, Y + 1) - 최후의 수단
+        // ====================================================
+        int backY = topY + 1;
+        for (int x = minX; x <= maxX; x++)
+        {
+            Vector3Int pos = new Vector3Int(x, backY, 0);
+            if (CheckPos(pos)) validTiles.Add(pos);
+        }
+
+        if (validTiles.Count > 0)
+        {
+            Vector3Int chosen = validTiles[Random.Range(0, validTiles.Count)];
+            return walkTilemap.GetCellCenterWorld(chosen);
+        }
+
+        // 여기까지 왔다면 사방이 다 막힌 것
+        Debug.LogWarning($"[NPC] ID {item.ID} 가구는 사방이 막혀 접근 불가!");
+        return Vector3.zero;
+    }
+
+    // 좌표 체크 헬퍼 함수 (코드 중복 방지)
+    bool CheckPos(Vector3Int pos)
+    {
+        // 디버깅을 위해 기즈모 리스트에 추가
+        debugCandidates.Add(walkTilemap.GetCellCenterWorld(pos));
+
+        // Pathfinding을 통해 갈 수 있는지(바닥O, 벽X, 장애물X) 확인
+        return pathfinding.IsWalkable(pos);
+    }
+
+    // 씬 뷰에서 후보 위치를 보여줌
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        foreach (var pos in debugCandidates)
+        {
+            Gizmos.DrawSphere(pos, 0.3f);
+        }
+
+        // 현재 가려고 하는 목표 지점은 빨간색
+        if (pathfinding != null && myData != null)
+        {
+            Gizmos.color = Color.red;
+            // 만약 이동 중이라면 목표 지점을 표시
+            // (변수로 저장해둔 게 있다면 사용, 없으면 생략)
         }
     }
 
-    Vector3 GetRandomWardrobePos()
+    void CheckAndAddCandidate(Vector3Int pos, List<Vector3Int> list)
     {
-        // 실제로는 이불장 오브젝트들의 위치 리스트 중 하나를 랜덤으로 반환하게 수정하세요.
-
-
-
-        return new Vector3(0.48f, -0.98f, 0);
+        // IsWalkable 내부에서 WallTilemap 체크가 추가되었으므로 벽도 자동으로 걸러짐
+        if (pathfinding.IsWalkable(pos))
+        {
+            list.Add(pos);
+        }
     }
 
-  
+    
+
+
+    Interiorinfo GetAnyTableInfo()
+    {
+        var tables = ShopStorageDataManager.Instance.interiorData.Table;
+        if (tables == null || tables.Count == 0) return null;
+        return tables[Random.Range(0, tables.Count)];
+    }
+
+    bool HasItemsInTable(int tableID)
+    {
+        if (ShopStorageDataManager.Instance.GetTableClass(tableID, out var table))
+        {
+            return table.count.Exists(c => c > 0);
+        }
+        return false;
+    }
+
+
+
     public void MoveToQueuePoint()
     {
         // CashierManager에게 내가 서야 할 월드 좌표를 물어봄
@@ -233,12 +388,54 @@ public class NPCAI : MonoBehaviour
     // 대기열 전용 이동 코루틴 (A*를 써도 되고, 줄 안에서는 단순 직선 이동을 써도 됩니다)
     IEnumerator MoveToQueueRoutine(Vector3 targetPos)
     {
+        // 1. 이동 시작 전에 방향을 먼저 계산합니다.
+        // (목표지점 - 현재위치)를 하면 바라봐야 할 방향 벡터가 나옵니다.
+        Vector3 direction = (targetPos - transform.position).normalized;
+
+        // 2. 아까 만든 SetDirection 함수로 방향을 고정시킵니다.
+        // (NPC가 몸을 먼저 돌리고 이동을 시작하게 됩니다)
+        SetDirection(direction);
+
+        // 3. 목표 지점까지 이동
         while (Vector3.Distance(transform.position, targetPos) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
-            UpdateAnimation(transform.position);
+
+            // 💡 중요: 여기서 UpdateAnimation을 또 호출하면 안 됩니다!
+            // 이미 위에서 방향을 고정했기 때문에, 이동만 하면 됩니다.
             yield return null;
         }
-        animator.SetFloat("Speed", 0f);
+
+        // 4. 도착 완료 처리
+        transform.position = targetPos; // 좌표를 깔끔하게 맞춤
+        animator.SetFloat("Speed", 0f); // 걷기 모션 정지
     }
+
+    // NPCAI.cs 내부 수정
+    public Vector3 GetFurnitureFrontPos(Interiorinfo targetItem)
+    {
+        // 1. 가구의 왼쪽 위 타일 좌표를 가져옵니다 (Pathfinding의 보정된 함수 사용)
+        Vector3Int startTile = pathfinding.IndexToPos(targetItem.placement);
+
+        // 2. 가구 너비 중 랜덤 위치 선정
+        int randomXOffset = Random.Range(0, targetItem.Width);
+
+        // 3. 최종 목적지 타일 계산
+        // x는 오른쪽으로 더하고, y는 아래쪽(앞쪽)으로 가야 하므로 Height만큼 뺍니다.
+        int targetX = startTile.x + randomXOffset;
+        int targetY = startTile.y - targetItem.Height; // 유니티 좌표계에서 아래는 -Y
+
+        Vector3Int targetTile = new Vector3Int(targetX, targetY, 0);
+
+        // 4. 장애물 체크 및 월드 좌표 반환
+        if (!pathfinding.IsWalkable(targetTile))
+        {
+            targetX = startTile.x + (targetItem.Width / 2);
+            targetTile = new Vector3Int(targetX, targetY, 0);
+        }
+
+        return walkTilemap.GetCellCenterWorld(targetTile);
+    }
+
+
 }

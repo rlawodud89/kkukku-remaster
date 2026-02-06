@@ -45,7 +45,7 @@ public class ShopStoragePanel : MonoBehaviour
         int j = 0;
         foreach (StorageClass s in ShopStorageDataManager.Instance.storageClasses)
         {
-            GameObject go = Instantiate(rightItemPrefab, leftContent);
+            GameObject go = Instantiate(rightItemPrefab, rightContent);
             rightSpawnedItems.Add(go);
 
             var item = go.GetComponent<BlanketItem>();

@@ -18,5 +18,5 @@ MonoBehaviour:
   prefab: {fileID: 1673913281668456721, guid: 1665dfcb6cefda742b9f5529939053bd, type: 3}
   price: 0
   itemWidth: 3
-  itemHeight: 0
+  itemHeight: 1
   slotCount: 30

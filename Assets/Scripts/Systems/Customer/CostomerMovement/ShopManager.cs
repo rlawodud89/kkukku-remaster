@@ -191,6 +191,7 @@ public class ShopManager : MonoBehaviour
 
         // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
         ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
+        ShopStorageDataManager.Instance.UpdateStorageData(randomTable.tableID, -1);
 
 
         ShopStorageClick[] allStorages = FindObjectsOfType<ShopStorageClick>();
