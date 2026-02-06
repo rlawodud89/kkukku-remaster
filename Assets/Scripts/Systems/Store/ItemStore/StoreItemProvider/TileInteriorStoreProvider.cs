@@ -22,4 +22,19 @@ public class TileInteriorStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddTileInteriorItem(itemName);
     }
+
+    public string GetDescription(string itemName)
+    {
+        TileInteriorItemSO item = ServiceLocator.Get<GameData>().Inventory.GetTileInteriorItemSO(itemName);
+
+        switch (item.tileType)
+        {
+            case TileInteriorType.WALL:
+                return "벽타일";
+            case TileInteriorType.FLOOR:
+                return "바닥타일";
+            default:
+                return "";
+        }
+    }
 }

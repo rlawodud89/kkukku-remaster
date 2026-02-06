@@ -23,4 +23,24 @@ public class RoomInteriorStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddRoomInteriorItem(itemName, count);
     }
+
+    public string GetDescription(string itemName)
+    {
+        RoomInteriorItemSO item = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+
+        switch (item.roomInteriorType)
+        {
+            case RoomInteriorType.BLANKET_BOX:
+            case RoomInteriorType.MATERIAL_BOX:
+            case RoomInteriorType.SNACK_BOX:
+                return $"최대 저장량: {item.slotCount}";
+
+            case RoomInteriorType.CRAFTING_TABLE:
+                return "레시피 발견을 위한 제작대";
+            case RoomInteriorType.INTERIOR:
+                return "단순 인테리어 아이템";
+            default:
+                return "";
+        }
+    }
 }

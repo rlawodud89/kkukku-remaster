@@ -784,8 +784,10 @@ MonoBehaviour:
   priceText: {fileID: 5662268778391648583}
   countText: {fileID: 6987542184109968552}
   buyPopup: {fileID: 0}
+  descriptionPanel: {fileID: 0}
   goldSprite: {fileID: 21300000, guid: 2aa0069e60d476d49bd9b3ffd7365e96, type: 3}
   moonrockSprite: {fileID: 21300000, guid: f74694d56aa4cb04f85ed7d377e13710, type: 3}
+  longPressTime: 0.5
 --- !u!1 &6773432473895546564
 GameObject:
   m_ObjectHideFlags: 0

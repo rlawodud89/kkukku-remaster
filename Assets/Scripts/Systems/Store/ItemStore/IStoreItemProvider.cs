@@ -8,4 +8,5 @@ public interface IStoreItemProvider
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData();
     public bool AddItem(string itemName, int count);
+    public string GetDescription(string itemName);
 }

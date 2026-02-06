@@ -7,6 +7,7 @@ public class StoreItemLoader : MonoBehaviour
     [SerializeField] private StoreType storeType;
     [SerializeField] private RectTransform content;
     [SerializeField] private BuyPopup popup;
+    [SerializeField] private DescriptionPanel descriptionPanel;
 
     [SerializeField] private GameObject countablePrefab;
     [SerializeField] private GameObject countlessPrefab;
@@ -40,7 +41,8 @@ public class StoreItemLoader : MonoBehaviour
             {
                 GameObject item = Instantiate(countablePrefab, content);
                 CountableItemPanel ui = item.GetComponent<CountableItemPanel>();
-                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price, popup);
+                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price,
+                    popup, descriptionPanel);
             }
         }
         else
@@ -49,7 +51,8 @@ public class StoreItemLoader : MonoBehaviour
             {
                 GameObject item = Instantiate(countlessPrefab, content);
                 CountlessItemPanel ui = item.GetComponent<CountlessItemPanel>();
-                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price, popup);
+                ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price,
+                    popup, descriptionPanel);
             }
         }
     }
