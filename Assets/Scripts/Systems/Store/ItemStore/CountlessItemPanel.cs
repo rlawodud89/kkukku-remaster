@@ -7,14 +7,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEditor.Timeline.TimelinePlaybackControls;
 
-public class CountlessItemPanel : MonoBehaviour,
-    IPointerDownHandler,
-    IPointerUpHandler,
-    IPointerExitHandler,
-    IBeginDragHandler
+public class CountlessItemPanel : MonoBehaviour
 {
     [Header("UI 요소")]
-    public Image itemImg;
+    public PanelItemImg itemImg;
     public TMP_Text nameText;
     public Image priceImg;
     public TMP_Text priceText;
@@ -27,17 +23,12 @@ public class CountlessItemPanel : MonoBehaviour,
     public Sprite goldSprite;
     public Sprite moonrockSprite;
 
-    [Header("설명글 누르기 시간 설정")]
-    public float longPressTime = 1f;
 
     private IStoreItemProvider storeItemProvider;
     private string itemName;
     private Sprite itemSprite;
     private int price;
     private static int count = 1;
-
-    private Coroutine pressCoroutine;
-    private bool isPressed;
 
 
     public void SetItem(IStoreItemProvider storeItemProvider, string itemName, Sprite itemSprite, int price,
@@ -50,7 +41,7 @@ public class CountlessItemPanel : MonoBehaviour,
         this.buyPopup = buyPopup;
         this.descriptionPanel = descriptionPanel;
 
-        itemImg.sprite = itemSprite;
+        itemImg.SetItemImg(itemSprite, storeItemProvider.GetDescription(itemName), descriptionPanel);
         nameText.text = itemName;
         priceText.text = price.ToString();
         priceImg.sprite = storeItemProvider.isGold ? goldSprite : moonrockSprite;
@@ -62,56 +53,4 @@ public class CountlessItemPanel : MonoBehaviour,
         buyPopup.gameObject.SetActive(true);
     }
 
-
-    // === 설명글 패널 관련 메서드 ===
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        isPressed = true;
-        pressCoroutine = StartCoroutine(LongPressRoutine());
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        CancelPress();
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        CancelPress();
-    }
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        CancelPress();
-    }
-
-    private IEnumerator LongPressRoutine()
-    {
-        yield return new WaitForSeconds(longPressTime);
-
-        if (!isPressed) yield break;
-
-        // 이미 다른 버튼이 점유 중이면 실패
-        if (!DescriptionLock.TryAcquire(this))
-            yield break;
-
-        descriptionPanel.Show(storeItemProvider.GetDescription(itemName), transform as RectTransform);
-    }
-
-    private void CancelPress()
-    {
-        isPressed = false;
-
-        if (pressCoroutine != null)
-        {
-            StopCoroutine(pressCoroutine);
-            pressCoroutine = null;
-        }
-
-        if (DescriptionLock.IsOwner(this))
-        {
-            descriptionPanel.Hide();
-            DescriptionLock.Release(this);
-        }
-    }
 }

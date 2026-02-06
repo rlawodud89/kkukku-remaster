@@ -4,45 +4,26 @@ using UnityEngine;
 
 public static class DescriptionLock
 {
-    public static CountableItemPanel currentCountableOwner { get; private set; }
-    public static CountlessItemPanel currentCountlessOwner { get; private set; }
+    public static PanelItemImg currentOwner { get; private set; }
 
-    public static bool TryAcquire(CountableItemPanel requester)
+    public static bool TryAcquire(PanelItemImg requester)
     {
-        if (currentCountableOwner != null) return false;
+        if (currentOwner != null) return false;
 
-        currentCountableOwner = requester;
+        currentOwner = requester;
         return true;
     }
 
-    public static bool TryAcquire(CountlessItemPanel requester)
+    public static void Release(PanelItemImg requester)
     {
-        if (currentCountlessOwner != null) return false;
-
-        currentCountlessOwner = requester;
-        return true;
+        if (currentOwner == requester)
+            currentOwner = null;
     }
 
-    public static void Release(CountableItemPanel requester)
+    public static bool IsOwner(PanelItemImg requester)
     {
-        if (currentCountableOwner == requester)
-            currentCountableOwner = null;
+        return currentOwner == requester;
     }
 
-    public static void Release(CountlessItemPanel requester)
-    {
-        if (currentCountlessOwner == requester)
-            currentCountlessOwner = null;
-    }
-
-    public static bool IsOwner(CountableItemPanel requester)
-    {
-        return currentCountableOwner == requester;
-    }
-
-    public static bool IsOwner(CountlessItemPanel requester)
-    {
-        return currentCountlessOwner == requester;
-    }
 }
 

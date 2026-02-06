@@ -277,6 +277,7 @@ GameObject:
   - component: {fileID: 6322400274380496774}
   - component: {fileID: 8145991663890433513}
   - component: {fileID: 8579524479891676485}
+  - component: {fileID: 3308089113932259792}
   m_Layer: 5
   m_Name: ItemImg
   m_TagString: Untagged
@@ -341,6 +342,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3308089113932259792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781008862444183738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a75eb3bb2bace0940885abc1ef55ad7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemImg: {fileID: 8579524479891676485}
+  longPressTime: 0.5
 --- !u!1 &3445564783456969333
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 927168f3945748541a46c73772330664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 8579524479891676485}
+  itemImg: {fileID: 3308089113932259792}
   nameText: {fileID: 1035090955407600947}
   priceImg: {fileID: 8319880926230979513}
   priceText: {fileID: 5662268778391648583}
@@ -787,7 +802,6 @@ MonoBehaviour:
   descriptionPanel: {fileID: 0}
   goldSprite: {fileID: 21300000, guid: 2aa0069e60d476d49bd9b3ffd7365e96, type: 3}
   moonrockSprite: {fileID: 21300000, guid: f74694d56aa4cb04f85ed7d377e13710, type: 3}
-  longPressTime: 0.5
 --- !u!1 &6773432473895546564
 GameObject:
   m_ObjectHideFlags: 0
