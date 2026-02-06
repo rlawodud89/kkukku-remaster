@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 597560bb54ffe624cbfb7ffe9fc08a0d, type: 3}
-  m_Name: "\uC6B4\uBB34\uC19C"
+  m_Script: {fileID: 11500000, guid: 0c062fc5ac5cf354c96a6573e656b18b, type: 3}
+  m_Name: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
   m_EditorClassIdentifier: 
-  itemName: "\uC6B4\uBB34\uC19C"
-  materialType: 1
-  image: {fileID: -1075516444, guid: 9d3a526f0082e214ba1172473953b18d, type: 3}
-  level: 1
-  price: 20
-  decoMaterialType: 0
+  itemName: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
+  toolType: 0
+  image: {fileID: 0}
+  price: 0
+  needClickCount: 4

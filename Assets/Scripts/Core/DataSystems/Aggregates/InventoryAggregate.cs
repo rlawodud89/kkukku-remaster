@@ -720,6 +720,33 @@ public class InventoryAggregate : IAggregate
         return list;
     }
 
+    public List<StorageClass> GetCurrentRoomSnackBoxData()
+    {
+        List<StorageClass> list = new List<StorageClass>();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> boxData = ServiceLocator.Get<GameData>().Interior.GetCurrentRoomSnackBoxData();
+
+        foreach (var box in boxData)
+        {
+            StorageClass storeClass = new StorageClass();
+            storeClass.storageID = box.ID;
+            storeClass.max = box.boxSO.slotCount;
+
+            storeClass.count = 0;
+            if (snackInventory.TryGetValue(box.ID, out var dict))
+            {
+                foreach (var (itemName, inven) in dict)
+                {
+                    storeClass.count += inven.count;
+                }
+            }
+
+            list.Add(storeClass);
+        }
+
+        return list;
+    }
+
 
     public bool AddMaterialFromEntire(string itemName, int count)
     {
@@ -1140,5 +1167,5 @@ public class InventoryAggregate : IAggregate
         return result;
     }
 
-    
+
 }

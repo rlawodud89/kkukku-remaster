@@ -18,7 +18,7 @@ public class UserAggregate : IAggregate
 
     // === 변경 사항 저장소 ===
 
-    private HashSet<ToolType> updateToolTypes = new();
+    private HashSet<ToolType> updatedToolUsed = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -35,7 +35,7 @@ public class UserAggregate : IAggregate
     {
         IsDirty = false;
 
-        updateToolTypes.Clear();
+        updatedToolUsed.Clear();
     }
 
     public IEnumerable<SavePayload> ToSavePayloads()
@@ -73,7 +73,7 @@ public class UserAggregate : IAggregate
         };
 
         // 변경된 장착 도구 UPDATE
-        foreach (var toolType in updateToolTypes)
+        foreach (var toolType in updatedToolUsed)
         {
             yield return new SavePayload
             {
@@ -224,6 +224,8 @@ public class UserAggregate : IAggregate
     public void SetCurrentUsedTool(ToolType toolType, string toolName)
     {
         toolUsed[toolType].toolName = toolName;
+        updatedToolUsed.Add(toolType);
+
         MarkDirty();
     }
 
