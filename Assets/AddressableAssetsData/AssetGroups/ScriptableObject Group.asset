@@ -145,6 +145,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 533e54d8cd0297a4e8a0f1d277aecd7a
+    m_Address: "Assets/ScriptableObjects/Item/Tool/Gathering/\uCD08\uAE09\uCC44\uC9D1\uB9DD.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tool
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 544214fa7c6b8314a9404ce3cdad835b
     m_Address: "Assets/ScriptableObjects/SpecialQuest/\uC5D0\uB7EC\uBC29\uC9C0\uC6A9.asset"
     m_ReadOnly: 0

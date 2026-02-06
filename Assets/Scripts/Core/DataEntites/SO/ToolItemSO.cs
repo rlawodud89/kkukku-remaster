@@ -8,6 +8,6 @@ public class ToolItemSO : ScriptableObject
     public Sprite image;
     public int price;
 
-    [Header("채집 도구인 경우, 채집 제한시간")]
-    public float timeLimit;
+    [Header("채집 도구인 경우, 클릭 필요 횟수")]
+    public int needClickCount;
 }

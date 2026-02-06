@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: "\uAE30\uBCF8\uCC44\uC9D1\uB9DD"
   toolType: 0
   image: {fileID: 0}
-  timeLimit: 5
+  price: 0
+  needClickCount: 6
