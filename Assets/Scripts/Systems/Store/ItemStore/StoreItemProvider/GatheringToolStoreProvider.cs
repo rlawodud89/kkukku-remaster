@@ -37,6 +37,6 @@ public class GatheringToolStoreProvider : IStoreItemProvider
     {
         ToolItemSO item = ServiceLocator.Get<GameData>().Inventory.GetToolItemSO(itemName);
 
-        return $"클릭 필요 횟수\n{item.needClickCount}번";
+        return $"클릭 필요 횟수: {item.needClickCount}번";
     }
 }
