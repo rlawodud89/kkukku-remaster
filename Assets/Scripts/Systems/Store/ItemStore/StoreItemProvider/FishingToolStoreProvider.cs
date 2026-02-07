@@ -32,4 +32,12 @@ public class FishingToolStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddToolItem(itemName);
     }
+
+    public string GetDescription(string itemName)
+    {
+        ToolItemSO item = ServiceLocator.Get<GameData>().Inventory.GetToolItemSO(itemName);
+
+        // TODO: 낚시 도구에 대한 설명 적기
+        return $"테스트";
+    }
 }

@@ -32,4 +32,11 @@ public class GatheringToolStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddToolItem(itemName);
     }
+
+    public string GetDescription(string itemName)
+    {
+        ToolItemSO item = ServiceLocator.Get<GameData>().Inventory.GetToolItemSO(itemName);
+
+        return $"클릭 필요 횟수: {item.needClickCount}번";
+    }
 }

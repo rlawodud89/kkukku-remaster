@@ -36,4 +36,11 @@ public class CottonStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddMaterialFromEntire(itemName, count);
     }
+
+    public string GetDescription(string itemName)
+    {
+        MaterialItemSO item = ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO(itemName);
+
+        return $"재료 레벨: {item.level}";
+    }
 }

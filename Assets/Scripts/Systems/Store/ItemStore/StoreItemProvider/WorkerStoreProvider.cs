@@ -35,4 +35,12 @@ public class WorkerStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddRoomInteriorItem(itemName, count);
     }
+
+    public string GetDescription(string itemName)
+    {
+        RoomInteriorItemSO item = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+
+        return $"최대 스테미나: {item.maxStamina}" +
+            $"\n작업시간: {item.workingTime}";
+    }
 }

@@ -23,4 +23,21 @@ public class ShopInteriorStoreProvider : IStoreItemProvider
 
         return ServiceLocator.Get<GameData>().Inventory.AddShopInteriorItem(itemName, count);
     }
+
+    public string GetDescription(string itemName)
+    {
+        ShopInteriorItemSO item = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemSO(itemName);
+
+        switch (item.shopInteriorType)
+        {
+            case ShopInteriorType.TABLE:
+                return $"최대 저장량: {item.slotCount}";
+            case ShopInteriorType.CASHER:
+                return "손님이 이불을 사는 계산대";
+            case ShopInteriorType.INTERIOR:
+                return "단순 인테리어 아이템";
+            default:
+                return "";
+        }
+    }
 }
