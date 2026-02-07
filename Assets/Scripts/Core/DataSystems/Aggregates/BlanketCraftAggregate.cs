@@ -121,4 +121,9 @@ public class BlanketCraftAggregate : IAggregate
 
         return blanketList;
     }
+
+    public List<BlanketItemSO> GetAllRecipes()
+    {
+        return blanketSOs.Values.ToList();
+    }
 }

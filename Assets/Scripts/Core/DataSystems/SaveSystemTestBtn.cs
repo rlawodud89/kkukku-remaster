@@ -14,6 +14,6 @@ public class SaveSystemTestBtn : MonoBehaviour
 
     public void OnClickTestBtn()
     {
-
+        var allRecipes = ServiceLocator.Get<GameData>().BlanketCraft.GetAllRecipes();
     }
 }
