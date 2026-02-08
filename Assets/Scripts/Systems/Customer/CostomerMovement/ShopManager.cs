@@ -54,11 +54,17 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // 현재 로드된 씬이 "가게 씬"일 경우
         if (scene.name == shopSceneName)
         {
+
+            isStoreOpen = ServiceLocator.Get<GameData>().User.GetIsOpen();
+
+            Debug.Log($"데이터 불러오기 완료! 현재 가게 상태: {(isStoreOpen ? "영업중" : "준비중")}");
+
             Debug.Log("가게 씬 진입! 오프라인 계산 및 NPC 배치 시작");
             SimulateOfflineProgress();
 
@@ -87,6 +93,9 @@ public class ShopManager : MonoBehaviour
     public void ToggleStoreOpen()
     {
         isStoreOpen = !isStoreOpen;
+
+        ServiceLocator.Get<GameData>().User.SetIsOpen(isStoreOpen);
+
         if (isStoreOpen)
         {
             StartCoroutine(SpawnCustomerRoutine());
@@ -191,7 +200,6 @@ public class ShopManager : MonoBehaviour
 
         // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
         ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
-        ShopStorageDataManager.Instance.UpdateStorageData(randomTable.tableID, -1);
 
 
         ShopStorageClick[] allStorages = FindObjectsOfType<ShopStorageClick>();
@@ -211,5 +219,6 @@ public class ShopManager : MonoBehaviour
         ServiceLocator.Get<GameData>().User.ChangeGold(price);
         Debug.Log($"오프라인 판매: {selectedItemName} 판매 완료! (+{price}G)");
     }
+
 
 }

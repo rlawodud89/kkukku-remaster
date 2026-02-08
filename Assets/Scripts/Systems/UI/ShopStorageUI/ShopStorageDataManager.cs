@@ -12,6 +12,7 @@ public class ShopStorageDataManager : MonoBehaviour
     public ShopInteriorData interiorData { get; set; }
 
     public Pathfinding pathfinding;
+    public CashierManager cashierManager;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -32,7 +33,21 @@ public class ShopStorageDataManager : MonoBehaviour
         ID = ServiceLocator.Get<GameData>().Interior.AddShopInterior(3, "기본 벽장");
         ID = ServiceLocator.Get<GameData>().Interior.AddShopInterior(31, "기본 진열장");
         ID = ServiceLocator.Get<GameData>().Interior.AddShopInterior(34, "기본 진열장");
+        ID = ServiceLocator.Get<GameData>().Interior.AddShopInterior(6, "다람쥐 캐셔");
         */
+
+        /*
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(1, "자수 꽃무늬 이불", 4);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(2, "자수 꽃무늬 이불", 5);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(3, "자수 꽃무늬 이불", 6);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(4, "자수 꽃무늬 이불", 7);
+
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(1, "살구빛 이불", 4);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(2, "살구빛 이불", 5);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(3, "살구빛 이불", 6);
+        ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(4, "살구빛 이불", 7);
+        */
+
 
         // pathfinding 할당 확인
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
@@ -70,6 +85,9 @@ public class ShopStorageDataManager : MonoBehaviour
 
         //2. 작업실에 존재하는 모든 재고함 id 및 count/max 값 가져오기.
         storageClasses = ServiceLocator.Get<GameData>().Inventory.GetCurrentRoomBlanketBoxData();
+
+        cashierManager.cashierPosIndex = interiorData.Casher.placement;
+        cashierManager.cashierWidth = interiorData.Casher.Width;
     }
 
     private void LoadInteriorData()
@@ -116,8 +134,6 @@ public class ShopStorageDataManager : MonoBehaviour
         Debug.Log($" - 일반가구(Interior): {interiorData.Interior.Count}개");
         Debug.Log($" - 계산대(Casher): {(interiorData.Casher != null ? "있음" : "없음")}");
     }
-
-    
 
     public bool GetTableClass(int tableID, out TableClass result)
     {
