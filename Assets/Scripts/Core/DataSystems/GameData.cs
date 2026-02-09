@@ -10,7 +10,6 @@ public class GameData
     public QuestAggregate Quest { get; private set; }
     public ShopStateAggregate ShopState { get; private set; }
     public BlanketCraftAggregate BlanketCraft { get; private set; }
-
     public StoreAggregate Store { get; private set; }
 
 

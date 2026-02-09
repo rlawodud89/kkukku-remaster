@@ -6,13 +6,11 @@ using UnityEngine;
 
 public class InteriorAggregate : IAggregate
 {
-    // 현재는 x,y 좌표 float, 그리드 칸 번호 int 기반으로 바꾸면 변경 필요
-
     // === 런타임 데이터 ===
 
-    private Dictionary<int, ShopInteriorPlaced> shopPlaced;
-    private Dictionary<int, RoomInteriorPlaced> roomPlaced;
-    private Dictionary<TilePositionType, TileInteriorPlaced> tilePlaced;
+    private Dictionary<int, ShopInteriorPlaced> shopPlaced; // Key: ID
+    private Dictionary<int, RoomInteriorPlaced> roomPlaced; // Key: ID
+    private Dictionary<TilePositionType, TileInteriorPlaced> tilePlaced; // Key: tilePositionType
 
     // === SO 데이터 ===
 

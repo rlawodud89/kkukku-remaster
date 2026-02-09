@@ -7,7 +7,7 @@ public class StoreAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<string, StoreItemList> storeItemList;
+    private Dictionary<string, StoreItemList> storeItemList; // Key: itemName
 
     // === SO 데이터 ===
 

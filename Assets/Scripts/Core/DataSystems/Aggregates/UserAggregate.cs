@@ -8,7 +8,7 @@ public class UserAggregate : IAggregate
     // === 런타임 데이터 ===
 
     private User user;
-    private Dictionary<ToolType, ToolUsed> toolUsed;
+    private Dictionary<ToolType, ToolUsed> toolUsed; // Key: toolType
 
     // === SO 데이터 ===
 

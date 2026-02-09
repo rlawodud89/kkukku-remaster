@@ -8,8 +8,8 @@ public class QuestAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<int, QuestBox> questBox;
-    private Dictionary<string, SpecialQuestBox> specialQuestBox;
+    private Dictionary<int, QuestBox> questBox; // Key: questID
+    private Dictionary<string, SpecialQuestBox> specialQuestBox; // Key: questName
     private List<LetterBox> letterBox;
 
     // === SO 데이터 ===

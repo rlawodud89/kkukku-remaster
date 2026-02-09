@@ -8,14 +8,14 @@ public class InventoryAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<string, ShopInteriorInventory> shopInteriorInventory;
-    private Dictionary<string, RoomInteriorInventory> roomInteriorInventory;
-    private Dictionary<string, TileInteriorInventory> tileInventory;
+    private Dictionary<string, ShopInteriorInventory> shopInteriorInventory; // Key: itemName
+    private Dictionary<string, RoomInteriorInventory> roomInteriorInventory; // Key: itemName
+    private Dictionary<string, TileInteriorInventory> tileInventory; // Key: itemName
 
-    private Dictionary<int, Dictionary<string, MaterialInventory>> materialInventory;
-    private Dictionary<int, Dictionary<string, SnackInventory>> snackInventory;
-    private Dictionary<int, Dictionary<string, BlanketInventory>> blanketInventory;
-    private Dictionary<string, ToolInventory> toolInventory;
+    private Dictionary<int, Dictionary<string, MaterialInventory>> materialInventory; // Key: inventoryID, itemName
+    private Dictionary<int, Dictionary<string, SnackInventory>> snackInventory; // Key: inventoryID, itemName
+    private Dictionary<int, Dictionary<string, BlanketInventory>> blanketInventory; // Key: inventoryID, itemName
+    private Dictionary<string, ToolInventory> toolInventory; // Key: toolName
 
     // === SO 데이터 ===
 
