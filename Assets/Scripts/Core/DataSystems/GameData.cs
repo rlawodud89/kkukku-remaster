@@ -11,9 +11,11 @@ public class GameData
     public ShopStateAggregate ShopState { get; private set; }
     public BlanketCraftAggregate BlanketCraft { get; private set; }
 
+    public StoreAggregate Store { get; private set; }
+
 
     public GameData(UserAggregate User, InventoryAggregate Inventory, InteriorAggregate Interior,
-        QuestAggregate Quest, ShopStateAggregate ShopState, BlanketCraftAggregate BlanketCraft)
+        QuestAggregate Quest, ShopStateAggregate ShopState, BlanketCraftAggregate BlanketCraft, StoreAggregate Store)
     {
         this.User = User;
         this.Inventory = Inventory;
@@ -21,5 +23,6 @@ public class GameData
         this.Quest = Quest;
         this.ShopState = ShopState;
         this.BlanketCraft = BlanketCraft;
+        this.Store = Store;
     }
 }

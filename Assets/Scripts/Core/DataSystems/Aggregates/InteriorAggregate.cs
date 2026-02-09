@@ -26,7 +26,8 @@ public class InteriorAggregate : IAggregate
     private Dictionary<int, SaveOperation> roomPlacedChanges = new();
     private HashSet<TilePositionType> updatedTilePlaced = new();
 
-    // === 기타 멤버 변수 ===
+    // === 기타 데이터 ===
+
     private int nextShopInteriorID = 1;
     private int nextRoomInteriorID = 1;
 

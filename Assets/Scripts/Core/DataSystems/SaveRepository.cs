@@ -95,7 +95,8 @@ public class SaveRepository
             LoadInteriorAggregate(),
             LoadQuestAggregate(),
             LoadShopStateAggregate(),
-            LoadBlanketCraftAggregate()
+            LoadBlanketCraftAggregate(),
+            LoadStoreAggregate()
         );
     }
 
@@ -263,6 +264,16 @@ public class SaveRepository
         return aggregate;
     }
 
+    private StoreAggregate LoadStoreAggregate()
+    {
+        List<StoreItemList> storeItemList = connection.Table<StoreItemList>().ToList();
+
+        var aggreagte = new StoreAggregate();
+        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs);
+
+        return aggreagte;
+    }
+
 
     // === 새로운 유저의 데이터 만드는 메서드 (게임 최초 실행 시 실행) ===
 
@@ -287,6 +298,7 @@ public class SaveRepository
         connection.CreateTable<LetterBox>();
         connection.CreateTable<ToolInventory>();
         connection.CreateTable<ToolUsed>();
+        connection.CreateTable<StoreItemList>();
 
         // User
         User user = new User();
@@ -373,5 +385,9 @@ public class SaveRepository
         fishingUsed.toolType = ToolType.FISHING;
         fishingUsed.toolName = "기본낚시대";
         connection.Insert(fishingUsed);
+
+        // StoreItemList
+
     }
+
 }
