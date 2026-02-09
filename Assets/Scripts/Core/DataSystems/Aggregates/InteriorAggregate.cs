@@ -45,8 +45,8 @@ public class InteriorAggregate : IAggregate
     {
         IsDirty = false;
 
-        shopPlaced.Clear();
-        roomPlaced.Clear();
+        shopPlacedChanges.Clear();
+        roomPlacedChanges.Clear();
         updatedTilePlaced.Clear();
     }
 
