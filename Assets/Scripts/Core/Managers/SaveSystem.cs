@@ -28,6 +28,8 @@ public class SaveSystem : MonoBehaviour
         ServiceLocator.Register(repository);
         ServiceLocator.Register(dirtyRegistry);
         ServiceLocator.Register(gameData);
+
+        // gameData.Store.ResetAllStoreItemList();
     }
 
     void Update()

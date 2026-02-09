@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c63a1c685c865f41a5bd741af3d29dd, type: 3}
-  m_Name: "\uC5D0\uB7EC\uBC29\uC9C0"
+  m_Name: "\uAE30\uBCF8\uBCBD\uD0C0\uC77C"
   m_EditorClassIdentifier: 
-  itemName: "\uC5D0\uB7EC\uBC29\uC9C0"
+  itemName: "\uAE30\uBCF8\uBCBD\uD0C0\uC77C"
   tileType: 0
   image: {fileID: 0}
   price: 0

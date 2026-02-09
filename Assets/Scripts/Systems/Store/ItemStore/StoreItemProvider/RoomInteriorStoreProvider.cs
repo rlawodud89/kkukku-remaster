@@ -11,7 +11,11 @@ public class RoomInteriorStoreProvider : IStoreItemProvider
     {
         List<(string itemName, Sprite itemSprite, int price)> data = new();
 
-        // TODO: DB에서 오늘 판매하는 아이템 리스트 받아오기
+        // DB에서 오늘 판매하는 아이템 리스트 받아오기
+        foreach (var item in ServiceLocator.Get<GameData>().Store.GetRoomInteriorStoreItemList())
+        {
+            data.Add((item.itemName, item.image, item.price));
+        }
 
         return data;
     }
