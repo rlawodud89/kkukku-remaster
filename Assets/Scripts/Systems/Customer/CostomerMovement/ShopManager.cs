@@ -29,6 +29,7 @@ public class ShopManager : MonoBehaviour
 
     void OnEnable()
     {
+        if (Instance != this) return;
         // 씬이 '로드'될 때 실행되는 이벤트
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -38,6 +39,7 @@ public class ShopManager : MonoBehaviour
 
     void OnDisable()
     {
+        if (Instance != this) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.activeSceneChanged -= OnSceneChanged; // 이벤트 해제
     }
@@ -57,6 +59,8 @@ public class ShopManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log($"[System] 씬 로드됨: '{scene.name}' / 설정된 가게 이름: '{shopSceneName}'");
+
         // 현재 로드된 씬이 "가게 씬"일 경우
         if (scene.name == shopSceneName)
         {
@@ -143,81 +147,139 @@ public class ShopManager : MonoBehaviour
     }
 
     // 씬에 다시 들어왔을 때 시뮬레이션
+    // ShopManager.cs
+
     public void SimulateOfflineProgress()
     {
         TimeSpan span = DateTime.UtcNow - lastExitTime;
-        float secondsPassed = (float)span.TotalSeconds;
+        float offlineSeconds = (float)span.TotalSeconds;
+        if (offlineSeconds < 0 || offlineSeconds > 999999f) offlineSeconds = 0;
+
+        // 🟢 [로그 시작]
+        Debug.Log($"============== [오프라인 정산 시작] ==============");
+        Debug.Log($"경과 시간: {offlineSeconds:F1}초");
+
+        int totalEarned = 0;
+        int soldCount = 0;
+        float shoppingDuration = 10f;
+        float payingDuration = 5f;
 
         for (int i = activeCustomers.Count - 1; i >= 0; i--)
         {
             var customer = activeCustomers[i];
-            // 예: 쇼핑은 10초, 결제는 5초 걸린다고 가정하고 로직 처리
-            // 시간 경과에 따라 상태를 넘기고, 결제가 끝나면 리스트에서 제거 & 돈 추가
-            if (customer.currentState != CustomerData.State.Leaving)
+            float remainTime = offlineSeconds;
+
+            // [1] 쇼핑 단계 체크
+            if (customer.currentState == CustomerData.State.MovingToWardrobe ||
+                customer.currentState == CustomerData.State.Deciding)
             {
-                // 단순화된 계산: 일정 시간 지나면 구매 완료 처리
-                if (secondsPassed > 15f)
+                if (remainTime >= shoppingDuration)
                 {
-                    CompletePurchase(customer);
-                    activeCustomers.RemoveAt(i);
+                    customer.currentState = CustomerData.State.Paying;
+                    remainTime -= shoppingDuration;
+                    // Debug.Log($"손님({customer.id}): 쇼핑 완료 -> 계산 대기");
+                }
+                else
+                {
+                    customer.currentState = CustomerData.State.Deciding;
+                    remainTime = 0;
                 }
             }
+
+            // [2] 계산 단계 체크
+            if (customer.currentState == CustomerData.State.MovingToCashier ||
+                customer.currentState == CustomerData.State.Paying)
+            {
+                if (remainTime >= payingDuration)
+                {
+                    // 판매 처리 및 로그 정보 받기
+                    string itemName;
+                    int price;
+
+                    if (CompletePurchase(customer, out itemName, out price))
+                    {
+                        Debug.Log($"💰 [판매 성공] 손님({customer.id})에게 '{itemName}' 판매 (+{price}G)");
+                        totalEarned += price;
+                        soldCount++;
+                    }
+                    else
+                    {
+                        Debug.Log($"💨 [판매 실패] 손님({customer.id}): 재고가 없어서 빈손으로 퇴장");
+                    }
+
+                    activeCustomers.RemoveAt(i);
+                    continue;
+                }
+                else
+                {
+                    customer.currentState = CustomerData.State.Paying;
+                }
+            }
+
+            // 생존자
+            customer.isSurvivor = true;
         }
+
+        // 🟢 [최종 요약 로그]
+        if (soldCount > 0)
+        {
+            Debug.Log($"📈 <color=yellow>총 수익: {totalEarned} G (판매: {soldCount}건)</color>");
+        }
+        else
+        {
+            Debug.Log($"💤 판매된 내역이 없습니다.");
+        }
+        Debug.Log($"============== [오프라인 정산 종료] ==============");
     }
 
-    void CompletePurchase(CustomerData data)
-    {
-        // 1. ShopStorageDataManager에서 현재 가게에 있는 테이블 정보 가져오기
-        var allTables = ShopStorageDataManager.Instance.tableClasses;
 
-        // 2. 이불이 하나라도 남아있는 테이블만 추려내기
+    bool CompletePurchase(CustomerData data, out string item, out int price)
+    {
+        item = "";
+        price = 0;
+
+        var allTables = ShopStorageDataManager.Instance.tableClasses;
         List<TableClass> availableTables = allTables.FindAll(t => t.count.Exists(c => c > 0));
 
-        // 팔 이불이 없으면 그냥 리턴 (손님이 못 사고 감)
-        if (availableTables.Count == 0)
-        {
-            Debug.Log("가게에 팔 이불이 없습니다!");
-            return;
-        }
+        // 재고 없음
+        if (availableTables.Count == 0) return false;
 
-        // 3. 랜덤으로 테이블 하나 선택
+        // 랜덤 판매 로직
         TableClass randomTable = availableTables[UnityEngine.Random.Range(0, availableTables.Count)];
-
-        // 4. 해당 테이블에서 재고가 있는 이불의 인덱스(몇 번째 칸인지) 찾기
         List<int> availableIndices = new List<int>();
         for (int i = 0; i < randomTable.count.Count; i++)
         {
-            if (randomTable.count[i] > 0)
-                availableIndices.Add(i);
+            if (randomTable.count[i] > 0) availableIndices.Add(i);
         }
+
+        if (availableIndices.Count == 0) return false;
+
         int selectedIndex = availableIndices[UnityEngine.Random.Range(0, availableIndices.Count)];
-
-        // 5. 선택된 이불 이름 가져오기
         string selectedItemName = randomTable.itemName[selectedIndex];
+        int itemPrice = ServiceLocator.Get<GameData>().Inventory.GetBlanketPrice(selectedItemName);
 
-        //이름으로 SO 찾아서 가격 가져오기 ---
-        int price = ServiceLocator.Get<GameData>().Inventory.GetBlanketPrice(selectedItemName);
-
-        // 6. 재고 차감 (ShopStorageDataManager의 함수 활용)
+        // 데이터 갱신 (재고 차감)
         ShopStorageDataManager.Instance.UpdateTableData(randomTable.tableID, selectedIndex, -1);
 
-
+        // 이미지 갱신
         ShopStorageClick[] allStorages = FindObjectsOfType<ShopStorageClick>();
-
         foreach (ShopStorageClick storage in allStorages)
         {
-            // 방금 손님이 이불을 꺼내간 바로 그 이불장을 찾았다면
             if (storage.storageID == randomTable.tableID)
             {
-                // 이불장아, 네 재고 상태를 다시 확인하고 이미지를 바꿔라! 라고 명령합니다.
                 storage.UpdateSpriteState();
-                break; // 찾았으니 더 이상 찾을 필요 없음
+                break;
             }
         }
 
-        // 7. 플레이어 지갑에 돈 추가
-        ServiceLocator.Get<GameData>().User.ChangeGold(price);
-        Debug.Log($"오프라인 판매: {selectedItemName} 판매 완료! (+{price}G)");
+        // 돈 획득
+        ServiceLocator.Get<GameData>().User.ChangeGold(itemPrice);
+
+        // 🚨 [로그용 정보 전달]
+        item = selectedItemName;
+        price = itemPrice;
+
+        return true;
     }
 
 
