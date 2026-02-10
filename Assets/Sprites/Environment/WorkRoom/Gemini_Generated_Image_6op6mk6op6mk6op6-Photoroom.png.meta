@@ -104,7 +104,7 @@ TextureImporter:
         y: 96
         width: 519
         height: 1127
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
