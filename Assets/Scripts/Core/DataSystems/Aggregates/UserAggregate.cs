@@ -8,9 +8,7 @@ public class UserAggregate : IAggregate
     // === 런타임 데이터 ===
 
     private User user;
-    private Dictionary<ToolType, ToolUsed> toolUsed;
-    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
-    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
+    private Dictionary<ToolType, ToolUsed> toolUsed; // Key: toolType
 
     // === SO 데이터 ===
 
@@ -19,6 +17,11 @@ public class UserAggregate : IAggregate
     // === 변경 사항 저장소 ===
 
     private HashSet<ToolType> updatedToolUsed = new();
+
+    // === 기타 데이터 ===
+
+    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
+    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
 
 
     // === 저장 시스템 사용 메서드 ===

@@ -1,64 +1,102 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class WR_StorageListUI : MonoBehaviour
 {
-    [Header("연결 필요")]
-    public Transform contentParent;   // Scroll View의 Content
-    public GameObject boxButtonPrefab; // 아래 2번에서 만들 버튼 프리팹
-    public RoomInteriorType targetType; // 지금 보고 있는 보관함 타입
-    
-    private void OnEnable() 
+    [Header("연결 필수")]
+    public Transform contentParent; 
+    public GameObject boxButtonPrefab; 
+
+    [Header("설정")]
+    public RoomInteriorType targetType; 
+
+    private void OnEnable()
     {
-        ShowStorageList();
+        // 타이밍 이슈 방지를 위해 코루틴 사용
+        StartCoroutine(RefreshRoutine());
     }
-    
-    public void ShowStorageList()
+
+    IEnumerator RefreshRoutine()
     {
+        // 1. 혹시 모를 매니저 초기화 대기 (한 프레임 쉼)
+        yield return null;
+
+        RefreshStorageList();
+    }
+
+    public void RefreshStorageList()
+    {
+        // 1. 매니저 찾기
         InteriorManager manager = FindObjectOfType<InteriorManager>();
+        if (manager == null)
+        {
+            Debug.LogError("[StorageList] InteriorManager를 찾을 수 없습니다!");
+            return;
+        }
 
-    // [중요] 아직 매니저가 안 만들어졌거나 못 찾았으면 스톱! (오류 방지)
-    if (manager == null)
-    {
-        Debug.LogWarning("InteriorManager를 찾을 수 없습니다. (아직 생성 전일 수 있음)");
-        return;
-    }
+        if (manager.currentPlacedList == null || manager.currentPlacedList.Count == 0)
+        {
+            Debug.LogWarning($"[StorageList] 매니저의 가구 리스트가 비어있습니다. (Count: 0)");
+            // 리스트가 비어있어도 기존 버튼은 지워야 하므로 아래 진행
+        }
 
-        // 1. 기존에 떠있던 버튼들 싹 지우기 (초기화)
+        // 2. 기존 버튼 삭제
         foreach (Transform child in contentParent)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. 현재 방에 있는 '모든' 가구 리스트 가져오기
-        List<RoomInteriorPlaced> allFurniture = manager.currentPlacedList;
-
-        Debug.Log($"[StorageListUI] 방에 있는 가구 총 {allFurniture.Count}개 중, '{targetType}' 타입 보관함을 표시합니다.");
-        
-        int index = 1;  // display용 인덱스 번호
-
-        // 3. 리스트 돌면서 '요청받은 타입(targetType)'과 똑같은 애들만 생성
-        foreach (var furniture in allFurniture)
+        // 3. 버튼 생성
+        int count = 0;
+        foreach (var furniture in manager.currentPlacedList)
         {
+            // 디버그: 타입 비교 로그
+            // Debug.Log($"검사 중: {furniture.interiorType} vs 목표: {targetType}");
+
             if (furniture.interiorType == targetType)
             {
-                CreateButton(furniture.ID, index, targetType);
-                index++;
+                CreateButton(furniture.ID, count + 1, targetType);
+                count++;
             }
+        }
+
+        Debug.Log($"[StorageList] 총 {count}개의 버튼을 생성했습니다.");
+
+        // 4. 레이아웃 갱신 (두 번 호출하여 확실하게 처리)
+        StartCoroutine(ForceLayoutRebuild());
+    }
+
+    IEnumerator ForceLayoutRebuild()
+    {
+        // 프레임 끝까지 대기 (Destroy가 완료되도록)
+        yield return new WaitForEndOfFrame();
+        
+        if (contentParent != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent.GetComponent<RectTransform>());
         }
     }
 
-    // 버튼 실제 생성 함수
     void CreateButton(int dbID, int displayIndex, RoomInteriorType type)
     {
+        if (boxButtonPrefab == null) return;
+
         GameObject btn = Instantiate(boxButtonPrefab, contentParent);
         
-        // 버튼 스크립트에 정보 주입
+        // UI 스케일/위치 초기화
+        btn.transform.localScale = Vector3.one;
+        btn.transform.localPosition = Vector3.zero;
+
         var script = btn.GetComponent<WR_StorageSelectButton>();
         if (script != null)
         {
-            // "너는 이불함이고, ID는 105번이고, 화면엔 '1번함'이라고 표시해"
             script.Setup(dbID, displayIndex, type);
+        }
+        else
+        {
+            Debug.LogError($"[StorageList] 프리팹에 'WR_StorageSelectButton' 스크립트가 없습니다!");
         }
     }
 }
