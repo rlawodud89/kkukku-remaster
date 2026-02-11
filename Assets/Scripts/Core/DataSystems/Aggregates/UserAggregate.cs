@@ -21,7 +21,7 @@ public class UserAggregate : IAggregate
     // === 기타 데이터 ===
 
     private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
-    private Dictionary<int, int> shopLevelSize = new Dictionary<int, int>();
+    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -106,9 +106,9 @@ public class UserAggregate : IAggregate
         interiorLevelInventoryCount.Add(2, 30);
         interiorLevelInventoryCount.Add(3, 40);
 
-        shopLevelSize.Add(1, 20);
-        shopLevelSize.Add(2, 30);
-        shopLevelSize.Add(3, 40);
+        shopLevelSize.Add(1, (20, 20));
+        shopLevelSize.Add(2, (30, 30));
+        shopLevelSize.Add(3, (40, 40));
     }
 
 
@@ -179,7 +179,7 @@ public class UserAggregate : IAggregate
     }
 
 
-    public (int level, int size) GetShopLevel()
+    public (int level, (int x, int y) size) GetShopLevel()
     {
         return (user.shopLevel, shopLevelSize[user.shopLevel]);
     }
@@ -216,6 +216,28 @@ public class UserAggregate : IAggregate
     public void SetIsOpen(bool isOpen)
     {
         user.isOpen = isOpen;
+        MarkDirty();
+    }
+
+    public float GetPlayTime()
+    {
+        return user.playTime;
+    }
+
+    public void SetPlayTime(float playTime)
+    {
+        user.playTime = playTime;
+        MarkDirty();
+    }
+
+    public string GetEndSceneName()
+    {
+        return user.endScene;
+    }
+
+    public void SetEndScene(string endSceneName)
+    {
+        user.endScene = endSceneName;
         MarkDirty();
     }
 

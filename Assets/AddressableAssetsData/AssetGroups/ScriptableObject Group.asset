@@ -71,12 +71,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - tool
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1ab8b3039213d33468cf46ce86dfc867
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/\uC5D0\uB7EC\uBC29\uC9C0\uC6A9.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - roomInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d058673641b69d48930ddbcc7aa251c
     m_Address: Assets/ScriptableObjects/InteriorItem/Room/Interior/MaterialStorage.asset
     m_ReadOnly: 0
