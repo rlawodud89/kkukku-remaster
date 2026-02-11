@@ -1,114 +1,137 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class FurnitureMobileDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [Header("Dependencies")]
+    // [변경] Grid 컴포넌트 직접 참조 대신 매니저를 통합니다.
+    private Camera mainCamera;
+    private SpriteRenderer spriteRenderer;
+
     [Header("Settings")]
-    [SerializeField] private Grid grid;
-    
-    // [변경됨] 인스펙터에서 입력받지 않고 코드에서 자동 설정하므로 SerializeField 제거
-    // (디버깅용으로 보고 싶다면 [SerializeField]를 다시 붙여도 되지만, 코드 값이 덮어씁니다)
-    private Vector2Int objectSize; 
+    // [중요] Pivot이 Bottom-Left면 사이즈 보정 계산이 필요 없으므로 objectSize는 단순 데이터용입니다.
+    [SerializeField] private Vector2Int objectSize = new Vector2Int(1, 1);
+    [SerializeField] private float dragThreshold = 0.5f; 
+
+    // 쉐이더 제어용 변수
+    private MaterialPropertyBlock mpb;
+    private static readonly int OutlineAlphaID = Shader.PropertyToID("_OutlineAlpha");
 
     private bool isDragging = false;
-    private Camera mainCamera;
-    
-    // (선택사항) 드래그 시 위치 보정을 위한 변수 (이전 질문 피드백 반영)
-    private Vector3 dragOffset; 
+    private bool isRealDrag = false;
+    private Vector3 dragOffset;
+    private Vector3 startDragPos;
 
     private void Start()
     {
         mainCamera = Camera.main;
-        if (InteriorManager.Instance != null && InteriorManager.Instance.mainGrid != null)
-        {
-            grid = InteriorManager.Instance.mainGrid;
-        }
-
-        if (grid == null)
-        {
-            grid = FindObjectOfType<Grid>();
-            if (grid == null) Debug.LogError("씬에 Grid가 하나도 없습니다!");
-        }
-        // [핵심] 태그에 따라 사이즈 자동 설정
-        SetSizeByTag();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        mpb = new MaterialPropertyBlock();
+        
+        // Grid 변수는 이제 SnapToGrid에서 InteriorManager를 직접 쓰므로 제거해도 됩니다.
     }
 
-    // 태그별 사이즈 정의 함수
-    private void SetSizeByTag()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        switch (gameObject.tag)
-        {
-            case "BlanketStorage": 
-                objectSize = new Vector2Int(2, 1);
-                break;
-
-            case "SnackBox": // 이불장 (예: 1x1)
-                objectSize = new Vector2Int(1, 1);
-                break;
-
-            case "PersonalCraftBox": // 계산대 (예: 2x1)
-                objectSize = new Vector2Int(2, 1);
-                break;
-
-            case "FoxEmployee":
-                objectSize = new Vector2Int(2, 1);
-                break;
-
-            case "CatEmployee":
-                objectSize = new Vector2Int(2, 1);
-                break;
-
-            case "LeopardEmployee":
-                objectSize = new Vector2Int(2, 1);
-                break;
-            default: // 태그가 없거나 모르는 태그일 때 기본값
-                objectSize = new Vector2Int(1, 1);
-                // Debug.LogWarning($"[FurnitureMobileDrag] '{gameObject.tag}' 태그의 사이즈가 정의되지 않아 기본값(1,1)을 사용합니다.");
-                break;
-        }
+        if (isRealDrag) return;
+        HandleClick();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // 편집 모드가 아니면 드래그 불가
-        if (InteriorManager.Instance == null || !InteriorManager.Instance.IsEditMode) 
-            return;
+        if (InteriorManager.Instance == null || !InteriorManager.Instance.IsEditMode) return;
 
         isDragging = true;
+        isRealDrag = false;
         
-        // (선택사항) 드래그 자연스럽게 하는 오프셋 계산 (아까 scale 0.7 문제 해결용)
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(eventData.position);
-        mouseWorldPos.z = 0;
-        dragOffset = transform.position - mouseWorldPos;
+        startDragPos = mainCamera.ScreenToWorldPoint(eventData.position);
+        startDragPos.z = 0;
+        
+        // [중요] 드래그 오프셋 계산
+        // 내 현재 위치(BottomLeft)와 마우스 찍은 위치의 차이
+        dragOffset = transform.position - startDragPos;
+
+        InteriorManager.Instance.SelectFurniture(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isDragging)
-        {
-            Vector3 touchPos = mainCamera.ScreenToWorldPoint(eventData.position);
-            touchPos.z = 0;
+        if (!isDragging) return;
 
-            // 오프셋 적용 (자연스러운 드래그를 위해)
-            // 만약 오프셋 없이 딱딱 붙는 게 좋다면 'touchPos'를 그대로 넣으세요.
-            SnapToGrid(touchPos + dragOffset);
+        Vector3 currentPos = mainCamera.ScreenToWorldPoint(eventData.position);
+        currentPos.z = 0;
+
+        if (!isRealDrag)
+        {
+            float distance = Vector3.Distance(startDragPos, currentPos);
+            if (distance < dragThreshold) return; 
+            
+            isRealDrag = true;
+            InteractionUI.Instance.HideMenu();
+        }
+
+        if (isRealDrag)
+        {
+            // 오프셋을 더한 "가구의 원점(Bottom-Left)이 있어야 할 위치"를 넘김
+            SnapToGrid(currentPos + dragOffset);
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         isDragging = false;
+
+        if (isRealDrag)
+        {
+            InteractionUI.Instance.OpenMenu(this);
+        }
+        else
+        {
+            HandleClick();
+        }
+        isRealDrag = false;
     }
 
+    private void HandleClick()
+    {
+        if (InteriorManager.Instance == null || !InteriorManager.Instance.IsEditMode) return;
+        InteriorManager.Instance.SelectFurniture(this);
+        InteractionUI.Instance.OpenMenu(this);
+    }
+
+    public void SetHighlight(bool isOn)
+    {
+        if (spriteRenderer == null) return;
+        spriteRenderer.GetPropertyBlock(mpb);
+        float value = isOn ? 1f : 0f;
+        mpb.SetFloat(OutlineAlphaID, value);
+        spriteRenderer.SetPropertyBlock(mpb);
+    }
+
+    // =================================================================
+    // ★ [핵심 수정] InteriorManager와 로직 통일 (이상한 움직임 해결)
+    // =================================================================
     private void SnapToGrid(Vector3 targetWorldPos)
     {
-        Vector3Int cellPos = grid.WorldToCell(targetWorldPos);
-        Vector3 finalPos = grid.GetCellCenterWorld(cellPos);
+        if (InteriorManager.Instance == null) return;
 
-        // objectSize가 위에서 설정된 값에 따라 계산됨
-        if (objectSize.x % 2 == 0) finalPos.x += grid.cellSize.x * 0.5f; 
-        if (objectSize.y % 2 == 0) finalPos.y += grid.cellSize.y * 0.5f;
+        // 1. 현재 좌표가 "몇 번 그리드"인지 매니저에게 물어봅니다.
+        // (매니저가 -2.8 기준점 로직을 갖고 있으므로 이게 가장 정확합니다)
+        int gridIndex = InteriorManager.Instance.WorldToGrid(targetWorldPos);
 
+        // 2. 범위를 벗어났다면 이동하지 않습니다. (혹은 가장자리로 Clamp 가능)
+        if (gridIndex == -1) return;
+
+        // 3. 그 그리드 번호의 "정확한 좌표(Bottom-Left)"를 받아옵니다.
+        Vector3 finalPos = InteriorManager.Instance.GridToWorld(gridIndex);
+
+        // 4. 적용 (Width/Height 보정 계산 삭제함 -> Pivot이 구석이니까 필요 없음!)
         transform.position = new Vector3(finalPos.x, finalPos.y, transform.position.z);
+    }
+
+    public void StoreInInventory()
+    {
+        InteriorManager.Instance.RemoveFurnitureData(this);
+        Destroy(gameObject);
     }
 }

@@ -71,6 +71,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - tool
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ab8b3039213d33468cf46ce86dfc867
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/\uC5D0\uB7EC\uBC29\uC9C0\uC6A9.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d058673641b69d48930ddbcc7aa251c
+    m_Address: Assets/ScriptableObjects/InteriorItem/Room/Interior/MaterialStorage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d26c0f8c2e3ed74c93d4773dea2dd1d
     m_Address: Assets/ScriptableObjects/Customer/Flamingo.asset
     m_ReadOnly: 0
@@ -182,6 +194,13 @@ MonoBehaviour:
     m_SerializedLabels:
     - customer
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60c8260bc57852f499d661d5055504b8
+    m_Address: "Assets/ScriptableObjects/Item/Blanket/Level 1/\uC790\uC218 \uAF43\uBB34\uB2AC
+      \uC774\uBD88.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - blanket
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 614dcdf391d2e9a47b647d43c007df88
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uBD80\uB4DC\uB7EC\uC6B4
       \uC2E4\uD06C \uB9E4\uB4ED.asset"
@@ -259,6 +278,13 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 816ceb8167fb63946a354686c22d791d
+    m_Address: "Assets/ScriptableObjects/Item/Blanket/Level 1/\uC5C9\uC131\uD55C
+      \uC774\uBD88.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - blanket
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81d49000a96d72b4fa5f2af3f63cdc73
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uC624\uB85C\uB77C \uD06C\uB9AC\uC2A4\uD0C8
       \uD3EC\uB3C4.asset"
@@ -314,6 +340,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b18d327d23c098f44a4ee5ad29cab067
+    m_Address: "Assets/ScriptableObjects/Item/Blanket/Level 1/\uBE68\uAC04 \uCCB4\uD06C
+      \uB9AC\uBCF8 \uC774\uBD88.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - blanket
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0b74ef7019d419428ca1f2ddb840da5
     m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/Table/\uAE30\uBCF8 \uBCBD\uC7A5.asset"
@@ -381,6 +414,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6116dad8cef4be48bfa4f806a00dba3
+    m_Address: "Assets/ScriptableObjects/Item/Blanket/Level 1/\uC0B4\uAD6C\uBE5B
+      \uC774\uBD88.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - blanket
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff525bb32dbde504f951f6722076cfdd
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uC6B4\uBB34\uC19C.asset"

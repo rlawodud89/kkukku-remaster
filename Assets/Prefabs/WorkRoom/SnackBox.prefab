@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 777610569287518965}
   - component: {fileID: 1417904705375036701}
   - component: {fileID: 7974472667402716385}
-  - component: {fileID: 795678783904931538}
   - component: {fileID: 6003088105149315223}
+  - component: {fileID: 2080687656221668252}
   m_Layer: 0
   m_Name: SnackBox
   m_TagString: Untagged
@@ -665,19 +665,6 @@ PolygonCollider2D:
       - {x: 1.295, y: 4.04}
       - {x: 1.275, y: 4.0499997}
   m_UseDelaunayMesh: 0
---- !u!114 &795678783904931538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2196293096841948034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed8cbf1aaa7a4214ba011aba37753ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetPanel: {fileID: 0}
 --- !u!114 &6003088105149315223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,4 +678,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  objectSize: {x: 1, y: 1}
+--- !u!114 &2080687656221668252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2196293096841948034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25fca991af2cd3941b7ac80083802dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myStorageID: 0
+  myType: 2
+  myStorageType: 2
+  storageUIController: {fileID: 0}
