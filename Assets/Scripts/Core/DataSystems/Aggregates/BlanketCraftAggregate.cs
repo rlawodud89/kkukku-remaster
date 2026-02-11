@@ -19,7 +19,7 @@ public class BlanketCraftAggregate : IAggregate
     // === 변경 사항 저장소 ===
 
     private HashSet<string> insertedBlanketRecipe = new();
-    private static int maxRecordCount = 5;
+    public const int maxRecordCount = 5;
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -126,4 +126,6 @@ public class BlanketCraftAggregate : IAggregate
     {
         return blanketSOs.Values.ToList();
     }
+
+
 }

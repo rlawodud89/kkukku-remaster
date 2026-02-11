@@ -451,4 +451,18 @@ public class InteriorAggregate : IAggregate
             MarkDirty();
         }
     }
+
+    public TileInteriorItemSO GetCurrentTileInterior(TilePositionType tilePositionType)
+    {
+        return tileInteriorSOs[tilePlaced[tilePositionType].itemName];
+    }
+
+    public void SetTileInterior(TilePositionType tilePositionType, string itemName)
+    {
+        tilePlaced[tilePositionType].itemName = itemName;
+
+        updatedTilePlaced.Add(tilePositionType);
+
+        MarkDirty();
+    }
 }
