@@ -252,8 +252,8 @@ public class SaveRepository
 
     private BlanketCraftAggregate LoadBlanketCraftAggregate()
     {
-        List<BlanketRecord> blanketRecord = connection.Table<BlanketRecord>().ToList();
         List<BlanketRecipe> blanketRecipe = connection.Table<BlanketRecipe>().ToList();
+        List<BlanketRecord> blanketRecord = connection.Table<BlanketRecord>().ToList();
 
         var aggregate = new BlanketCraftAggregate();
         aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord, materialSOs, blanketSOs);
