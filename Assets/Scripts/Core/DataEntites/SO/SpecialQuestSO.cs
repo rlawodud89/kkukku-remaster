@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpecialQuestSO : ScriptableObject
 {
     public string questName;
-    public string customerName;
+    public string npcID;
     public string description;
     public DecoMaterialType needType;
     public string hint;
@@ -12,5 +12,5 @@ public class SpecialQuestSO : ScriptableObject
     public int rewardGold;
     public int rewardMoonrock;
     public float rewardEnergy;
-    public string rewardLetterName;
+    public int rewardLetterID;
 }

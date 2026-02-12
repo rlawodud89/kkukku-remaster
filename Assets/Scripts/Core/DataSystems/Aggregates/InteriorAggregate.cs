@@ -26,6 +26,10 @@ public class InteriorAggregate : IAggregate
     private Dictionary<int, SaveOperation> roomPlacedChanges = new();
     private HashSet<TilePositionType> updatedTilePlaced = new();
 
+    // === 기타 멤버 변수 ===
+    private int nextShopInteriorID = 1;
+    private int nextRoomInteriorID = 1;
+
 
     // === 저장 시스템 사용 메서드 ===
 
@@ -41,8 +45,8 @@ public class InteriorAggregate : IAggregate
     {
         IsDirty = false;
 
-        shopPlaced.Clear();
-        roomPlaced.Clear();
+        shopPlacedChanges.Clear();
+        roomPlacedChanges.Clear();
         updatedTilePlaced.Clear();
     }
 
@@ -52,12 +56,12 @@ public class InteriorAggregate : IAggregate
             yield break;
 
         // 가게 인테리어
-        foreach (var (gridNumber, change) in shopPlacedChanges)
+        foreach (var (ID, change) in shopPlacedChanges)
         {
             switch (change)
             {
                 case SaveOperation.INSERT:
-                    ShopInteriorPlaced insertInterior = shopPlaced[gridNumber];
+                    ShopInteriorPlaced insertInterior = shopPlaced[ID];
 
                     yield return new SavePayload
                     {
@@ -65,17 +69,17 @@ public class InteriorAggregate : IAggregate
                         Table = "ShopInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
+                            { "ID", insertInterior.ID },
                             { "gridNumber", insertInterior.gridNumber },
                             { "itemName", insertInterior.itemName },
                             { "interiorType", insertInterior.interiorType },
-                            { "ID", insertInterior.ID }
                         }
                     };
 
                     break;
 
                 case SaveOperation.UPDATE:
-                    ShopInteriorPlaced updateInterior = shopPlaced[gridNumber];
+                    ShopInteriorPlaced updateInterior = shopPlaced[ID];
 
                     yield return new SavePayload
                     {
@@ -83,13 +87,14 @@ public class InteriorAggregate : IAggregate
                         Table = "ShopInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
+                            { "gridNumber", updateInterior.gridNumber },
                             { "itemName", updateInterior.itemName },
                             { "interiorType", updateInterior.interiorType },
-                            { "ID", updateInterior.ID }
+
                         },
                         Conditions = new Dictionary<string, object>
                         {
-                            { "gridNumber", updateInterior.gridNumber }
+                            { "ID", updateInterior.ID }
                         }
                     };
 
@@ -102,7 +107,7 @@ public class InteriorAggregate : IAggregate
                         Table = "ShopInteriorPlaced",
                         Conditions = new Dictionary<string, object>
                         {
-                            { "gridNumber", gridNumber }
+                            { "ID", ID }
                         }
                     };
 
@@ -113,12 +118,12 @@ public class InteriorAggregate : IAggregate
 
 
         // 작업실 인테리어
-        foreach (var (gridNumber, change) in roomPlacedChanges)
+        foreach (var (ID, change) in roomPlacedChanges)
         {
             switch (change)
             {
                 case SaveOperation.INSERT:
-                    RoomInteriorPlaced insertInterior = roomPlaced[gridNumber];
+                    RoomInteriorPlaced insertInterior = roomPlaced[ID];
 
                     yield return new SavePayload
                     {
@@ -136,7 +141,7 @@ public class InteriorAggregate : IAggregate
                     break;
 
                 case SaveOperation.UPDATE:
-                    RoomInteriorPlaced updateInterior = roomPlaced[gridNumber];
+                    RoomInteriorPlaced updateInterior = roomPlaced[ID];
 
                     yield return new SavePayload
                     {
@@ -144,13 +149,13 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
+                            { "gridNumber", updateInterior.gridNumber },
                             { "itemName", updateInterior.itemName },
                             { "interiorType", updateInterior.interiorType },
-                            { "ID", updateInterior.ID }
                         },
                         Conditions = new Dictionary<string, object>
                         {
-                            { "gridNumber", updateInterior.gridNumber }
+                            { "ID", updateInterior.ID }
                         }
                     };
 
@@ -163,7 +168,7 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Conditions = new Dictionary<string, object>
                         {
-                            { "gridNumber", gridNumber }
+                            { "ID", ID }
                         }
                     };
 
@@ -172,9 +177,9 @@ public class InteriorAggregate : IAggregate
         }
 
         // 타일 변경
-        foreach (var utp in updatedTilePlaced)
+        foreach (var tilePositionType in updatedTilePlaced)
         {
-            TileInteriorPlaced tile = tilePlaced[utp];
+            TileInteriorPlaced tile = tilePlaced[tilePositionType];
 
             yield return new SavePayload
             {
@@ -191,20 +196,22 @@ public class InteriorAggregate : IAggregate
                 }
             };
         }
-
     }
 
     public void LoadInteriorAggregate(IEnumerable<ShopInteriorPlaced> shopPlaced, IEnumerable<RoomInteriorPlaced> roomPlaced,
         IEnumerable<TileInteriorPlaced> tilePlaced, Dictionary<string, ShopInteriorItemSO> shopInteriorSOs,
         Dictionary<string, RoomInteriorItemSO> roomInteriorSOs, Dictionary<string, TileInteriorItemSO> tileInteriorSOs)
     {
-        this.shopPlaced = shopPlaced.ToDictionary(sp => sp.gridNumber);
-        this.roomPlaced = roomPlaced.ToDictionary(rp => rp.gridNumber);
+        this.shopPlaced = shopPlaced.ToDictionary(sp => sp.ID);
+        this.roomPlaced = roomPlaced.ToDictionary(rp => rp.ID);
         this.tilePlaced = tilePlaced.ToDictionary(tp => tp.tilePosition);
 
         this.shopInteriorSOs = shopInteriorSOs;
         this.roomInteriorSOs = roomInteriorSOs;
         this.tileInteriorSOs = tileInteriorSOs;
+
+        nextShopInteriorID = this.shopPlaced.Count == 0 ? 1 : this.shopPlaced.Keys.Max() + 1;
+        nextRoomInteriorID = this.roomPlaced.Count == 0 ? 1 : this.roomPlaced.Keys.Max() + 1;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -248,12 +255,18 @@ public class InteriorAggregate : IAggregate
 
     // === 게임 플레이 메서드 ===
 
+
     public RoomInteriorItemSO GetRoomInteriorInRoom(int ID)
     {
         RoomInteriorPlaced placed = roomPlaced.Values.FirstOrDefault(i => i.ID == ID);
 
         if (placed == null) return null;
         else return roomInteriorSOs[placed.itemName];
+    }
+
+    public List<ShopInteriorPlaced> GetCurrentShopInterior()
+    {
+        return shopPlaced.Values.ToList();
     }
 
     public List<RoomInteriorPlaced> GetCurrentRoomInterior()
@@ -289,5 +302,167 @@ public class InteriorAggregate : IAggregate
         }
 
         return list;
+    }
+
+    public List<(RoomInteriorItemSO boxSO, int ID)> GetCurrentRoomMaterialBoxData()
+    {
+        List<RoomInteriorPlaced> roomMaterialBoxes = roomPlaced.Values
+            .Where(i => i.interiorType == RoomInteriorType.MATERIAL_BOX)
+            .ToList();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> list = new();
+        foreach (var box in roomMaterialBoxes)
+        {
+            list.Add((roomInteriorSOs[box.itemName], box.ID));
+        }
+
+        return list;
+    }
+
+    public List<(RoomInteriorItemSO boxSO, int ID)> GetCurrentRoomSnackBoxData()
+    {
+        List<RoomInteriorPlaced> roomSnackBoxes = roomPlaced.Values
+            .Where(i => i.interiorType == RoomInteriorType.SNACK_BOX)
+            .ToList();
+
+        List<(RoomInteriorItemSO boxSO, int ID)> list = new();
+        foreach (var box in roomSnackBoxes)
+        {
+            list.Add((roomInteriorSOs[box.itemName], box.ID));
+        }
+
+        return list;
+    }
+
+    public int AddShopInterior(int gridNumber, string itemName)
+    {
+        if (shopPlaced.Values.Any(v => v.gridNumber == gridNumber))
+            return -1;
+
+        var interiorType = shopInteriorSOs[itemName].shopInteriorType;
+
+        var newshopInterior = new ShopInteriorPlaced
+        {
+            ID = nextShopInteriorID,
+            gridNumber = gridNumber,
+            itemName = itemName,
+            interiorType = interiorType
+        };
+
+        shopPlaced.Add(newshopInterior.ID, newshopInterior);
+
+        MergeChange(shopPlacedChanges,
+            newshopInterior.ID,
+            SaveOperation.INSERT);
+
+        MarkDirty();
+
+        nextShopInteriorID++;
+
+        return newshopInterior.ID;
+    }
+
+    public int AddRoomInterior(int gridNumber, string itemName)
+    {
+        if (roomPlaced.Values.Any(v => v.gridNumber == gridNumber))
+            return -1;
+
+        var interiorType = roomInteriorSOs[itemName].roomInteriorType;
+
+        var newroomInterior = new RoomInteriorPlaced
+        {
+            ID = nextRoomInteriorID,
+            gridNumber = gridNumber,
+            itemName = itemName,
+            interiorType = interiorType
+        };
+
+        roomPlaced.Add(newroomInterior.ID, newroomInterior);
+
+        MergeChange(roomPlacedChanges,
+            newroomInterior.ID,
+            SaveOperation.INSERT);
+
+        MarkDirty();
+
+        nextRoomInteriorID++;
+
+        if (interiorType == RoomInteriorType.WORKER) ServiceLocator.Get<GameData>().ShopState.AddWorkerState(newroomInterior.ID);
+
+        return newroomInterior.ID;
+    }
+
+    public void RemoveShopInterior(int targetID)
+    {
+        if (shopPlaced.ContainsKey(targetID))
+        {
+            shopPlaced.Remove(targetID);
+
+            MergeChange(shopPlacedChanges,
+                targetID,
+                SaveOperation.DELETE);
+
+            MarkDirty();
+        }
+    }
+
+    public void RemoveRoomInterior(int targetID)
+    {
+        if (roomPlaced.ContainsKey(targetID))
+        {
+            RoomInteriorItemSO interiorSO = roomInteriorSOs[roomPlaced[targetID].itemName];
+            if (interiorSO.roomInteriorType == RoomInteriorType.WORKER)
+                ServiceLocator.Get<GameData>().ShopState.RemoveWorkerState(targetID);
+
+            roomPlaced.Remove(targetID);
+
+            MergeChange(roomPlacedChanges,
+                targetID,
+                SaveOperation.DELETE);
+
+            MarkDirty();
+        }
+    }
+
+    public void TransferShopInterior(int targetID, int newGirdNumber)
+    {
+        if (shopPlaced.TryGetValue(targetID, out var shopInterior))
+        {
+            shopInterior.gridNumber = newGirdNumber;
+
+            MergeChange(shopPlacedChanges,
+                targetID,
+                SaveOperation.UPDATE);
+
+            MarkDirty();
+        }
+    }
+
+    public void TransferRoomInterior(int targetID, int newGirdNumber)
+    {
+        if (roomPlaced.TryGetValue(targetID, out var roomInterior))
+        {
+            roomInterior.gridNumber = newGirdNumber;
+
+            MergeChange(roomPlacedChanges,
+                targetID,
+                SaveOperation.UPDATE);
+
+            MarkDirty();
+        }
+    }
+
+    public TileInteriorItemSO GetCurrentTileInterior(TilePositionType tilePositionType)
+    {
+        return tileInteriorSOs[tilePlaced[tilePositionType].itemName];
+    }
+
+    public void SetTileInterior(TilePositionType tilePositionType, string itemName)
+    {
+        tilePlaced[tilePositionType].itemName = itemName;
+
+        updatedTilePlaced.Add(tilePositionType);
+
+        MarkDirty();
     }
 }

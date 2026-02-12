@@ -16,5 +16,5 @@ MonoBehaviour:
   materialType: 1
   image: {fileID: -1075516444, guid: 9d3a526f0082e214ba1172473953b18d, type: 3}
   level: 1
-  price: 0
+  price: 20
   decoMaterialType: 0

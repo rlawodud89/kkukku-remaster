@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ public class QuestAggregate : IAggregate
     private Dictionary<int, QuestBox> questBox;
     private Dictionary<string, SpecialQuestBox> specialQuestBox;
     private List<LetterBox> letterBox;
+
+    // === SO 데이터 ===
+
+    private Dictionary<string, SpecialQuestSO> specialQuestSOs;
+    private Dictionary<string, NPCDataSO> customerSOs;
 
     // === 변경 사항 저장소 ===
 
@@ -176,11 +182,14 @@ public class QuestAggregate : IAggregate
     }
 
     public void LoadQuestAggregate(IEnumerable<QuestBox> questBox, IEnumerable<SpecialQuestBox> specialQuestBox,
-        IEnumerable<LetterBox> letterBox)
+        IEnumerable<LetterBox> letterBox, Dictionary<string, SpecialQuestSO> specialQuestSOs, Dictionary<string, NPCDataSO> customerSOs)
     {
         this.questBox = questBox.ToDictionary(qb => qb.questID);
         this.specialQuestBox = specialQuestBox.ToDictionary(sqb => sqb.questName);
         this.letterBox = letterBox.ToList();
+
+        this.specialQuestSOs = specialQuestSOs;
+        this.customerSOs = customerSOs;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -291,4 +300,105 @@ public class QuestAggregate : IAggregate
 
         return true;
     }
+
+    public bool RemoveQuest(int questID)
+    {
+        if (!questBox.ContainsKey(questID)) return false;
+
+        questBox.Remove(questID);
+
+        MergeChange(questChanges,
+            questID,
+            SaveOperation.DELETE);
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public SpecialQuestSO GetSpeicalQuestSO(string questName)
+    {
+        if (specialQuestSOs.TryGetValue(questName, out var specialQuestSO)) return specialQuestSO;
+        else return null;
+    }
+
+    public NPCDataSO GetSpeicalQuestNPCData(string questName)
+    {
+        if (specialQuestSOs.TryGetValue(questName, out var specialQuestSO))
+            return customerSOs[specialQuestSO.npcID];
+
+        else return null;
+    }
+
+    public int GetNPCSpecialQuestState(string npcID)
+    {
+        foreach (var (questName, specialQuest) in specialQuestBox)
+        {
+            if (specialQuestSOs[questName].npcID == npcID)
+            {
+                if (specialQuest.isComplete) return 2;
+                else return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    public List<SpecialQuestBox> GetCurrentSpecialQuests()
+    {
+        return specialQuestBox.Values.ToList();
+    }
+
+    public bool AddSpeicalQuest(string questName)
+    {
+        if (specialQuestBox.ContainsKey(questName)) return false;
+
+        specialQuestBox.Add(questName, new SpecialQuestBox
+        {
+            questName = questName,
+            isComplete = false,
+            failCount = 0
+        });
+
+        MergeChange(specialQuestChanges,
+            questName,
+            SaveOperation.INSERT);
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool SaveSpecialQuest(string questName, bool isComplete, int failCount)
+    {
+        if (!specialQuestBox.ContainsKey(questName)) return false;
+
+        specialQuestBox[questName].isComplete = isComplete;
+        specialQuestBox[questName].failCount = failCount;
+
+        MergeChange(specialQuestChanges,
+            questName,
+            SaveOperation.UPDATE);
+
+        MarkDirty();
+
+        return true;
+    }
+
+    public bool RemoveSpecialQuest(string questName)
+    {
+        if (!specialQuestBox.ContainsKey(questName)) return false;
+
+        specialQuestBox.Remove(questName);
+
+        MergeChange(specialQuestChanges,
+            questName,
+            SaveOperation.DELETE);
+
+        MarkDirty();
+
+        return true;
+    }
+
+
 }

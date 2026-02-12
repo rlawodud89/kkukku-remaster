@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Reflection;
 
-public class BlanketItem : MonoBehaviour
+public class BlanketItem : MonoBehaviour, IPointerClickHandler
 {
     public string itemName;
     public int currentAmount;  // 현재 수량
@@ -16,7 +16,6 @@ public class BlanketItem : MonoBehaviour
     public Image highlightImage; // 선택 시 보일 테두리 이미지
     public Image itemImage; // 아이템 이미지
 
-    public Image blanketImage; // 재고함 이미지 미리 넣어둘 것
     public TextMeshProUGUI amountText;
     public TextMeshProUGUI nameText;
 
@@ -31,7 +30,6 @@ public class BlanketItem : MonoBehaviour
         this.dataIndex = index;
         this.itemName = name;
         this.currentAmount = amount;
-        this.itemImage = blanketImage;
         this.max = max;
         amountText.text = $"{currentAmount} / {max}";
     }

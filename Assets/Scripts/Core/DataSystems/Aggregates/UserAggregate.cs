@@ -9,6 +9,8 @@ public class UserAggregate : IAggregate
 
     private User user;
     private Dictionary<ToolType, ToolUsed> toolUsed;
+    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
+    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
 
     // === SO 데이터 ===
 
@@ -16,7 +18,7 @@ public class UserAggregate : IAggregate
 
     // === 변경 사항 저장소 ===
 
-    private HashSet<ToolType> updateToolTypes = new();
+    private HashSet<ToolType> updatedToolUsed = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -33,7 +35,7 @@ public class UserAggregate : IAggregate
     {
         IsDirty = false;
 
-        updateToolTypes.Clear();
+        updatedToolUsed.Clear();
     }
 
     public IEnumerable<SavePayload> ToSavePayloads()
@@ -71,7 +73,7 @@ public class UserAggregate : IAggregate
         };
 
         // 변경된 장착 도구 UPDATE
-        foreach (var toolType in updateToolTypes)
+        foreach (var toolType in updatedToolUsed)
         {
             yield return new SavePayload
             {
@@ -96,10 +98,19 @@ public class UserAggregate : IAggregate
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
 
         this.toolSOs = toolSOs;
+
+        interiorLevelInventoryCount.Add(1, 20);
+        interiorLevelInventoryCount.Add(2, 30);
+        interiorLevelInventoryCount.Add(3, 40);
+
+        shopLevelSize.Add(1, (20, 20));
+        shopLevelSize.Add(2, (30, 30));
+        shopLevelSize.Add(3, (40, 40));
     }
 
 
     // === 게임 플레이 메서드 ===
+
 
     public (string shopName, int level, float energy) GetUserData()
     {
@@ -132,6 +143,16 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetCurrentGold()
+    {
+        return user.gold;
+    }
+
+    public int GetCurrentMoonrock()
+    {
+        return user.moonrock;
+    }
+
     public void ChangeGold(int amount)
     {
         user.gold += amount;
@@ -144,6 +165,90 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetItemShopLevel()
+    {
+        return user.itemShopLevel;
+    }
 
+    public (int level, int invenCount) GetInteriorInventoryLevel()
+    {
+        return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+    }
+
+
+    public (int level, (int x, int y) size) GetShopLevel()
+    {
+        return (user.shopLevel, shopLevelSize[user.shopLevel]);
+    }
+
+    public void ChangeItemShopLevel(int amount)
+    {
+        if (user.itemShopLevel + amount <= 0) return;
+
+        user.itemShopLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeInteriorInventoryLevel(int amount)
+    {
+        if (user.interiorInventoryLevel + amount <= 0) return;
+
+        user.interiorInventoryLevel += amount;
+        MarkDirty();
+    }
+
+    public void ChangeShopLevel(int amount)
+    {
+        if (user.shopLevel + amount <= 0) return;
+
+        user.shopLevel += amount;
+        MarkDirty();
+    }
+
+    public bool GetIsOpen()
+    {
+        return user.isOpen;
+    }
+
+    public void SetIsOpen(bool isOpen)
+    {
+        user.isOpen = isOpen;
+        MarkDirty();
+    }
+
+    public float GetPlayTime()
+    {
+        return user.playTime;
+    }
+
+    public void SetPlayTime(float playTime)
+    {
+        user.playTime = playTime;
+        MarkDirty();
+    }
+
+    public string GetEndSceneName()
+    {
+        return user.endScene;
+    }
+
+    public void SetEndScene(string endSceneName)
+    {
+        user.endScene = endSceneName;
+        MarkDirty();
+    }
+
+    public ToolItemSO GetCurrentUsedTool(ToolType toolType)
+    {
+        return toolSOs[toolUsed[toolType].toolName];
+    }
+
+    public void SetCurrentUsedTool(ToolType toolType, string toolName)
+    {
+        toolUsed[toolType].toolName = toolName;
+        updatedToolUsed.Add(toolType);
+
+        MarkDirty();
+    }
 
 }
