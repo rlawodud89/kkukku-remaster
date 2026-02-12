@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2249278129579529520}
   - component: {fileID: 2128995488484060390}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: LetterText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -48.9}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.0000076293945, y: -48}
+  m_SizeDelta: {x: 57.0961, y: -27.2698}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2249278129579529520
 CanvasRenderer:
@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 7640857000609670663}
   - component: {fileID: 7479953327265705234}
   - component: {fileID: 1205374344197072024}
+  - component: {fileID: 1486047052370422114}
   m_Layer: 5
   m_Name: LetterButton
   m_TagString: Untagged
@@ -281,3 +282,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   letterContentPanel: {fileID: 8855529928303853904, guid: a5e22245133215b4192541a7d2ddb0c8, type: 3}
+  letterText: {fileID: 2128995488484060390}
+--- !u!114 &1486047052370422114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3864970082504229190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 100
+  m_PreferredHeight: 65
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1

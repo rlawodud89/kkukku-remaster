@@ -142,6 +142,18 @@ MonoBehaviour:
   questIcon: {fileID: 4798512912136388361}
   questTitle: {fileID: 6626592894901561364}
   progressText: {fileID: 2673460457435054859}
+  collectBlanketIcon: {fileID: 21300000, guid: b465c1440b0472d4fbbdc99b4a3aee75, type: 3}
+  fishingIcon: {fileID: -720028984, guid: 7ab76343fba02eb4b86faba42b226a77, type: 3}
+  gatheringIcon: {fileID: 21300000, guid: 49d080e42df266948bb86a3ab216ea84, type: 3}
+  visitLocationIcon: {fileID: 21300000, guid: 49d080e42df266948bb86a3ab216ea84, type: 3}
+  talkIcon: {fileID: 863523151, guid: 62537c6992c7d4641b52ace99b55ecc4, type: 3}
+  reward1Icon: {fileID: 8361608140692479264}
+  reward1Amount: {fileID: 7530410561570339938}
+  reward2Icon: {fileID: 746166343055447629}
+  reward2Amount: {fileID: 6140825675462509921}
+  goldSprite: {fileID: 21300000, guid: 2aa0069e60d476d49bd9b3ffd7365e96, type: 3}
+  moonRockSprite: {fileID: 21300000, guid: f74694d56aa4cb04f85ed7d377e13710, type: 3}
+  energySprite: {fileID: 21300000, guid: 22e96cf36930b3c4db2f5e238041393d, type: 3}
   completeButton: {fileID: 5530252443430419943}
 --- !u!1 &431125342035446917
 GameObject:
@@ -612,7 +624,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 124.29999, y: -3.3999877}
+  m_AnchoredPosition: {x: 136.19998, y: -1.9999938}
   m_SizeDelta: {x: 49.2145, y: 49.2145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4374744701562908293
@@ -651,7 +663,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 211, y: -3.4}
+  m_AnchoredPosition: {x: 222.9, y: -2.0000062}
   m_SizeDelta: {x: 90.431, y: 28.2891}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3767637387364028407
@@ -735,7 +747,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4399455345730086016}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1893721977934332858}
+        m_TargetAssemblyTypeName: QuestSlotUI, Assembly-CSharp
+        m_MethodName: OnRewardButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5491057523668731844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,8 +1271,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -76.94, y: 9.4}
-  m_SizeDelta: {x: -384.2541, y: -46.0728}
+  m_AnchoredPosition: {x: -70.3627, y: 8.524803}
+  m_SizeDelta: {x: -371.0995, y: -47.823}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3819227527692029904
 CanvasRenderer:
@@ -1382,6 +1406,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 53.1, y: -3.4}
+  m_AnchoredPosition: {x: 65, y: -2}
   m_SizeDelta: {x: 49.2145, y: 49.2145}
   m_Pivot: {x: 0.5, y: 0.5}
