@@ -60,10 +60,11 @@ public class LetterManager : MonoBehaviour
     // 편지 부여
     public void GiveLetter(int letterID)
     {
+        // 이미 리스트에 있다면 추가하지 않음
+        if (myLetterIDs.Contains(letterID)) return;
         myLetterIDs.Add(letterID);
 
-        List<int> list = new List<int>();
-        list.Add(letterID);
+        List<int> list = new List<int> { letterID };
         ServiceLocator.Get<GameData>().Quest.AddLetters(list);
 
         UpdateUI();
@@ -72,6 +73,11 @@ public class LetterManager : MonoBehaviour
     public void UpdateUI()
     {
         if (contentPanel == null) return;
+
+        foreach (Transform child in contentPanel)
+        {
+            Destroy(child.gameObject);
+        }
 
         //myLetterIDs = ServiceLocator.Get<GameData>().Quest.GetCurrentLetters();
 
@@ -102,7 +108,7 @@ public class LetterManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        //myLetterIDs.Clear();
+        myLetterIDs.Clear();
 
         // DB에서 현재 보유 중인 편지 ID 리스트 가져오기
         myLetterIDs = ServiceLocator.Get<GameData>().Quest.GetCurrentLetters();
