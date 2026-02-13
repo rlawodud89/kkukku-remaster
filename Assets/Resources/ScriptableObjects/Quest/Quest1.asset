@@ -21,6 +21,9 @@ MonoBehaviour:
   requiredLevel: 0
   type: 0
   goalCount: 2
-  rewardGold: 100
-  rewardMoonRock: 0
-  rewardEnergy: 200
+  reward1:
+    type: 0
+    amount: 100
+  reward2:
+    type: 1
+    amount: 200

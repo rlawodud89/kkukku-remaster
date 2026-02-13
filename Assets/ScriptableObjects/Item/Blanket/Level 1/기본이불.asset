@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8\uC774\uBD88"
   m_EditorClassIdentifier: 
   itemName: "\uAE30\uBCF8\uC774\uBD88"
-  image: {fileID: 0}
+  image: {fileID: 21300000, guid: b465c1440b0472d4fbbdc99b4a3aee75, type: 3}
   level: 1
   price: 100
+  recipe:
+  - itemName: "\uC19C"
+    count: 1
+  - itemName: "\uCC9C"
+    count: 2

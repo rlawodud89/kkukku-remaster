@@ -33,4 +33,17 @@ public class Quest : MonoBehaviour
             // 나중에: 퀘스트 완료 알림 호출
         }
     }
+
+    // 보상 수령 함수
+    public void ReceiveReward()
+    {
+        // 완료되었고, 아직 보상을 받지 않은 경우에만 실행
+        if (isCompleted && !isRewarded)
+        {
+            isRewarded = true;
+            Debug.Log($"{data.title} 보상 수령 완료!");
+            
+            // 실제 보상 지급 로직
+        }
+    }
 }
