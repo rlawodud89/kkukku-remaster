@@ -4,52 +4,34 @@ using System.Collections.Generic;
 public class CashierManager : MonoBehaviour
 {
     public static CashierManager Instance;
-    public Transform cashierPos; // 계산대 입구 위치
     public float queueSpacing = 1.0f; // 줄 서는 간격
+    public Pathfinding pathfinding;
 
+    public int cashierPosIndex;
+    public int cashierWidth;
     // 현재 줄 서 있는 NPC 리스트
     private List<NPCAI> waitingQueue = new List<NPCAI>();
 
     void Awake() { Instance = this; }
 
-    // 줄 서기 요청
-    public void JoinQueue(NPCAI npc)
+    public float interactionDistance = 0.6f; // 💡 이 값을 조절해서 바짝 붙이세요!
+                                             // 1.0f = 한 칸 아래, 0.5f = 반 칸 아래
+
+    public Vector3 GetCashierPosition()
     {
-        waitingQueue.Add(npc);
-        UpdateQueuePositions(); // 줄 위치 갱신
+        // 1. 계산대 타일과 너비 계산 (기존 동일)
+        Vector3Int leftTilePos = pathfinding.IndexToPos(cashierPosIndex);
+        Vector3Int rightTilePos = leftTilePos;
+        if (cashierWidth > 1) rightTilePos.x += (cashierWidth - 1);
+
+        Vector3 leftWorld = pathfinding.walkTilemap.GetCellCenterWorld(leftTilePos);
+        Vector3 rightWorld = pathfinding.walkTilemap.GetCellCenterWorld(rightTilePos);
+        
+        Vector3 center = (leftWorld + rightWorld) / 2f;
+
+        // 2. 🚨 수정된 부분: interactionDistance 변수 사용
+        // Vector3.down * 1.0f 대신 변수를 곱해줍니다.
+        return center + (Vector3.down * interactionDistance); 
     }
 
-    // 줄 위치 계산 (0번은 계산대 바로 앞, 1번은 그 뒤...)
-    public Vector3 GetQueuePosition(NPCAI npc)
-    {
-        int index = waitingQueue.IndexOf(npc);
-        // 계산대 위치에서 아래쪽(또는 뒤쪽)으로 간격만큼 띄워서 좌표 계산
-        return cashierPos.position + (Vector3.down * index * queueSpacing);
-    }
-
-    // 계산 완료 후 한 칸씩 당기기
-    public void LeaveQueue(NPCAI npc)
-    {
-        waitingQueue.Remove(npc);
-        UpdateQueuePositions();
-    }
-
-    private void UpdateQueuePositions()
-    {
-        // 줄 서 있는 모든 NPC에게 새 목표 지점으로 이동하라고 명령
-        foreach (var npc in waitingQueue)
-        {
-            npc.MoveToQueuePoint();
-        }
-    }
-
-    public bool IsItMyTurn(NPCAI npc)
-    {
-        // 리스트가 비어있지 않고, 리스트의 첫 번째(0번)가 나인 경우 true 반환
-        if (waitingQueue.Count > 0 && waitingQueue[0] == npc)
-        {
-            return true;
-        }
-        return false;
-    }
 }

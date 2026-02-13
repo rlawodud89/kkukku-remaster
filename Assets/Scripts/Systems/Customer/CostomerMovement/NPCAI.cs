@@ -30,6 +30,11 @@ public class NPCAI : MonoBehaviour
     [Header("Quest Effects")]
     public GameObject questIcon; // '!' 아이콘 오브젝트
 
+    [Header("Shopping Info")]
+    private int selectedTableID;      // 어느 가구에서 가져왔는지
+    private int selectedItemIndex;    // 그 가구의 몇 번째 칸인지
+    private string selectedItemName;  // 물건 이름
+    private int priceToPay;           // 내야 할 돈
 
     // 1. 캐릭터 클릭 감지
     void OnMouseDown()
@@ -104,6 +109,8 @@ public class NPCAI : MonoBehaviour
         StartCoroutine(MainBehaviorRoutine());
     }
 
+
+
     IEnumerator MainBehaviorRoutine()
     {
         if (currentBehavior == NPCBehavior.SpecialQuest)
@@ -122,9 +129,107 @@ public class NPCAI : MonoBehaviour
         }
         else
         {
-            // [일반 로직] 기존의 이불 고르고 계산대 가는 루틴
-            yield return StartCoroutine(NormalShopRoutine());
+            if (myData.isSurvivor)
+            {
+                myData.isSurvivor = false; // 플래그 해제
+
+                switch (myData.currentState)
+                {
+                    case CustomerData.State.Deciding:
+                        // 쇼핑 중 -> 랜덤 가구로 순간이동 -> 고민 시작
+                        yield return StartCoroutine(SurvivorDecidingRoutine());
+                        break;
+
+                    case CustomerData.State.Paying:
+                        // 계산 중 -> 계산대로 순간이동 -> 계산 시작
+                        yield return StartCoroutine(SurvivorPayingRoutine());
+                        break;
+
+                    // 그 외(MoveToWardrobe 등)는 그냥 Deciding으로 퉁치거나 기본 로직
+                    default:
+                        yield return StartCoroutine(SurvivorDecidingRoutine());
+                        break;
+                }
+            }
+            else
+            {
+                // 2. 신규 손님 -> 입구부터 걸어오기
+                yield return StartCoroutine(NormalShopRoutine());
+            }
         }
+    }
+
+    // --- [생존자 행동 1] 쇼핑 중이었던 척 하기 ---
+    IEnumerator SurvivorDecidingRoutine()
+    {
+        // 1. 랜덤 가구 앞으로 순간이동
+        Interiorinfo targetTable = GetAnyTableInfo(); // (기존 함수 활용)
+
+        if (targetTable != null)
+        {
+            Vector3 standPos = GetSmartInteractionPos(targetTable);
+            if (standPos != Vector3.zero)
+            {
+                transform.position = standPos;
+                SetFaceToFurniture(targetTable); // 방향 설정
+                animator.SetFloat("Speed", 0f);  // 멈춤
+
+                // 2. 🚨 시간 계산 안 함! 그냥 쿨하게 2초 고민함 (리셋)
+                ShowSpeechBubble("음... 뭘 살까?");
+                yield return new WaitForSeconds(2f);
+
+                // 3. 이후 로직은 똑같음 (집기 시도 -> 계산대 이동)
+                if (TryPickItem(targetTable.ID))
+                {
+                    yield return StartCoroutine(GoToCashierRoutine());
+                }
+                else
+                {
+                    // 없으면 퇴장
+                    yield return StartCoroutine(LeaveShop());
+                }
+            }
+        }
+        else
+        {
+            yield return StartCoroutine(LeaveShop());
+        }
+    }
+
+    // --- [생존자 행동 2] 계산 중이었던 척 하기 ---
+    IEnumerator SurvivorPayingRoutine()
+    {
+        // 1. 계산대 앞으로 순간이동
+        Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
+        transform.position = cashierPos;
+
+        // 2. 방향 위로, 멈춤
+        SetDirection(Vector3.up);
+        animator.SetFloat("Speed", 0f);
+
+        // 3. 🚨 그냥 쿨하게 1.5초 계산 시작 (리셋)
+        ShowSpeechBubble("계산해주세요!");
+        yield return new WaitForSeconds(1.5f);
+
+        // 4. 돈 처리
+        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay); // (priceToPay는 데이터에서 복구하거나 랜덤값)
+
+        // 5. 퇴장
+        yield return StartCoroutine(LeaveShop());
+    }
+
+    // (참고) 코드 중복을 줄이기 위한 계산대 이동 함수
+    IEnumerator GoToCashierRoutine()
+    {
+        Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
+        myData.currentState = CustomerData.State.MovingToCashier;
+
+        yield return StartCoroutine(MoveToQueueRoutine(cashierPos)); // 걸어가기
+
+        // 도착하면 바로 Paying 루틴으로 이어짐 (혹은 여기서 처리)
+        yield return StartCoroutine(SurvivorPayingRoutine());
+        // 주의: SurvivorPayingRoutine은 순간이동을 포함하므로, 
+        // 걸어온 경우에는 순간이동 코드를 뺀 순수 계산 로직만 실행하도록 분리하는 게 좋습니다.
     }
 
     // 기존 UpdateAnimation 함수는 삭제하거나 사용하지 않습니다.
@@ -132,12 +237,55 @@ public class NPCAI : MonoBehaviour
     void SetDirection(Vector3 dir)
     {
         // 방향 벡터가 너무 작으면 무시 (0일 때 휙 도는 것 방지)
-        if (dir.sqrMagnitude < 0.01f) return;
+        if (dir.sqrMagnitude < 0.02f) return;
 
         lastMoveDir = dir;
         animator.SetFloat("MoveX", dir.x);
         animator.SetFloat("MoveY", dir.y);
         animator.SetFloat("Speed", 1f); // 움직인다고 알림
+    }
+
+    IEnumerator MoveToQueueRoutine(Vector3 targetPos)
+    {
+        // 1. 멀면 A* (장애물 회피)
+        float dist = Vector3.Distance(transform.position, targetPos);
+        if (dist > 1.5f)
+        {
+            // 목표지점 자체가 장애물일 수 있으므로 살짝 앞에서 A* 종료
+            Vector3 safeSpot = targetPos + Vector3.down * 0.5f;
+            yield return StartCoroutine(MoveWithAStar(safeSpot));
+        }
+
+        // 2. 가까우면 직선 이동 (정밀 주차)
+        float timeOut = 3.0f;
+
+        while (Vector3.Distance(transform.position, targetPos) > 0.05f && timeOut > 0)
+        {
+            timeOut -= Time.deltaTime;
+
+            float currentDist = Vector3.Distance(transform.position, targetPos);
+
+            // 🚨 핵심 수정: 거리가 너무 가까우면(0.1f 미만) 방향을 바꾸지 않음!
+            // (도착 직전에 벡터가 뒤집히는 것을 방지)
+            if (currentDist > 0.1f)
+            {
+                Vector3 direction = (targetPos - transform.position).normalized;
+                SetDirection(direction);
+            }
+
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // 3. 도착 확정
+        transform.position = targetPos;
+        animator.SetFloat("Speed", 0f);
+        SetDirection(Vector3.up);
+
+        // (혹시 애니메이션이 튀는 걸 방지하기 위해 한 프레임 대기 후 한번 더 고정)
+        yield return null;
+        animator.SetFloat("MoveX", 0);
+        animator.SetFloat("MoveY", 1); // 1 = 위쪽(뒷모습)
     }
 
     IEnumerator MoveWithAStar(Vector3 targetWorldPos)
@@ -182,61 +330,145 @@ public class NPCAI : MonoBehaviour
         animator.SetFloat("MoveX", lastMoveDir.x);
         animator.SetFloat("MoveY", lastMoveDir.y);
     }
+    // [NPCAI.cs 수정]
 
     IEnumerator NormalShopRoutine()
     {
-        // 1. 가구 탐색 및 스마트 위치 선정
+        // 1. 첫 번째 시도: 일단 아무 테이블이나 무작위 선정
         Interiorinfo targetTable = GetAnyTableInfo();
 
-        if (targetTable != null)
+        // (함수 분리: 이동 및 대기 로직을 재사용하기 위해)
+        yield return StartCoroutine(VisitTableAndCheck(targetTable));
+    }
+
+    // 가구 방문 및 구매 시도를 처리하는 서브 코루틴
+    IEnumerator VisitTableAndCheck(Interiorinfo targetTable)
+    {
+        if (targetTable == null) yield break;
+
+        // --- [이동] ---
+        Vector3 targetPos = GetSmartInteractionPos(targetTable);
+        if (targetPos != Vector3.zero)
         {
-            // 💡 변경점: 무조건 아래가 아니라, 갈 수 있는 빈 곳을 찾음
-            Vector3 targetPos = GetSmartInteractionPos(targetTable);
+            yield return StartCoroutine(MoveWithAStar(targetPos));
 
-            // 만약 갈 수 있는 곳이 아예 없다면(사방이 벽) 스킵
-            if (targetPos != Vector3.zero)
+            // --- [도착 및 방향 전환] ---
+            myData.currentState = CustomerData.State.Deciding;
+            animator.SetFloat("Speed", 0f);
+
+            // 방향 보기 (아까 만든 로직)
+            Vector3Int myGridPos = walkTilemap.WorldToCell(transform.position);
+            Vector3Int tableOrigin = pathfinding.IndexToPos(targetTable.placement);
+            int tMinX = tableOrigin.x;
+            int tMaxX = tableOrigin.x + targetTable.Width - 1;
+            int tMaxY = tableOrigin.y;
+            int tMinY = tableOrigin.y - targetTable.Height + 1;
+
+            Vector3 lookDir = Vector3.zero;
+            if (myGridPos.x < tMinX) lookDir = Vector3.right;
+            else if (myGridPos.x > tMaxX) lookDir = Vector3.left;
+            else if (myGridPos.y < tMinY) lookDir = Vector3.up;
+            else if (myGridPos.y > tMaxY) lookDir = Vector3.down;
+
+            if (lookDir != Vector3.zero)
             {
-                yield return StartCoroutine(MoveWithAStar(targetPos));
+                SetDirection(lookDir);
+                animator.SetFloat("Speed", 0f);
+            }
 
-                // 도착 후 고민
-                myData.currentState = CustomerData.State.Deciding;
-                animator.SetFloat("Speed", 0f); // 도착하면 멈춤 애니메이션
-                yield return new WaitForSeconds(2f);
+            // 2초 고민
+            yield return new WaitForSeconds(2f);
 
-                // 재고 확인 및 구매/실망 로직 (기존과 동일)
-                if (HasItemsInTable(targetTable.ID))
-                {
-                    // ... 구매 로직 ...
-                    myData.currentState = CustomerData.State.MovingToCashier;
-                    CashierManager.Instance.JoinQueue(this);
-
-                    while (!CashierManager.Instance.IsItMyTurn(this)) yield return null;
-
-                    myData.currentState = CustomerData.State.Paying;
-                    yield return new WaitForSeconds(1.5f);
-                    CashierManager.Instance.LeaveQueue(this);
-                }
-                else
-                {
-                    ShowSpeechBubble("다 팔렸나보네...");
-                    yield return new WaitForSeconds(1f);
-                }
+            // --- [구매 시도 1차] ---
+            if (TryPickItem(targetTable.ID))
+            {
+                // 성공! 계산대로 이동 (기존 코드)
+                yield return StartCoroutine(GoToCashierAndPay());
             }
             else
             {
-                Debug.LogWarning($"ID {targetTable.ID} 가구 주변에 설 자리가 없습니다.");
+                // 🚨 실패! (여기가 핵심 변경)
+                yield return new WaitForSeconds(1.5f);
+
+                // 2. 다른 재고 있는 테이블 탐색
+                Interiorinfo newTarget = GetRandomTableWithStock();
+
+                // (방금 갔던 곳이랑 똑같은 곳이면 굳이 또 안 가고 포기, 혹은 다른 곳이 있으면 이동)
+                if (newTarget != null && newTarget.ID != targetTable.ID)
+                {
+
+                    // --- [이동 (재시도)] ---
+                    // 재귀 호출보다는 코드를 반복하거나, 여기서 바로 이동 로직 수행
+                    // 복잡도를 줄이기 위해 여기서 바로 이동합니다.
+
+                    Vector3 newPos = GetSmartInteractionPos(newTarget);
+                    yield return StartCoroutine(MoveWithAStar(newPos));
+
+                    // 도착 후 다시 고민
+                    animator.SetFloat("Speed", 0f);
+                    // (방향 전환 로직은 생략하거나 위와 동일하게 복사)
+
+                    yield return new WaitForSeconds(1.5f); // 2차 고민
+
+                    // --- [구매 시도 2차] ---
+                    if (TryPickItem(newTarget.ID))
+                    {
+                        yield return StartCoroutine(GoToCashierAndPay());
+                    }
+                    else
+                    {
+                        // 2번이나 가봤는데도 없으면 진짜 퇴장
+                        ShowSpeechBubble("다 팔렸나보네...");
+                        yield return new WaitForSeconds(1f);
+                        yield return StartCoroutine(LeaveShop());
+                    }
+                }
+                else
+                {
+                    // 재고 있는 테이블이 아예 없음
+                    ShowSpeechBubble("아무것도 없네...");
+                    yield return new WaitForSeconds(1f);
+                    yield return StartCoroutine(LeaveShop());
+                }
             }
         }
-
-        // 4. 퇴장 (입구로)
-        if (NPCSpawner.Instance != null)
+        else
         {
-            yield return StartCoroutine(MoveWithAStar(NPCSpawner.Instance.entranceTransform.position));
+            // 갈 자리가 없어서 못 간 경우 -> 바로 퇴장 혹은 다른 테이블 시도
+            yield return StartCoroutine(LeaveShop());
         }
+    }
+
+    // 코드 중복을 줄이기 위해 계산대 이동 로직 분리
+    IEnumerator GoToCashierAndPay()
+    {
+        Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
+        myData.currentState = CustomerData.State.MovingToCashier;
+        yield return StartCoroutine(MoveToQueueRoutine(cashierPos));
+
+        myData.currentState = CustomerData.State.Paying;
+        SetDirection(Vector3.up);
+        animator.SetFloat("Speed", 0f);
+
+        yield return new WaitForSeconds(1.5f);
+
+        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay);
+        Debug.Log($"[판매] {priceToPay}G 획득!");
+
+        yield return StartCoroutine(LeaveShop());
+    }
+
+    // 퇴장 로직 분리
+    IEnumerator LeaveShop()
+    {
+        if (NPCSpawner.Instance != null)
+            yield return StartCoroutine(MoveWithAStar(NPCSpawner.Instance.entranceTransform.position));
 
         ShopManager.Instance.activeCustomers.Remove(myData);
         Destroy(gameObject);
     }
+    
+
 
     // 디버깅용 리스트 (인스펙터에서 볼 필요 없음)
     private List<Vector3> debugCandidates = new List<Vector3>();
@@ -364,52 +596,69 @@ public class NPCAI : MonoBehaviour
         return tables[Random.Range(0, tables.Count)];
     }
 
-    bool HasItemsInTable(int tableID)
+
+
+    bool TryPickItem(int tableID)
     {
+        // 1. 매니저한테 테이블 정보 달라고 함
         if (ShopStorageDataManager.Instance.GetTableClass(tableID, out var table))
         {
-            return table.count.Exists(c => c > 0);
-        }
-        return false;
-    }
+            // 2. 재고가 1개 이상인 아이템들의 인덱스를 다 찾음
+            List<int> availableIndices = new List<int>();
+            for (int i = 0; i < table.count.Count; i++)
+            {
+                if (table.count[i] > 0) availableIndices.Add(i);
+            }
 
+            // 3. 살 게 하나라도 있다면?
+            if (availableIndices.Count > 0)
+            {
+                // 랜덤으로 하나 선택
+                int randomIndex = availableIndices[Random.Range(0, availableIndices.Count)];
+
+                // 정보 기억하기
+                selectedTableID = tableID;
+                selectedItemIndex = randomIndex;
+                selectedItemName = table.itemName[randomIndex];
+
+                // 가격 확인
+                priceToPay = ServiceLocator.Get<GameData>().Inventory.GetBlanketPrice(selectedItemName);
+
+                // 🚨 핵심 변경: 물건을 집는 순간 즉시 재고 차감! (선점)
+                // ---------------------------------------------------------
+                ShopStorageDataManager.Instance.UpdateTableData(selectedTableID, selectedItemIndex, -1);
+
+                // (선택사항) 이불장 이미지가 비어야 하니까 즉시 갱신
+                var allStorages = FindObjectsOfType<ShopStorageClick>();
+                foreach (var storage in allStorages)
+                {
+                    if (storage.storageID == selectedTableID) storage.UpdateSpriteState();
+                }
+                // ---------------------------------------------------------
+
+                Debug.Log($"[NPC] '{selectedItemName}' 찜함! (이제 다른 애들은 못 가져감)");
+                return true; // 성공!
+            }
+        }
+        return false; // 재고 없음
+    }
 
 
     public void MoveToQueuePoint()
     {
-        // CashierManager에게 내가 서야 할 월드 좌표를 물어봄
-        Vector3 targetQueuePos = CashierManager.Instance.GetQueuePosition(this);
+        // 1. 목표 지점 받아오기
+        Vector3 targetQueuePos = CashierManager.Instance.GetCashierPosition();
 
-        // 기존에 이동 중이던 코루틴이 있다면 멈추고 새로 이동 시작
+        // 2. 기존 이동 코루틴들 모두 중지 (충돌 방지)
         StopCoroutine("MoveToQueueRoutine");
+        StopCoroutine("MoveWithAStar");
+
+        // 3. 새 이동 시작
         StartCoroutine(MoveToQueueRoutine(targetQueuePos));
     }
 
-    // 대기열 전용 이동 코루틴 (A*를 써도 되고, 줄 안에서는 단순 직선 이동을 써도 됩니다)
-    IEnumerator MoveToQueueRoutine(Vector3 targetPos)
-    {
-        // 1. 이동 시작 전에 방향을 먼저 계산합니다.
-        // (목표지점 - 현재위치)를 하면 바라봐야 할 방향 벡터가 나옵니다.
-        Vector3 direction = (targetPos - transform.position).normalized;
 
-        // 2. 아까 만든 SetDirection 함수로 방향을 고정시킵니다.
-        // (NPC가 몸을 먼저 돌리고 이동을 시작하게 됩니다)
-        SetDirection(direction);
-
-        // 3. 목표 지점까지 이동
-        while (Vector3.Distance(transform.position, targetPos) > 0.05f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
-
-            // 💡 중요: 여기서 UpdateAnimation을 또 호출하면 안 됩니다!
-            // 이미 위에서 방향을 고정했기 때문에, 이동만 하면 됩니다.
-            yield return null;
-        }
-
-        // 4. 도착 완료 처리
-        transform.position = targetPos; // 좌표를 깔끔하게 맞춤
-        animator.SetFloat("Speed", 0f); // 걷기 모션 정지
-    }
+ 
 
     // NPCAI.cs 내부 수정
     public Vector3 GetFurnitureFrontPos(Interiorinfo targetItem)
@@ -437,5 +686,73 @@ public class NPCAI : MonoBehaviour
         return walkTilemap.GetCellCenterWorld(targetTile);
     }
 
+    void OnDestroy()
+    {
+        // 1. 내가 물건을 집었는데(가격이 있음)
+        // 2. 아직 계산 완료 상태(Paying 끝남)가 아니라면? -> 도둑놈이거나 버그임
+        // 3. 다시 재고를 +1 해줘야 함
 
+        if (priceToPay > 0 && myData.currentState != CustomerData.State.Paying)
+        {
+            ShopStorageDataManager.Instance.UpdateTableData(selectedTableID, selectedItemIndex, 1); 
+        }
+
+        if (ShopManager.Instance != null)
+            ShopManager.Instance.activeCustomers.Remove(myData);
+    }
+
+    Interiorinfo GetRandomTableWithStock()
+    {
+        var allTables = ShopStorageDataManager.Instance.interiorData.Table;
+        List<Interiorinfo> validTables = new List<Interiorinfo>();
+
+        foreach (var tableInfo in allTables)
+        {
+            // 매니저를 통해 실제 재고(TableClass) 확인
+            if (ShopStorageDataManager.Instance.GetTableClass(tableInfo.ID, out var tableData))
+            {
+                // 재고가 하나라도 0보다 큰 게 있는지 확인 (Exists 함수 사용)
+                if (tableData.count.Exists(c => c > 0))
+                {
+                    validTables.Add(tableInfo);
+                }
+            }
+        }
+
+        if (validTables.Count > 0)
+        {
+            return validTables[Random.Range(0, validTables.Count)];
+        }
+
+        return null; // 모든 가구가 텅 빔
+    }
+
+    // 가구를 바라보는 방향을 계산해서 적용하는 함수
+    void SetFaceToFurniture(Interiorinfo targetTable)
+    {
+        // 1. 내 위치(그리드)와 테이블 기준점(그리드) 가져오기
+        Vector3Int myGridPos = walkTilemap.WorldToCell(transform.position);
+        Vector3Int tableOrigin = pathfinding.IndexToPos(targetTable.placement);
+
+        // 2. 테이블의 범위(Bounds) 계산
+        int tMinX = tableOrigin.x;
+        int tMaxX = tableOrigin.x + targetTable.Width - 1;
+        int tMaxY = tableOrigin.y;
+        int tMinY = tableOrigin.y - targetTable.Height + 1;
+
+        // 3. 비교해서 방향 정하기
+        Vector3 lookDir = Vector3.zero;
+
+        if (myGridPos.x < tMinX) lookDir = Vector3.right; // 왼쪽에서 접근 -> 오른쪽 봄
+        else if (myGridPos.x > tMaxX) lookDir = Vector3.left;  // 오른쪽에서 접근 -> 왼쪽 봄
+        else if (myGridPos.y < tMinY) lookDir = Vector3.up;    // 아래에서 접근 -> 위쪽 봄 (뒷모습)
+        else if (myGridPos.y > tMaxY) lookDir = Vector3.down;  // 위에서 접근 -> 아래쪽 봄 (앞모습)
+
+        // 4. 시선 적용 및 걷기 모션 정지
+        if (lookDir != Vector3.zero)
+        {
+            SetDirection(lookDir);       // 방향 돌리고
+            animator.SetFloat("Speed", 0f); // 제자리걸음 방지 (멈춤)
+        }
+    }
 }

@@ -39,7 +39,7 @@ public class BlanketItem : MonoBehaviour, IPointerClickHandler
         this.dataIndex = index;
         this.itemName = name;
         this.currentAmount = amount;
-        this.itemImage = itemImage;
+        this.itemImage.sprite = itemImage.sprite;
         nameText.text = itemName;
         amountText.text = amount.ToString();
     }
@@ -58,11 +58,15 @@ public class BlanketItem : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log($"클릭됨: {itemName}"); // 이 로그가 뜨는지 확인!
         OnItemSelected?.Invoke(this);
     }
 
     public void SetHighlight(bool active)
     {
-        highlightImage.enabled = active;
+        if (highlightImage != null)
+        {
+            highlightImage.gameObject.SetActive(active);
+        }
     }
 }

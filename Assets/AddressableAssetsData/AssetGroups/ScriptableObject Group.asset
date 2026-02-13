@@ -378,6 +378,13 @@ MonoBehaviour:
     m_SerializedLabels:
     - customer
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce1189885cbead5418b2ba981c141b80
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/Casher/\uB2E4\uB78C\uC950
+      \uCE90\uC154.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - shopInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d113413ebddf175459832e509271ecd6
     m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/\uC5D0\uB7EC\uBC29\uC9C0.asset"
     m_ReadOnly: 0
