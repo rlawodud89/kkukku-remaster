@@ -3344,6 +3344,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033234114}
   m_CullTransparentMesh: 1
+--- !u!1 &1080789364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1080789366}
+  - component: {fileID: 1080789365}
+  m_Layer: 0
+  m_Name: BlanketShopManager(D)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1080789365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080789364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f066e5056846a49a3f346a340e70d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeCustomers: []
+  isStoreOpen: 0
+  minSpawnTime: 3
+  maxSpawnTime: 8
+  maxCustomers: 10
+  shopSceneName: BlanketShop
+--- !u!4 &1080789366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080789364}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.5340712, y: 0.14675821, z: -0.043781318}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1096038748
 GameObject:
   m_ObjectHideFlags: 0
@@ -6049,3 +6099,4 @@ SceneRoots:
   - {fileID: 1576697279}
   - {fileID: 601730807}
   - {fileID: 2075330999}
+  - {fileID: 1080789366}

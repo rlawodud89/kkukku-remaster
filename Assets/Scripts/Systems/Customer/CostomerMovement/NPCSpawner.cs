@@ -52,6 +52,9 @@ public class NPCSpawner : MonoBehaviour
             targetIndex = data.prefabIndex;
         }
 
+
+
+
         // 결정된 번호의 프리팹을 소환
         GameObject npc = Instantiate(npcPrefab[targetIndex], GetEntrancePosition(), Quaternion.identity);
 
