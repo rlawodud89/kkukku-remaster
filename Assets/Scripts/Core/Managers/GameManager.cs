@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -33,4 +34,76 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private int gold;
+    private int moonRock;  
+    private int level;
+    private float energy;
+    private int maxEnergy=200;
+
+    public TMP_Text goldText;
+    public TMP_Text moonRockText;
+    public TMP_Text levelText;
+    public UnityEngine.UI.Image energyBar;
+
+
+    void Start()
+    {
+        LoadGameData();
+    }
+
+    void LoadGameData()
+    {
+        gold=ServiceLocator.Get<GameData>().User.GetCurrentGold();
+        moonRock=ServiceLocator.Get<GameData>().User.GetCurrentMoonrock();
+
+        var userData = ServiceLocator.Get<GameData>().User.GetUserData();
+        level=userData.level;
+        energy=userData.energy;
+        UpdateUI();
+    }
+
+    void UpdateUI()
+    {
+        goldText.text=gold.ToString();
+        moonRockText.text=moonRock.ToString();
+
+        levelText.text=$"Lv {level.ToString()}";
+        energyBar.fillAmount = energy / maxEnergy;
+        Debug.Log($"포근에너지: {energy}");
+    }
+
+    public void ChangeGold(int amount)
+    {
+        gold+=amount;
+        ServiceLocator.Get<GameData>().User.ChangeGold(amount);
+        UpdateUI();
+    }
+
+    public void ChangeMoonRock(int amount)
+    {
+        moonRock+=amount;
+        ServiceLocator.Get<GameData>().User.ChangeMoonrock(amount);
+        UpdateUI();
+    }
+
+    public void ChangeEnergy(int amount)
+    {
+        energy+=amount;
+        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        UpdateUI();
+
+        if (maxEnergy == energy)
+        {
+            ChangeLevel();
+        }
+    }
+
+    public void ChangeLevel()
+    {
+        level+=1;
+        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        UpdateUI();
+    }
+
 }
