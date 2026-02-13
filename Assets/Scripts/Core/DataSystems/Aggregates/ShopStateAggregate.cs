@@ -10,8 +10,8 @@ public class ShopStateAggregate : IAggregate
 {
     // === 런타임 데이터 ===
 
-    private Dictionary<int, Dictionary<string, ShopTable>> shopTable;
-    private Dictionary<int, WorkerState> workerState;
+    private Dictionary<int, Dictionary<string, ShopTable>> shopTable; // Key: inventoryID, itemName
+    private Dictionary<int, WorkerState> workerState; // Key: WorkerID
 
     // === SO 데이터 ===
 

@@ -71,12 +71,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - tool
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1ab8b3039213d33468cf46ce86dfc867
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Room/\uC5D0\uB7EC\uBC29\uC9C0\uC6A9.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - roomInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d058673641b69d48930ddbcc7aa251c
     m_Address: Assets/ScriptableObjects/InteriorItem/Room/Interior/MaterialStorage.asset
     m_ReadOnly: 0
@@ -132,6 +126,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c1aafea8f8384e41a36e7b18ba6fedc
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAE30\uBCF8\uBC14\uB2E5\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42215d9702cfd974886604c0e1852248
     m_Address: Assets/ScriptableObjects/Customer/Capybara.asset
@@ -311,12 +311,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a2969fec773924e4696513131be25136
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/\uC5D0\uB7EC\uBC29\uC9C0.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - shopInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3173d7f57903cb41b71473d181fc910
     m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uC740\uD558\uAFC8\uC2E4.asset"
     m_ReadOnly: 0
@@ -385,8 +379,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - shopInterior
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d113413ebddf175459832e509271ecd6
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/\uC5D0\uB7EC\uBC29\uC9C0.asset"
+  - m_GUID: cead3364b68af014ba911766659ca1eb
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uAE30\uBCF8\uBCBD\uD0C0\uC77C.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - tileInterior

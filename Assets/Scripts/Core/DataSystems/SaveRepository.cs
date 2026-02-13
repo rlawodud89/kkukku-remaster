@@ -1,12 +1,9 @@
-using JetBrains.Annotations;
 using SQLite4Unity3d;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SaveRepository
 {
@@ -95,7 +92,8 @@ public class SaveRepository
             LoadInteriorAggregate(),
             LoadQuestAggregate(),
             LoadShopStateAggregate(),
-            LoadBlanketCraftAggregate()
+            LoadBlanketCraftAggregate(),
+            LoadStoreAggregate()
         );
     }
 
@@ -254,13 +252,23 @@ public class SaveRepository
 
     private BlanketCraftAggregate LoadBlanketCraftAggregate()
     {
-        List<BlanketRecord> blanketRecord = connection.Table<BlanketRecord>().ToList();
         List<BlanketRecipe> blanketRecipe = connection.Table<BlanketRecipe>().ToList();
+        List<BlanketRecord> blanketRecord = connection.Table<BlanketRecord>().ToList();
 
         var aggregate = new BlanketCraftAggregate();
         aggregate.LoadBlanketCraftAggregate(blanketRecipe, blanketRecord, materialSOs, blanketSOs);
 
         return aggregate;
+    }
+
+    private StoreAggregate LoadStoreAggregate()
+    {
+        List<StoreItemList> storeItemList = connection.Table<StoreItemList>().ToList();
+
+        var aggreagte = new StoreAggregate();
+        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs);
+
+        return aggreagte;
     }
 
 
@@ -287,6 +295,7 @@ public class SaveRepository
         connection.CreateTable<LetterBox>();
         connection.CreateTable<ToolInventory>();
         connection.CreateTable<ToolUsed>();
+        connection.CreateTable<StoreItemList>();
 
         // User
         User user = new User();
@@ -373,5 +382,9 @@ public class SaveRepository
         fishingUsed.toolType = ToolType.FISHING;
         fishingUsed.toolName = "기본낚시대";
         connection.Insert(fishingUsed);
+
+        // StoreItemList
+
     }
+
 }
