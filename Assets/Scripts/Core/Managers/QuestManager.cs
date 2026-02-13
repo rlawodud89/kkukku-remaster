@@ -49,8 +49,8 @@ public class QuestManager : MonoBehaviour
         
 
         // 테스트용
-        GenerateDailyQuests(0);
-        UpdateUI();
+        //GenerateDailyQuests(0);
+        LoadQuestsFromDB();
     }
 
     // 플레이어에게 퀘스트 부여하는 함수 (아침마다 호출)
@@ -77,11 +77,16 @@ public class QuestManager : MonoBehaviour
             // 원본 퀘스트 데이터를 참고하여 새 Quest 객체를 하나 만들어 넣기
             myActiveQuests.Add(new Quest(candidates[randIdx]));
 
+            // DB에 저장
+            bool isAdded = ServiceLocator.Get<GameData>().Quest.AddQuest(candidates[randIdx].questID);
+
             Debug.Log($"오늘의 일일 퀘스트 {i+1}: {candidates[randIdx].questID}");
 
             // 중복 방지
             candidates.RemoveAt(randIdx);
         }
+
+        UpdateUI();
     }
 
     // UI 갱신하는 함수
@@ -105,5 +110,42 @@ public class QuestManager : MonoBehaviour
             QuestSlotUI questSlotUIScricpt =newButton.GetComponent<QuestSlotUI>();
             questSlotUIScricpt.Setup(quest);
         }
+    }
+
+    public void LoadQuestsFromDB()
+    {
+        // 기존 리스트 초기화
+        myActiveQuests.Clear();
+
+        List<QuestBox> questDataList = ServiceLocator.Get<GameData>().Quest.GetCurrentQuests();
+
+        if (questDataList == null || questDataList.Count == 0)
+        {
+            Debug.Log("저장된 퀘스트 데이터가 없습니다.");
+            return;
+        }
+
+        foreach (QuestBox data in questDataList)
+        {
+            // 전체 원본 데이터(allQuestDatas)에서 ID가 일치하는 SO 찾기
+            QuestDataSO originalSO = allQuestDatas.FirstOrDefault(x => x.questID == data.questID);
+
+            if (originalSO != null)
+            {
+                // 찾은 SO를 바탕으로 새로운 Quest 인스턴스 생성
+                Quest loadedQuest = new Quest(originalSO);
+
+                // DB에서 받아온 현재 진행 상황 덮어씌우기
+                loadedQuest.currentCount = data.progress;
+                loadedQuest.isCompleted = data.isComplete;
+                loadedQuest.isRewarded = data.isReward;
+
+                // 리스트에 추가
+                myActiveQuests.Add(loadedQuest);
+            }
+        }
+
+        UpdateUI();
+        Debug.Log($"{myActiveQuests.Count}개의 퀘스트를 DB에서 성공적으로 불러왔습니다.");
     }
 }

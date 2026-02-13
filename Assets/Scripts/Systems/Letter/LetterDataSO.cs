@@ -6,7 +6,7 @@ using UnityEngine;
 public class LetterDataSO : ScriptableObject
 {
     [Header("Basic Info")]
-    //public string letterID;        // 고유 ID 
+    public int letterID;        // ID 
     public string senderName;      // 보낸 주민 이름
     public string title;           // 편지 제목
     [TextArea(5, 10)]

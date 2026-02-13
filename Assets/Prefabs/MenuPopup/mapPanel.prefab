@@ -2546,7 +2546,7 @@ GameObject:
   - component: {fileID: 1827281919594012776}
   - component: {fileID: 5294575420044361617}
   m_Layer: 5
-  m_Name: mapPanel
+  m_Name: MapPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

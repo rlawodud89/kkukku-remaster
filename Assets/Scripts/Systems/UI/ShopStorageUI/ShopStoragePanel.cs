@@ -29,6 +29,8 @@ public class ShopStoragePanel : MonoBehaviour
         {
             for(int i = 0; i < blanketList.itemName.Count; i++)
             {
+                if (blanketList.count[i] <= 0) continue;
+
                 GameObject go = Instantiate(leftItemPrefab, leftContent);
                 leftSpawnedItems.Add(go);
 

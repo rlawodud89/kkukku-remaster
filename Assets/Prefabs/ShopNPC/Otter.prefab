@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 355160870802135574}
   - component: {fileID: 9018027341485072847}
   - component: {fileID: 953214347603592189}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 4770324065502047281}
   - component: {fileID: 3384802273443941281}
   - component: {fileID: 2963734755727450815}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &3384802273443941281
 MonoBehaviour:
@@ -323,7 +323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4849747918494526569}
   - component: {fileID: 5945528225553454104}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: SpeechBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -555,6 +555,7 @@ MonoBehaviour:
     currentTilePos: {x: 0, y: 0, z: 0}
     selectedItemID: 0
     timer: 0
+    prefabIndex: 0
   walkTilemap: {fileID: 0}
   pathfinding: {fileID: 0}
   moveSpeed: 2
@@ -621,7 +622,7 @@ GameObject:
   - component: {fileID: 3729150512487010060}
   - component: {fileID: 4325332262360261359}
   - component: {fileID: 2172891124250475856}
-  m_Layer: 9
+  m_Layer: 5
   m_Name: QuestIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

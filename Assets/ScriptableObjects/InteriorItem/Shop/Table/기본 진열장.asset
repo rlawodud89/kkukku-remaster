@@ -19,4 +19,4 @@ MonoBehaviour:
   price: 0
   itemWidth: 3
   itemHeight: 1
-  slotCount: 0
+  slotCount: 15
