@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -151,12 +152,15 @@ public class ShopStorageDataManager : MonoBehaviour
         return false;
     }
 
+    public event Action<int, int> OnTableDataChanged;
+
     public void UpdateTableData(int tableID, int itemIndex, int changeAmount)
     {
         if (GetTableClass(tableID, out var table))
         {
             ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(tableID, table.itemName[itemIndex], changeAmount);
             table.count[itemIndex] += changeAmount;
+            OnTableDataChanged?.Invoke(tableID, itemIndex);
         }
     }
 

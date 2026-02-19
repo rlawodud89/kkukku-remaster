@@ -17,9 +17,77 @@ public class ShopStoragePanel : MonoBehaviour
     private List<GameObject> leftSpawnedItems = new List<GameObject>();
     private List<GameObject> rightSpawnedItems = new List<GameObject>();
 
+    private int currentOpenTableID = -1;
+
+    private void OnEnable()
+    {
+        if (ShopStorageDataManager.Instance != null)
+        {
+            ShopStorageDataManager.Instance.OnTableDataChanged += HandleTableDataChanged;
+        }
+    }
+
+    // 💡 패널이 꺼질 때 이벤트 구독 해제 (메모리 누수 방지)
+    private void OnDisable()
+    {
+        if (ShopStorageDataManager.Instance != null)
+        {
+            ShopStorageDataManager.Instance.OnTableDataChanged -= HandleTableDataChanged;
+        }
+    }
+    private void HandleTableDataChanged(int tableID, int itemIndex)
+    {
+        // 1. 내가 지금 보고 있는 가구가 아니면 무시
+        if (currentOpenTableID != tableID) return;
+
+        // 2. 최신 데이터를 가져옴
+        if (ShopStorageDataManager.Instance.GetTableClass(tableID, out TableClass blanketList))
+        {
+            int updatedAmount = blanketList.count[itemIndex];
+
+            // 3. 현재 생성되어 있는(왼쪽) UI 리스트를 뒤져서 해당 아이템을 찾음
+            for (int i = 0; i < leftSpawnedItems.Count; i++)
+            {
+                var go = leftSpawnedItems[i];
+                var item = go.GetComponent<BlanketItem>();
+
+                // (주의: BlanketItem 안에 원래 인덱스를 저장해둔 변수가 필요함. 
+                // SetupItem 할 때 받은 i 값을 보통 item.dataIndex 등으로 저장해 두셨을 거라 가정합니다.)
+                // 만약 변수 이름이 다르다면 본인의 변수명으로 수정해 주세요.
+                if (item.dataIndex == itemIndex)
+                {
+                    item.currentAmount = updatedAmount; // 수량 업데이트
+                    item.RefreshUI(true);               // 텍스트 새로고침
+
+                    // 4. 만약 NPC가 사가서 재고가 0이 되었다면 목록에서 삭제
+                    if (updatedAmount <= 0)
+                    {
+                        if (selectedLeft == item)
+                        {
+                            selectedLeft = null;
+                            currentTransferCount = 1;
+                            quantityText.text = "1";
+                            RefreshButtonState();
+                        }
+                        leftSpawnedItems.RemoveAt(i);
+                        Destroy(go);
+                    }
+                    // 5. 수량이 0은 아니지만, 플레이어가 옮기려고 입력한 숫자보다 남은 재고가 적어졌다면 조정
+                    else if (selectedLeft == item && currentTransferCount > updatedAmount)
+                    {
+                        currentTransferCount = updatedAmount;
+                        quantityText.text = currentTransferCount.ToString();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     // 1. 클릭 시 호출되어 데이터를 채우는 함수
     public void OpenStorage(int id)
     {
+        currentOpenTableID = id;
         gameObject.SetActive(true); // 패널 켜기
 
         // 이전 데이터 삭제
