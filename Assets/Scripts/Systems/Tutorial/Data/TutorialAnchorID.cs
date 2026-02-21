@@ -1,4 +1,4 @@
-public enum TutorialAnchorID
+public enum TutorialID
 {
     None = 0,
 
@@ -13,5 +13,8 @@ public enum TutorialAnchorID
 
     // Scene Specific
     FactorySlot,
-    EmployeeButton
+    EmployeeButton,
+
+    ToolButton,
+    GatheringItem
 }

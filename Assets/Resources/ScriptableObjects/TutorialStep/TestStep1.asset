@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
   m_Name: TestStep1
   m_EditorClassIdentifier: 
-  targetAnchor: 5
-  dialogue: "\uC124\uBA85\uCC3D \uD14C\uC2A4\uD2B8"
-  waitForClick: 1
+  highlightTarget: 9
+  dialogue: "\uB098\uBB34 \uC704 \uC544\uC774\uD15C\uC744 \uC2DC\uAC04 \uC548\uC5D0
+    \uD074\uB9AD\uD558\uBA74 \uD68D\uB4DD\uD560 \uC218 \uC788\uC5B4."
+  showDialogue: 1
+  completeEvent: 9
   autoProceed: 0

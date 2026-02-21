@@ -11,8 +11,6 @@ public class TutorialManager : MonoBehaviour
     private int currentStepIndex = -1;
     private TutorialStep currentStep;
 
-    private bool isWaitingForInput = false;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -23,6 +21,16 @@ public class TutorialManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        TutorialEventBus.OnEvent += HandleEvent;
+    }
+
+    private void OnDisable()
+    {
+        TutorialEventBus.OnEvent -= HandleEvent;
     }
 
     private void Start()
@@ -52,39 +60,43 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator RunStep(TutorialStep step)
     {
-        // Anchor 로드 대기
-        yield return new WaitUntil(() =>
-            AnchorRegistry.HasAnchor(step.targetAnchor));
-
-        var anchor = AnchorRegistry.GetAnchor(step.targetAnchor);
-
-        RectTransform targetRect = anchor.GetComponent<RectTransform>();
-
-        HighlightSystem.Instance.Highlight(targetRect);
-
-        // 대화 표시
-        TutorialDialogue.Instance.ShowDialogue(step.dialogue);
-
-        if (step.waitForClick)
+        // 하이라이트 처리
+        if (step.highlightTarget != TutorialID.None)
         {
-            isWaitingForInput = true;
+            yield return new WaitUntil(() =>
+                AnchorRegistry.HasAnchor(step.highlightTarget));
 
-            // Anchor에 클릭 이벤트 연결
-            ButtonClickListener listener = anchor.GetComponent<ButtonClickListener>();
-            listener.OnClicked += OnTargetClicked;
+            var anchor = AnchorRegistry.GetAnchor(step.highlightTarget);
+            RectTransform targetRect = anchor.GetComponent<RectTransform>();
+
+            HighlightSystem.Instance.Highlight(targetRect);
         }
-        else if (step.autoProceed)
+        else
         {
-            yield return new WaitForSeconds(1.5f);
+            HighlightSystem.Instance.Clear();
+        }
+
+        // 대사 처리
+        if (step.showDialogue)
+            TutorialDialogue.Instance.ShowDialogue(step.dialogue);
+        else
+            TutorialDialogue.Instance.HideDialogue();
+
+        // 자동 진행
+        if (step.autoProceed)
+        {
+            yield return new WaitForSeconds(1.0f);
             NextStep();
         }
     }
 
-    private void OnTargetClicked()
+    private void HandleEvent(TutorialID eventID)
     {
-        if (!isWaitingForInput) return;
+        if (currentStep == null)
+            return;
 
-        isWaitingForInput = false;
+        if (currentStep.completeEvent != eventID)
+            return;
 
         HighlightSystem.Instance.Clear();
         TutorialDialogue.Instance.HideDialogue();

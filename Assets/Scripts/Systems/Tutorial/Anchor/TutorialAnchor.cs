@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TutorialAnchor : MonoBehaviour
 {
-    public TutorialAnchorID anchorID;
+    public TutorialID anchorID;
 
     private void OnEnable()
     {

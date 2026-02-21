@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
   m_Name: TestStep2
   m_EditorClassIdentifier: 
-  targetAnchor: 1
-  dialogue: "\uC124\uBA85\uCC3D \uD14C\uC2A4\uD2B8"
-  waitForClick: 1
+  highlightTarget: 8
+  dialogue: "\uB3C4\uAD6C\uB97C \uBCC0\uACBD\uD574\uBCF4\uC790."
+  showDialogue: 1
+  completeEvent: 8
   autoProceed: 0

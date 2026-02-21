@@ -3,12 +3,12 @@ using UnityEngine;
 
 public static class AnchorRegistry
 {
-    private static Dictionary<TutorialAnchorID, TutorialAnchor> anchors
-        = new Dictionary<TutorialAnchorID, TutorialAnchor>();
+    private static Dictionary<TutorialID, TutorialAnchor> anchors
+        = new Dictionary<TutorialID, TutorialAnchor>();
 
-    public static void Register(TutorialAnchorID id, TutorialAnchor anchor)
+    public static void Register(TutorialID id, TutorialAnchor anchor)
     {
-        if (id == TutorialAnchorID.None)
+        if (id == TutorialID.None)
         {
             Debug.LogWarning("Invalid Anchor ID: None");
             return;
@@ -23,7 +23,7 @@ public static class AnchorRegistry
         anchors.Add(id, anchor);
     }
 
-    public static void Unregister(TutorialAnchorID id, TutorialAnchor anchor)
+    public static void Unregister(TutorialID id, TutorialAnchor anchor)
     {
         if (anchors.ContainsKey(id) && anchors[id] == anchor)
         {
@@ -31,7 +31,7 @@ public static class AnchorRegistry
         }
     }
 
-    public static TutorialAnchor GetAnchor(TutorialAnchorID id)
+    public static TutorialAnchor GetAnchor(TutorialID id)
     {
         if (anchors.TryGetValue(id, out var anchor))
         {
@@ -42,7 +42,7 @@ public static class AnchorRegistry
         return null;
     }
 
-    public static bool HasAnchor(TutorialAnchorID id)
+    public static bool HasAnchor(TutorialID id)
     {
         return anchors.ContainsKey(id);
     }
