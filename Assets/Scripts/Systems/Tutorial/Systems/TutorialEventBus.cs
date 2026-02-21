@@ -2,10 +2,25 @@ using System;
 
 public static class TutorialEventBus
 {
-    public static Action<TutorialID> OnEvent;
+    private static Action<TutorialID> onEvent;
 
-    public static void Raise(TutorialID ID)
+    public static void Raise(TutorialID id)
     {
-        OnEvent?.Invoke(ID);
+        onEvent?.Invoke(id);
+    }
+
+    public static void Subscribe(Action<TutorialID> listener)
+    {
+        onEvent += listener;
+    }
+
+    public static void Unsubscribe(Action<TutorialID> listener)
+    {
+        onEvent -= listener;
+    }
+
+    public static void Clear()
+    {
+        onEvent = null;
     }
 }

@@ -17,5 +17,8 @@ public enum TutorialID
     EmployeeButton,
 
     ToolButton,
-    GatheringItem
+    GatheringItem,
+
+    StoreDescription,
+    StoreItemBuy,
 }

@@ -25,18 +25,19 @@ public class TutorialManager : MonoBehaviour
 
     private void OnEnable()
     {
-        TutorialEventBus.OnEvent += HandleEvent;
+        TutorialEventBus.Subscribe(HandleEvent);
     }
 
     private void OnDisable()
     {
-        TutorialEventBus.OnEvent -= HandleEvent;
+        TutorialEventBus.Unsubscribe(HandleEvent);
     }
 
     private void Start()
     {
         StartTutorial();
     }
+
 
     public void StartTutorial()
     {

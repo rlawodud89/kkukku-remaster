@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: TestStep3
+  m_Name: TestStep5
   m_EditorClassIdentifier: 
-  highlightTarget: 0
-  dialogue: "\uC124\uBA85\uCC3D\uB9CC \uC788\uB294 \uACBD\uC6B0"
+  highlightTarget: 12
+  dialogue: "+- \uBC84\uD2BC\uC744 \uC218\uB7C9\uC744 \uC870\uC808\uD558\uACE0, \uAD6C\uB9E4
+    \uBC84\uD2BC\uC744 \uB204\uB974\uBA74 \uAD6C\uB9E4\uD560 \uC218 \uC788\uC5B4."
   showDialogue: 1
-  completeEvent: 1
+  completeEvent: 12
   autoProceed: 0
