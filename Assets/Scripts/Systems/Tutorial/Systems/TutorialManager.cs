@@ -60,6 +60,13 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator RunStep(TutorialStep step)
     {
+        // 대화창만 있는 경우(DialogueNext), Mask 대신 따로 입력 차단
+        bool shouldBlockInput =
+            step.completeEvent == TutorialID.DialogueNext;
+
+        TutorialInputBlocker.Instance.SetBlock(shouldBlockInput);
+
+
         // 하이라이트 처리
         if (step.highlightTarget != TutorialID.None)
         {
@@ -76,11 +83,13 @@ public class TutorialManager : MonoBehaviour
             HighlightSystem.Instance.Clear();
         }
 
+
         // 대사 처리
         if (step.showDialogue)
             TutorialDialogue.Instance.ShowDialogue(step.dialogue);
         else
             TutorialDialogue.Instance.HideDialogue();
+
 
         // 자동 진행
         if (step.autoProceed)
@@ -100,6 +109,7 @@ public class TutorialManager : MonoBehaviour
 
         HighlightSystem.Instance.Clear();
         TutorialDialogue.Instance.HideDialogue();
+        TutorialInputBlocker.Instance.SetBlock(false);
 
         NextStep();
     }

@@ -23,5 +23,12 @@ public class TutorialDialogue : MonoBehaviour
     public void HideDialogue()
     {
         dialoguePanel.SetActive(false);
+
+    }
+
+    public void OnClickCloseButton()
+    {
+        dialoguePanel.SetActive(false);
+        TutorialEventBus.Raise(TutorialID.DialogueNext);
     }
 }
