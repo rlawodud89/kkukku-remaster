@@ -37,5 +37,5 @@ public class WallpaperItem
 {
     public string itemName;       // 이름
     public Sprite itemImage;      // 이미지
-    public TileBase tileBase;
+    public TileBase[] wallTiles = new TileBase[3];
 }
