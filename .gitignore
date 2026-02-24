@@ -100,3 +100,4 @@ InitTestScene*.unity*
 
 # SQLite Test DB file
 Assets/StreamingAssets/kkukkuDB.db
+Assets/StreamingAssets/kkukkuDB.db.meta
