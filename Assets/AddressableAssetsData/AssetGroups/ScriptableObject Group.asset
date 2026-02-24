@@ -89,11 +89,23 @@ MonoBehaviour:
     m_SerializedLabels:
     - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 215bcbe4f3af11c438c48d972ed8cd04
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uCCB4\uD06C\uBB34\uB2AC\uCE74\uD3AB\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2691f4f84176b224db1d174bb384a6bc
     m_Address: Assets/ScriptableObjects/Customer/Fox.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a294ec289c8fc443a51f30e23441d4d
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAC00\uAC8C\uAE30\uBCF8\uBC14\uB2E5\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30e1c0089e4e4c94c864ceea14dfa449
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD22C\uBA85\uD558\uACE0
@@ -138,6 +150,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4449e02aa9b4b794ba415acbfe198497
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uC6E8\uC778\uC2A4\uCF54\uD305\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4813aec0d0a3a4a44baf523c9cd80abe
     m_Address: Assets/ScriptableObjects/Customer/Frog.asset
@@ -252,6 +270,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cf4aee770300f6448bd3cbd38c69a0d
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uCC38\uB098\uBB34\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80aafc7c48da6034084228e659b66c37
     m_Address: Assets/ScriptableObjects/InteriorItem/Room/Worker/CatEmployee.asset
     m_ReadOnly: 0
@@ -342,6 +366,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - blanket
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf955827781db0c45b8843f1f1d39dda
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uD558\uD2B8\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0b74ef7019d419428ca1f2ddb840da5
     m_Address: "Assets/ScriptableObjects/InteriorItem/Shop/Table/\uAE30\uBCF8 \uBCBD\uC7A5.asset"
     m_ReadOnly: 0
@@ -365,6 +395,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7d1e70d4b090ba459e8964f84a250e1
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uBE48\uD2F0\uC9C0\uAF43\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ca9cc440e4dfd1d4ca960be7d1399160
     m_Address: Assets/ScriptableObjects/Customer/Owl.asset
@@ -403,12 +439,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - customer
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e39d048ca3812dc4b848d60f7b7fd838
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uAC00\uAC8C\uAE30\uBCF8\uBCBD\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e746450314ca6fa409dd69d1f80fcc2c
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD560\uBA38\uB2C8\uC758
       \uAF43\uBC14\uB298.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7af72513ca8b034ea35f7ead6221cf2
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAC00\uBB38\uBE44\uB098\uBB34\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed4648b151803af4e8eead68cb29952a
     m_Address: Assets/ScriptableObjects/Customer/Lion.asset
@@ -422,6 +470,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - blanket
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9629331a7469014092962491805ac77
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uD5E4\uB9C1\uBCF8\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff525bb32dbde504f951f6722076cfdd
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uC6B4\uBB34\uC19C.asset"

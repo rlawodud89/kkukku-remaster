@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d4686b6f16223ea43b2b0cd34ff883fd
+guid: 10b9c007e1e97c74cbf5585e3121299b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 479
+  spritePixelsToUnits: 245
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -121,7 +121,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: "\uD558\uD2B8 1_0"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 122.5
+        width: 245
+        height: 122.5
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 206e935ca9ad3884eaecb9b12bbdf74b
+      internalID: 870964708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uD558\uD2B8 1_1"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0.5
+        width: 245
+        height: 122.5
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d32dfb669b486f4a87aa0ddf9320ef6
+      internalID: -2008940207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +174,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "\uD558\uD2B8 1_0": 870964708
+      "\uD558\uD2B8 1_1": -2008940207
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
