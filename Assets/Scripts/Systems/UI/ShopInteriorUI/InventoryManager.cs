@@ -9,8 +9,9 @@ public class InventoryManager : MonoBehaviour
 
     [Header("아이템 리스트 (데이터)")]
     public List<FurnitureItem> furnitureList = new List<FurnitureItem>();
-    public List<TileItem> tileList = new List<TileItem>();
+    public List<FloorItem> tileList = new List<FloorItem>();
     public List<WallpaperItem> wallpaperList = new List<WallpaperItem>();
+
 
     private int currentPage = 0;
     private int itemsPerPage = 8;

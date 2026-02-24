@@ -27,7 +27,7 @@ public class FurnitureItem
     public GameObject prefab;
 }
 
-public class TileItem
+public class FloorItem
 {
     public string itemName;       // 이름
     public Sprite itemImage;      // 이미지
