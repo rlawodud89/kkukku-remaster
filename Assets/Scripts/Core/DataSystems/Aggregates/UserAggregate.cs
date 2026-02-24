@@ -178,7 +178,6 @@ public class UserAggregate : IAggregate
         return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
     }
 
-
     public (int level, (int x, int y) size) GetShopLevel()
     {
         return (user.shopLevel, shopLevelSize[user.shopLevel]);
@@ -254,4 +253,9 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public void GetCurrentShopGridSize(out int x, out int y)
+    {
+        x = shopLevelSize[user.shopLevel].x;
+        y = shopLevelSize[user.shopLevel].y;
+    }
 }

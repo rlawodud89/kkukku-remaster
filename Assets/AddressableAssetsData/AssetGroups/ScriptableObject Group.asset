@@ -139,12 +139,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c1aafea8f8384e41a36e7b18ba6fedc
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAE30\uBCF8\uBC14\uB2E5\uD0C0\uC77C.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - tileInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42215d9702cfd974886604c0e1852248
     m_Address: Assets/ScriptableObjects/Customer/Capybara.asset
     m_ReadOnly: 0
