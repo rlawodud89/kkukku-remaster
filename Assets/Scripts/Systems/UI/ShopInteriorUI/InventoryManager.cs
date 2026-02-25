@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class InventoryManager : MonoBehaviour
     public List<FloorItem> tileList = new List<FloorItem>();
     public List<WallpaperItem> wallpaperList = new List<WallpaperItem>();
 
+    public Tilemap floorTilemap; // 바닥을 깔 타일맵
+    public Tilemap wallTilemap;  // 벽지를 깔 타일맵
+
+    [Header("현재 장착 중인 아이템 추적")]
+    public string currentFloorName = "";       // 현재 깔려있는 바닥 이름
+    public string currentWallpaperName = "";   // 현재 발려있는 벽지 이름
 
     private int currentPage = 0;
     private int itemsPerPage = 8;
@@ -47,33 +54,74 @@ public class InventoryManager : MonoBehaviour
                 if (itemIndex < furnitureList.Count)
                 {
                     var item = furnitureList[itemIndex];
-                    // 가구는 quantity를 넣고, showCount를 true로 전달
-                    slots[i].UpdateSlot(item.itemImage, item.itemName, item.quantity, true);
+                    // 가구는 isEquipped 자리에 false 전달 (개수 0일 때 잠기는 건 ItemSlot이 알아서 함)
+                    slots[i].UpdateSlot(item.itemImage, item.itemName, 0, item.quantity, true, false);
                 }
-                else { slots[i].UpdateSlot(null, "", 0, false); }
+                else { slots[i].UpdateSlot(null, "", 0, 0, false, false); }
             }
             else if (currentCategory == 1) // 타일 탭
             {
                 if (itemIndex < tileList.Count)
                 {
                     var item = tileList[itemIndex];
-                    // 타일은 showCount를 false로 전달하여 숫자 숨김
-                    slots[i].UpdateSlot(item.itemImage, item.itemName, 0, false);
+                    // ✨ 현재 깔려있는 바닥 이름과 일치하는지 확인
+                    bool isEquipped = (item.itemName == currentFloorName);
+                    slots[i].UpdateSlot(item.itemImage, item.itemName, 1, 0, false, isEquipped);
                 }
-                else { slots[i].UpdateSlot(null, "", 0, false); }
+                else { slots[i].UpdateSlot(null, "", 1, 0, false, false); }
             }
             else if (currentCategory == 2) // 벽지 탭
             {
                 if (itemIndex < wallpaperList.Count)
                 {
                     var item = wallpaperList[itemIndex];
-                    // 벽지도 showCount를 false로 전달
-                    slots[i].UpdateSlot(item.itemImage, item.itemName, 0, false);
+                    // ✨ 현재 발려있는 벽지 이름과 일치하는지 확인
+                    bool isEquipped = (item.itemName == currentWallpaperName);
+                    slots[i].UpdateSlot(item.itemImage, item.itemName, 2, 0, false, isEquipped);
                 }
-                else { slots[i].UpdateSlot(null, "", 0, false); }
+                else { slots[i].UpdateSlot(null, "", 2, 0, false, false); }
             }
         }
     }
+
+    public void PlaceTileOnMap(string targetName, int category, Vector3 mousePosition)
+    {
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
+        worldPoint.z = 0;
+
+        if (category == 1) // 바닥 타일 탭일 때
+        {
+            FloorItem itemToPlace = tileList.Find(x => x.itemName == targetName);
+            if (itemToPlace != null)
+            {
+                Vector3Int dropCellPos = floorTilemap.WorldToCell(worldPoint);
+
+                if (floorTilemap.HasTile(dropCellPos))
+                {
+                    BoundsInt bounds = floorTilemap.cellBounds;
+                    foreach (Vector3Int pos in bounds.allPositionsWithin)
+                    {
+                        if (floorTilemap.HasTile(pos))
+                        {
+                            floorTilemap.SetTile(pos, itemToPlace.tileBase);
+                        }
+                    }
+
+                    // ✨ 핵심: 타일을 다 깔고 나서 현재 장착 중인 이름 업데이트 후 UI 다시 그리기!
+                    currentFloorName = targetName;
+                    RefreshUI();
+
+                    Debug.Log($"[{targetName}] 바닥 전체 교체 완료!");
+                }
+            }
+        }
+        else if (category == 2) // 벽지
+        {
+            // 나중에 구현할 때 currentWallpaperName = targetName; 과 RefreshUI() 추가
+        }
+    }
+
+
 
     // --- 페이지 넘기기 함수 ---
     public void OnClickNextPage()

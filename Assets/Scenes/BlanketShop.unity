@@ -3055,6 +3055,10 @@ MonoBehaviour:
   - {fileID: 1891401692}
   - {fileID: 390855385}
   - {fileID: 896409447}
+  floorTilemap: {fileID: 1470153661}
+  wallTilemap: {fileID: 995760815}
+  currentFloorName: 
+  currentWallpaperName: 
 --- !u!1 &886224995
 GameObject:
   m_ObjectHideFlags: 0
