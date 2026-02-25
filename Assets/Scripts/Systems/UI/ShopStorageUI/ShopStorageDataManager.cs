@@ -51,17 +51,6 @@ public class ShopStorageDataManager : MonoBehaviour
         ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(4, "살구빛 이불", 7);
         */
 
-        ServiceLocator.Get<GameData>().Interior.SetTileInterior(
-                                                        TilePositionType.SHOP_WALL, "가게기본벽타일");
-        // -> 가게 벽 타일 변경
-
-        ServiceLocator.Get<GameData>().Interior.SetTileInterior(
-                                                                TilePositionType.ROOM_FLOOR, "가게기본바닥타일");
-        // -> 작업실 바닥 타일 변경
-
-        ServiceLocator.Get<GameData>().Inventory.AddTileInteriorItem("빈티지꽃타일");
-        ServiceLocator.Get<GameData>().Inventory.AddTileInteriorItem("체크무늬카펫타일");
-
 
         // pathfinding 할당 확인
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
