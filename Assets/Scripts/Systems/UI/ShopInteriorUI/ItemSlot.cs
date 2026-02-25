@@ -61,7 +61,7 @@ public class ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // ✨ 빈 슬롯이거나 비활성화(isDisabled) 상태면 드래그 시작 자체를 막음!
+        // 빈 슬롯이거나 비활성화 상태면 드래그 막음
         if (string.IsNullOrEmpty(currentItemName) || isDisabled) return;
 
         ghostIcon = new GameObject("GhostIcon");
@@ -71,8 +71,13 @@ public class ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         Image ghostImage = ghostIcon.AddComponent<Image>();
         ghostImage.sprite = itemIcon.sprite;
-        ghostImage.SetNativeSize();
 
+        // ✨ 수정된 부분: SetNativeSize()를 지우고, 슬롯 아이콘의 실제 크기를 복사합니다!
+        RectTransform ghostRect = ghostIcon.GetComponent<RectTransform>();
+        RectTransform iconRect = itemIcon.GetComponent<RectTransform>();
+        ghostRect.sizeDelta = new Vector2(iconRect.rect.width, iconRect.rect.height);
+
+        // 투명도 설정 및 마우스 클릭 방해 금지
         Color c = ghostImage.color;
         c.a = 0.6f;
         ghostImage.color = c;

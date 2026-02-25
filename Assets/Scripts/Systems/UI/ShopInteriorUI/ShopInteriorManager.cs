@@ -10,6 +10,9 @@ public class ShopInteriorManager : MonoBehaviour
 
     public Transform furnitureParent; // 가구들이 생성될 부모 객체
 
+    [Header("가구 부모 객체")]
+    public Transform objectParent; // 유니티 에디터에서 'object'라는 이름의 게임오브젝트를 끌어다 넣으세요!
+
     // ==========================================
     // 데이터 매니저에서 호출할 초기화 함수
     // ==========================================
@@ -59,14 +62,32 @@ public class ShopInteriorManager : MonoBehaviour
     {
         if (info.prefab == null) return;
 
-        int gridWidth = ShopStorageDataManager.Instance.pathfinding.totalGridWidth;
-        int x = info.placement % gridWidth;
-        int y = info.placement / gridWidth;
+        // 1. Pathfinding을 통해 '왼쪽 위(Top-Left)' 그리드 좌표를 가져옵니다.
+        Vector3Int topLeftCell = ShopStorageDataManager.Instance.pathfinding.IndexToPos(info.placement);
 
-        Vector3Int cellPos = new Vector3Int(x, y, 0);
-        Vector3 spawnPosition = floorTilemap.GetCellCenterWorld(cellPos);
+        // 2. 가구 피벗이 '왼쪽 아래(Bottom-Left)'로 설정되었으므로, 
+        // 가구가 차지하는 전체 영역 중 가장 '왼쪽 아래 칸'의 좌표를 구합니다.
+        // (Y축은 아래로 갈수록 작아지므로 Height - 1 을 빼줍니다.)
+        Vector3Int bottomLeftCell = new Vector3Int(topLeftCell.x, topLeftCell.y - info.Height + 1, 0);
 
-        Instantiate(info.prefab, spawnPosition, Quaternion.identity, furnitureParent);
+        // 3. 타일맵의 CellToWorld는 해당 타일 칸의 '왼쪽 아래 꼭짓점'을 정확히 반환합니다!
+        Vector3 spawnPosition = floorTilemap.CellToWorld(bottomLeftCell);
+
+        // 4. 가구 오브젝트 생성
+        GameObject spawnedFurniture = Instantiate(info.prefab, spawnPosition, Quaternion.identity, objectParent);
+        spawnedFurniture.name = info.prefab.name;
+
+        // ✨ 5. 핵심: 생성된 가구에 고유 ID 전달하기
+        // 생성된 오브젝트에서 ShopStorageClick 컴포넌트를 찾습니다.
+        ShopStorageClick storageClick = spawnedFurniture.GetComponent<ShopStorageClick>();
+        if (storageClick != null)
+        {
+            // DB에서 가져온 진짜 고유 ID를 스크립트에 덮어씌워 줍니다.
+            storageClick.storageID = info.ID;
+
+            // 혹시 모를 딜레이를 방지하기 위해, ID를 넣자마자 바로 이미지를 업데이트하도록 강제로 한 번 더 불러줍니다.
+            storageClick.UpdateSpriteState();
+        }
     }
 
     // ==========================================
@@ -88,57 +109,50 @@ public class ShopInteriorManager : MonoBehaviour
 
     public void PlaceWallpaperEntirely(WallpaperItem wallpaperItem)
     {
-        // 벽지는 타일이 3개(중간, 위, 아래) 필요하므로 배열 길이 확인
         if (wallpaperItem == null || wallpaperItem.wallTiles.Length < 3) return;
 
         BoundsInt bounds = wallTilemap.cellBounds;
-
-        // 1. 벽 타일이 있는 곳 중 '가장 오른쪽 X 좌표(maxX)' 찾기
+        int minY = int.MaxValue;
         int maxX = int.MinValue;
+        HashSet<int> wallXCoords = new HashSet<int>();
+
+        // 1. 벽이 있는 X 좌표들을 싹 다 수집하고, '진짜 1층(가장 아래)'의 Y 좌표를 찾습니다.
         foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
             if (wallTilemap.HasTile(pos))
             {
-                if (pos.x > maxX)
-                {
-                    maxX = pos.x;
-                }
+                wallXCoords.Add(pos.x);
+                if (pos.x > maxX) maxX = pos.x;
+                if (pos.y < minY) minY = pos.y;
             }
         }
 
-        // 2. 본격적으로 조건에 맞춰 벽지 바르기
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        if (wallXCoords.Count == 0) return;
+
+        // 2. 수집한 X 좌표마다, 기존에 꼬여있던 1~4층 타일들을 싹 다 지우고 새로 바릅니다.
+        foreach (int x in wallXCoords)
         {
-            if (wallTilemap.HasTile(pos))
+            // ✨ 핵심: 공중에 뜬 버그 타일까지 포함해서 해당 세로줄을 싹 지워버림
+            for (int y = bounds.yMin; y <= bounds.yMax; y++)
             {
-                // 현재 칸이 '가장 오른쪽에서부터 두 번째 칸'인지 확인
-                bool isSecondFromRight = (pos.x == maxX - 1);
-
-                // [1층 / 가장 아래 줄] 
-                if (isSecondFromRight)
-                {
-                    wallTilemap.SetTile(pos, null); // 아무 타일도 넣지 않음 (문 공간)
-                }
-                else
-                {
-                    wallTilemap.SetTile(pos, wallpaperItem.wallTiles[0]); // 기본 타일베이스
-                }
-
-                // [2층 / 그 다음 줄] 
-                Vector3Int middlePos = pos + new Vector3Int(0, 1, 0);
-                if (isSecondFromRight)
-                {
-                    wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[1]); // 상단 타일베이스
-                }
-                else
-                {
-                    wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[0]); // 기본 타일베이스
-                }
-
-                // [3층 / 가장 위의 줄]
-                Vector3Int topPos = pos + new Vector3Int(0, 2, 0);
-                wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]); // 하단 타일베이스
+                wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
             }
+
+            // 이제 minY를 기준으로 정확하게 3단을 쌓아 올립니다.
+            Vector3Int basePos = new Vector3Int(x, minY, 0);
+            bool isSecondFromRight = (x == maxX - 1);
+
+            // [1층 / 가장 아래 줄] 문 공간은 비우기
+            if (!isSecondFromRight) wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
+
+            // [2층 / 중간 줄] 문 윗부분(상단) 또는 기본 타일
+            Vector3Int middlePos = basePos + new Vector3Int(0, 1, 0);
+            if (isSecondFromRight) wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[1]);
+            else wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[0]);
+
+            // [3층 / 가장 윗 줄] 하단 타일
+            Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
+            wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
         }
     }
 }
