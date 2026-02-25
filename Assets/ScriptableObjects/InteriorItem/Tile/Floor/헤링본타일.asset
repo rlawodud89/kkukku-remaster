@@ -16,3 +16,6 @@ MonoBehaviour:
   tileType: 1
   image: {fileID: 21300000, guid: aa4252fd6f445554ea5216be00e16bb0, type: 3}
   price: 0
+  tileBase: {fileID: 11400000, guid: f1c8533e7d4fca14eaaed73bf1b3f59e, type: 2}
+  topTileBase: {fileID: 0}
+  bottomTileBase: {fileID: 0}

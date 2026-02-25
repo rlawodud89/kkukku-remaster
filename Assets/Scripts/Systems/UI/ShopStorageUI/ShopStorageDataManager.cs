@@ -14,14 +14,16 @@ public class ShopStorageDataManager : MonoBehaviour
 
     public Pathfinding pathfinding;
     public CashierManager cashierManager;
+
+    public ShopInteriorManager interiorManager;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         // 가게 그리드 설정 불러오기
-        pathfinding.totalGridHeight = 6;
-        pathfinding.totalGridWidth = 10;
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out pathfinding.totalGridWidth, out pathfinding.totalGridHeight);
         pathfinding.CalculateGridOrigin();
 
         interiorData = new ShopInteriorData();
@@ -49,6 +51,15 @@ public class ShopStorageDataManager : MonoBehaviour
         ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(4, "살구빛 이불", 7);
         */
 
+
+        ServiceLocator.Get<GameData>().Inventory.AddTileInteriorItem("가게기본바닥타일");
+        ServiceLocator.Get<GameData>().Inventory.AddTileInteriorItem("가게기본벽타일");
+
+        ServiceLocator.Get<GameData>().Interior.SetTileInterior(TilePositionType.SHOP_WALL, "가게기본벽타일");
+        // -> 가게 벽 타일 변경
+
+        ServiceLocator.Get<GameData>().Interior.SetTileInterior(TilePositionType.ROOM_FLOOR, "가게기본바닥타일");
+        // -> 작업실 바닥 타일 변경
 
         // pathfinding 할당 확인
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
@@ -89,6 +100,12 @@ public class ShopStorageDataManager : MonoBehaviour
 
         cashierManager.cashierPosIndex = interiorData.Casher.placement;
         cashierManager.cashierWidth = interiorData.Casher.Width;
+
+        if (interiorManager != null)
+        {
+            interiorManager.InitializeShopInterior(); // 맵에 가구 소환!
+        }
+
     }
 
     private void LoadInteriorData()
