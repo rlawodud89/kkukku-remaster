@@ -1478,9 +1478,37 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -161
       objectReference: {fileID: 0}
+    - target: {fileID: 6011688224257869468, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011688224257869468, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011688224257869468, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -17
+      objectReference: {fileID: 0}
     - target: {fileID: 6954155075049089963, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
       propertyPath: m_Name
       value: ToolInventoryUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8000817994668049997, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8939628240989522844, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8939628240989522844, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: 8939628240989522844, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.13327901
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -150,6 +150,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - tileInterior
+  - m_GUID: 468e61287b8ebc44781bd22f2b79479a
+    m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uC911\uAE09\uB09A\uC2DC\uB300.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tool
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4813aec0d0a3a4a44baf523c9cd80abe
     m_Address: Assets/ScriptableObjects/Customer/Frog.asset
@@ -315,6 +320,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - roomInterior
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c4b278102228c341a49f3963aa67c37
+    m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uCD08\uAE09\uB09A\uC2DC\uB300.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tool
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 991ed990c15b94d4d8d5b9126d427fac
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uC559\uC99D\uB9DE\uC740
