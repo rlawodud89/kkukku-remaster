@@ -17,6 +17,8 @@ MonoBehaviour:
   image: {fileID: -1912704371, guid: 4ed528b528a916146ab0dfd433560ebc, type: 3}
   prefab: {fileID: 2196293096841948034, guid: 20d876c48b62d804d9737708e08e82f9, type: 3}
   price: 0
+  itemWidth: 1
+  itemHeight: 1
   slotCount: 30
   maxStamina: 0
   workingTime: 0

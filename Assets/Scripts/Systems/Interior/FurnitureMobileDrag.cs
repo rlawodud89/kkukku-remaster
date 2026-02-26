@@ -21,6 +21,8 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
     private bool isRealDrag = false;
     private Vector3 dragOffset;
     private Vector3 startDragPos;
+    public int myID = -1;
+
 
     private void Start()
     {
@@ -28,6 +30,10 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
         spriteRenderer = GetComponent<SpriteRenderer>();
         mpb = new MaterialPropertyBlock();
         
+        if (TryGetComponent<WR_StorageController>(out var script))
+        {
+            myID = script.myStorageID;
+        }
         // Grid 변수는 이제 SnapToGrid에서 InteriorManager를 직접 쓰므로 제거해도 됩니다.
     }
 
@@ -72,8 +78,11 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
 
         if (isRealDrag)
         {
-            // 오프셋을 더한 "가구의 원점(Bottom-Left)이 있어야 할 위치"를 넘김
-            SnapToGrid(currentPos + dragOffset);
+            Vector3 targetPos = currentPos + dragOffset;
+            SnapToGrid(targetPos);
+            
+            // ★ 매니저에게 내 '이름(itemName)'도 같이 넘겨서 크기를 물어보게 합니다!
+            InteriorManager.Instance.UpdateGridHighlight(targetPos, myID, gameObject.name);
         }
     }
 

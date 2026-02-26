@@ -17,6 +17,12 @@ public class InteriorManager : MonoBehaviour
     [SerializeField] private Sprite editModeOffSprite;
     [SerializeField] private TextMeshProUGUI buttonText;
 
+    [Header("Inventory UI")]
+    [SerializeField] private GameObject RoomInteriorInventoryPanel;
+    [SerializeField] private Transform RoomInteriorInventoryContent; 
+    [SerializeField] private GameObject RoomInteriorInventorySlotPrefab;
+    
+
     [Header("Prefabs & Parents")]
     [SerializeField] private List<GameObject> allFurniturePrefabs; 
     [SerializeField] private Transform furnitureParent; 
@@ -25,6 +31,12 @@ public class InteriorManager : MonoBehaviour
     [SerializeField] private int gridWidth = 8;  
     [SerializeField] private int gridHeight = 6; 
     [SerializeField] private float cellSize = 0.7f; 
+
+    [Header("Grid Highlight")]
+    public Transform gridHighlightObj;      // 방금 만든 GridHighlight 객체 연결
+    public SpriteRenderer highlightSprite;  // 색상을 바꾸기 위해 연결
+    public Color colorValid = new Color(0, 1, 0, 0.5f);   // 놓을 수 있음 (반투명 초록)
+    public Color colorInvalid = new Color(1, 0, 0, 0.5f); // 겹침/불가 (반투명 빨강)
 
     [Header("Visual Adjustment")]
     [SerializeField] private float yVisualOffset = 0.35f; // ★ 이 값을 조절해서 위치를 땡기세요!
@@ -46,7 +58,7 @@ public class InteriorManager : MonoBehaviour
     {
 
         // 1. [테스트용] 강제로 데이터 집어넣기
-        InjectTestData(); 
+        //InjectTestData(); 
 
         // 2. [로드] 저장된 데이터 화면에 뿌리기
         SpawnFurniture(); 
@@ -70,6 +82,7 @@ public class InteriorManager : MonoBehaviour
         //interiorDB.AddRoomInterior(8, "PersonalCraftBox"); 
         //interiorDB.AddRoomInterior(15, "MaterialStorage"); 
         //interiorDB.AddRoomInterior(14, "SnackBox");
+        //interiorDB.AddRoomInterior(18, "고양이");
     }
 
     public void ToggleEditMode()
@@ -99,9 +112,7 @@ public class InteriorManager : MonoBehaviour
     // =================================================================
     // 1. [로드] DB에서 불러와서 배치하기
     // =================================================================
-// InteriorManager.cs
 
-// InteriorManager.cs
 
 public void SpawnFurniture()
 {
@@ -131,7 +142,7 @@ public void SpawnFurniture()
         GameObject obj = Instantiate(targetPrefab, spawnPos, Quaternion.identity, furnitureParent);
         obj.name = interior.itemName;
 
-        if (obj.TryGetComponent<WR_StorageClick>(out var script))
+        if (obj.TryGetComponent<WR_StorageController>(out var script))
         {
             script.myStorageID = interior.ID; 
         }
@@ -144,48 +155,48 @@ public void SpawnFurniture()
     // =================================================================
     // InteriorManager.cs
 
-public void InstallFurniture(int gridIndex, string itemName)
-{
-    Debug.Log($"[설치 시도] 위치: {gridIndex}, 이름: {itemName}");
-
-    // 1. 프리팹 리스트가 비어있는지 체크
-    if (allFurniturePrefabs == null || allFurniturePrefabs.Count == 0)
+    public void InstallFurniture(int gridIndex, string itemName)
     {
-        Debug.LogError("❌ [오류] InteriorManager에 'All Furniture Prefabs' 리스트가 비어있습니다! 인스펙터를 확인하세요.");
-        return;
+        Debug.Log($"[설치 시도] 위치: {gridIndex}, 이름: {itemName}");
+
+        // 1. 프리팹 리스트가 비어있는지 체크
+        if (allFurniturePrefabs == null || allFurniturePrefabs.Count == 0)
+        {
+            Debug.LogError("❌ [오류] InteriorManager에 'All Furniture Prefabs' 리스트가 비어있습니다! 인스펙터를 확인하세요.");
+            return;
+        }
+
+        // 2. 이름으로 프리팹 찾기
+        GameObject prefab = allFurniturePrefabs.Find(x => x.name == itemName);
+
+        if (prefab == null)
+        {
+            Debug.LogError($"❌ [오류] 프리팹을 찾을 수 없습니다! 찾는 이름: '{itemName}'");
+            Debug.LogError("팁: 리스트에 등록된 프리팹 이름과 데이터의 철자/띄어쓰기가 정확히 일치하는지 확인하세요.");
+            return;
+        }
+
+        // 3. 생성 및 배치
+        int newID = ServiceLocator.Get<GameData>().Interior.AddRoomInterior(gridIndex, itemName);
+        
+        GameObject obj = Instantiate(prefab, GridToWorld(gridIndex), Quaternion.identity, furnitureParent);
+        obj.name = itemName;
+
+        if (obj.TryGetComponent<WR_StorageController>(out var script))
+        {
+            script.myStorageID = newID;
+        }
+
+        // 리스트 추가
+        currentPlacedList.Add(new RoomInteriorPlaced 
+        { 
+            gridNumber = gridIndex, 
+            itemName = itemName, 
+            ID = newID 
+        });
+
+        Debug.Log($"✅ [성공] 가구 설치 완료! (ID: {newID})");
     }
-
-    // 2. 이름으로 프리팹 찾기
-    GameObject prefab = allFurniturePrefabs.Find(x => x.name == itemName);
-
-    if (prefab == null)
-    {
-        Debug.LogError($"❌ [오류] 프리팹을 찾을 수 없습니다! 찾는 이름: '{itemName}'");
-        Debug.LogError("팁: 리스트에 등록된 프리팹 이름과 데이터의 철자/띄어쓰기가 정확히 일치하는지 확인하세요.");
-        return;
-    }
-
-    // 3. 생성 및 배치
-    int newID = ServiceLocator.Get<GameData>().Interior.AddRoomInterior(gridIndex, itemName);
-    
-    GameObject obj = Instantiate(prefab, GridToWorld(gridIndex), Quaternion.identity, furnitureParent);
-    obj.name = itemName;
-
-    if (obj.TryGetComponent<WR_StorageClick>(out var script))
-    {
-        script.myStorageID = newID;
-    }
-
-    // 리스트 추가
-    currentPlacedList.Add(new RoomInteriorPlaced 
-    { 
-        gridNumber = gridIndex, 
-        itemName = itemName, 
-        ID = newID 
-    });
-
-    Debug.Log($"✅ [성공] 가구 설치 완료! (ID: {newID})");
-}
 
     // =================================================================
     // 3. [전체 저장] 가구를 드래그해서 위치를 바꿨을 때 사용 (Snapshot)
@@ -196,7 +207,7 @@ public void InstallFurniture(int gridIndex, string itemName)
 
         foreach (Transform child in furnitureParent)
         {
-            if (child.TryGetComponent<WR_StorageClick>(out var script))
+            if (child.TryGetComponent<WR_StorageController>(out var script))
             {
                 RoomInteriorPlaced data = new RoomInteriorPlaced();
                 
@@ -273,10 +284,14 @@ public void InstallFurniture(int gridIndex, string itemName)
     }
 
     // ============인테리어 edit Mode 관련 함수들 ============
-    
+    private int myID = -1;
     // 가구를 선택했을 때 호출
     public void SelectFurniture(FurnitureMobileDrag furniture)
     {
+        if (furniture.TryGetComponent<WR_StorageController>(out var script))
+        {
+            myID = script.myStorageID;
+        }
         // 1. 이미 다른 게 선택되어 있었다면? -> 걔는 선택 해제(UI 끄기)
         if (currentSelectedFurniture != null && currentSelectedFurniture != furniture)
         {
@@ -285,7 +300,7 @@ public void InstallFurniture(int gridIndex, string itemName)
 
         // 2. 새로운 녀석 선택
         currentSelectedFurniture = furniture;
-        
+        InteriorManager.Instance.UpdateGridHighlight(furniture.transform.position, myID, furniture.gameObject.name);
         // 3. 켜기
         if (currentSelectedFurniture != null)
         {
@@ -302,14 +317,58 @@ public void InstallFurniture(int gridIndex, string itemName)
             currentSelectedFurniture = null;
         }
         InteractionUI.Instance.HideMenu();
+        HideGridHighlight();
     }
+
+    public void UpdateGridHighlight(Vector3 targetPos, int furnitureID, string itemName)
+    {
+        if (gridHighlightObj == null) return;
+
+        int startGridIndex = WorldToGrid(targetPos);
+
+        if (startGridIndex == -1)
+        {
+            gridHighlightObj.gameObject.SetActive(false);
+            return;
+        }
+
+        // 1. SO에서 이 가구가 차지하는 가로/세로 칸 수 가져오기
+        var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+        int itemWidth = so != null ? so.itemWidth : 1; 
+        int itemHeight = so != null ? so.itemHeight : 1;
+
+        // 2. 하이라이트 네모의 크기(Scale)를 가구 크기에 맞게 쫙 늘려주기!
+        gridHighlightObj.localScale = new Vector3(itemWidth * cellSize, itemHeight * cellSize, 1f);
+
+        // 3. 위치 잡기: 왼쪽 아래(Bottom-Left) 기준점에서 폭과 높이의 '절반'만큼 우측 상단으로 이동
+        Vector3 cellBottomLeft = GridToWorld(startGridIndex);
+        gridHighlightObj.position = cellBottomLeft + new Vector3(itemWidth * cellSize * 0.5f, itemHeight * cellSize * 0.5f, 0f);
+
+        gridHighlightObj.gameObject.SetActive(true);
+
+        // 4. 이 가구가 차지할 '모든 칸'이 맵을 안 벗어났고 & 비어있는지 검사
+        bool isInvalid = CheckIfPlacementInvalid(startGridIndex, itemWidth, itemHeight, furnitureID);
+
+        // 5. 결과에 따라 초록색 / 빨간색 지정
+        if (highlightSprite) 
+        {
+            highlightSprite.color = isInvalid ? colorInvalid : colorValid;
+        }
+    }
+
+    // 하이라이트를 아예 끄는 함수 (드래그가 끝났을 때 사용)
+    public void HideGridHighlight()
+    {
+        if (gridHighlightObj != null) gridHighlightObj.gameObject.SetActive(false);
+    }
+
 
     // 보관함 이동
     public void RemoveFurnitureData(FurnitureMobileDrag furniture)
     {
         // 1. 리스트에서 제거 (스크립트에 ID가 있다고 가정)
         // 만약 FurnitureMobileDrag에 ID가 없다면 GetComponent로 가져와야 함
-        if(furniture.TryGetComponent<WR_StorageClick>(out var dataScript))
+        if(furniture.TryGetComponent<WR_StorageController>(out var dataScript))
         {
              var target = currentPlacedList.Find(x => x.ID == dataScript.myStorageID);
              if (target != null) currentPlacedList.Remove(target);
@@ -320,6 +379,544 @@ public void InstallFurniture(int gridIndex, string itemName)
         {
             currentSelectedFurniture = null;
             InteractionUI.Instance.HideMenu();
+        }
+    }
+
+   public void StoreSelectedFurniture()
+    {
+        if (currentSelectedFurniture == null) return;
+
+        if (currentSelectedFurniture.TryGetComponent<WR_StorageController>(out var script))
+        {
+            int targetID = script.myStorageID;
+            
+            // 핵심 방어 로직: 수납장 안에 물건이 1개라도 있는지 검사!
+            if (script.myStorageType == StorageUIController.StorageType.Material ||
+                script.myStorageType == StorageUIController.StorageType.Blanket ||
+                script.myStorageType == StorageUIController.StorageType.Snack ||
+                script.myStorageType == StorageUIController.StorageType.CraftBox)
+            {
+                int itemCount = GetItemCountInSpecificBox(script.myStorageType, targetID);
+                
+                if (itemCount > 0)
+                {
+                    Debug.LogWarning($"🚨 [수거 불가] 상자 안에 아이템이 {itemCount}개 들어있습니다! 먼저 비워주세요.");
+                    InteractionUI.Instance.HideMenu();
+                    return; 
+                }
+            }
+
+            string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim(); 
+            var gameData = ServiceLocator.Get<GameData>();
+
+            // DB 처리 
+            gameData.Interior.RemoveRoomInterior(targetID); 
+            gameData.Inventory.AddRoomInteriorItem(itemName, 1); 
+
+            // 로컬 리스트 처리
+            var targetData = currentPlacedList.Find(x => x.ID == targetID);
+            if (targetData != null) currentPlacedList.Remove(targetData);
+
+            // 실제 화면에서 오브젝트 파괴
+            Destroy(currentSelectedFurniture.gameObject);
+
+            Debug.Log($"✅ [수거 완료] 빈 '{itemName}' 가구를 보관함으로 넣었습니다!");
+
+            DeselectCurrent();
+        }
+    }
+    public void ConfirmFurnitureMove()
+    {
+        if (currentSelectedFurniture == null) return;
+
+        if (currentSelectedFurniture.TryGetComponent<WR_StorageController>(out var script))
+        {
+            int targetID = script.myStorageID;
+            
+            // 1. 현재 화면 상의 위치를 그리드 번호로 변환
+            int newGridIndex = WorldToGrid(currentSelectedFurniture.transform.position);
+
+            // 2. 맵의 왼쪽/아래쪽 완전 이탈 검사 (안전장치)
+            if (newGridIndex == -1)
+            {
+                Debug.LogWarning("맵 바깥으로는 가구를 배치할 수 없습니다!");
+                // TODO: 원래 자리로 되돌리는 로직 추가 가능
+                return;
+            }
+
+
+            string itemName = currentSelectedFurniture.gameObject.name; // 프리팹 이름
+            var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+            
+            int itemWidth = so != null ? so.itemWidth : 1;
+            int itemHeight = so != null ? so.itemHeight : 1;
+
+            if (CheckIfPlacementInvalid(newGridIndex, itemWidth, itemHeight, targetID))
+            {
+                Debug.LogWarning("여기는 가구를 놓을 수 없는 자리(맵 이탈 또는 겹침)입니다!");
+                // TODO: 유저에게 겹쳤다고 UI 알림 띄우기 (또는 제자리로 튕겨내기)
+                return;
+            }
+
+            var placedData = currentPlacedList.Find(x => x.ID == targetID);
+            if (placedData != null)
+            {
+                placedData.gridNumber = newGridIndex;
+            }
+
+            // 5. DB 업데이트
+            ServiceLocator.Get<GameData>().Interior.TransferRoomInterior(targetID, newGridIndex);
+
+            Debug.Log($"✅ [이동 완료] ID: {targetID} 가구가 {newGridIndex}번 칸으로 이동 저장되었습니다!");
+
+            // 6. 저장 완료되었으니 선택 해제 (테두리 끄기 등)
+            DeselectCurrent();
+        }
+    }
+    private bool CheckIfPlacementInvalid(int startIndex, int width, int height, int excludeID)
+    {
+        int startX = startIndex % gridWidth;
+        int startY = startIndex / gridWidth;
+
+        // 1. 맵 밖으로 삐져나가는지 검사 (벽 뚫기 방지!)
+        if (startX + width > gridWidth || startY + height > gridHeight)
+        {
+            return true; // 빨간불!
+        }
+
+        // 2. 내가 차지할 (X, Y) 칸들을 하나씩 돌면서 다른 가구가 있는지 검사
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int checkX = startX + x;
+                int checkY = startY + y;
+                int checkIndex = checkY * gridWidth + checkX;
+
+                if (IsGridOccupied(checkIndex, excludeID)) 
+                {
+                    return true; // 다른 가구랑 겹쳤으니 빨간불!
+                }
+            }
+        }
+        return false; // 완벽하게 깔끔한 자리!
+    }
+
+    // =================================================================
+    // ★ 헬퍼 2: (완전 교체) 특정 칸(targetIndex)에 다른 가구가 밟고 서 있는지 검사
+    // =================================================================
+    private bool IsGridOccupied(int targetGridIndex, int excludeID = -1)
+    {
+        int targetX = targetGridIndex % gridWidth;
+        int targetY = targetGridIndex / gridWidth;
+
+        foreach (var placed in currentPlacedList)
+        {
+            if (placed.ID == excludeID) continue; // 나 자신은 무시
+
+            // 이미 배치된 다른 가구의 크기도 알아와야 "걔가 밟고 있는 영역"을 알 수 있음!
+            var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(placed.itemName);
+            int pWidth = so != null ? so.itemWidth : 1;
+            int pHeight = so != null ? so.itemHeight : 1;
+
+            int pStartX = placed.gridNumber % gridWidth;
+            int pStartY = placed.gridNumber / gridWidth;
+
+            // 내가 검사하려는 (targetX, targetY)가 배치된 가구의 (폭 x 높이) 영역 안에 포함되는가?
+            bool overlapX = targetX >= pStartX && targetX < (pStartX + pWidth);
+            bool overlapY = targetY >= pStartY && targetY < (pStartY + pHeight);
+
+            if (overlapX && overlapY) 
+            {
+                return true; // 밟고 있음! (겹침)
+            }
+        }
+        return false;
+    }
+
+    
+    // ===============Storage 관리==================
+
+    public WR_StorageController GetStorageBoxByID(int storageID)
+    {
+        // furnitureParent 자식들을 뒤져서 ID가 일치하는 녀석을 찾습니다.
+        foreach (Transform child in furnitureParent)
+        {
+            if (child.TryGetComponent<WR_StorageController>(out var controller))
+            {
+                if (controller.myStorageID == storageID)
+                {
+                    return controller;
+                }
+            }
+        }
+        return null; // 못 찾았을 경우
+    }
+
+    public EmployeeController GetEmployeeControllerByID(int storageID)
+    {
+        // furnitureParent 자식들을 뒤져서 ID가 일치하는 직원 컨트롤러를 찾습니다.
+        foreach (Transform child in furnitureParent)
+        {
+            if (child.TryGetComponent<EmployeeController>(out var empController))
+            {
+                if (empController.TryGetComponent<WR_StorageController>(out var storageController))
+                {
+                    if (storageController.myStorageID == storageID)
+                    {
+                        return empController;
+                    }
+                }
+            }
+        }
+        return null; // 못 찾았을 경우
+    }
+    /// <summary>
+    /// 맵에 배치된 상자 중, 원하는 타입(예: 이불장)이면서 빈자리가 있는 상자를 찾아 아이템을 넣습니다.
+    /// </summary>
+    /// <returns>수납 성공 여부 (모든 상자가 꽉 찼으면 false)</returns>
+    public bool TryAddToAnyStorage(StorageUIController.StorageType targetType, string itemName, int amountToAdd)
+    {
+        // 1. 방에 배치된 모든 가구 검사
+        foreach (Transform child in furnitureParent)
+        {
+            if (child.TryGetComponent<WR_StorageController>(out var controller))
+            {
+                // 2. 타입이 일치하는 수납장인지 확인
+                if (controller.myStorageType == targetType)
+                {
+                    // 3. 해당 수납장에 수납 시도
+                    if (controller.TryAddItem(itemName, amountToAdd))
+                    {
+                        Debug.Log($"[InteriorManager] {controller.myStorageID}번 {targetType}에 '{itemName}' 자동 수납 완료!");
+                        return true; // 성공했으니 탐색 종료
+                    }
+                }
+            }
+        }
+
+        // 4. 모든 상자를 다 뒤졌는데도 자리가 없다면
+        Debug.LogWarning($"[InteriorManager] 배치된 모든 {targetType}이(가) 꽉 찼습니다!");
+        return false;
+    }
+
+    // =================================================================
+    // ★ 씬이 다를 때(미니게임 등) 화면의 오브젝트 없이 DB만 보고 수납하는 함수
+    // =================================================================
+    public bool TryAddToAnyStorage_CrossScene(StorageUIController.StorageType targetType, string itemName, int amountToAdd)
+    {
+        var gameData = ServiceLocator.Get<GameData>();
+        var roomInteriors = gameData.Interior.GetCurrentRoomInterior(); // 현재 방에 배치된 가구 DB 리스트
+
+        if (roomInteriors == null) return false;
+
+        foreach (var interior in roomInteriors)
+        {
+            if (interior.ID != -1) // 가구(상자)라면
+            {
+                // 1. 프리팹 리스트에서 해당 가구의 원본을 찾아 타입을 검사합니다.
+                GameObject prefab = allFurniturePrefabs.Find(x => x.name == interior.itemName);
+                if (prefab != null && prefab.TryGetComponent<WR_StorageController>(out var controllerPrefab))
+                {
+                    // 2. 내가 찾는 타입(예: 재료함)이 맞는지 확인
+                    if (controllerPrefab.myStorageType == targetType)
+                    {
+                        // 3. SO를 통해 이 상자의 최대 용량(칸 수) 확인
+                        var boxSO = gameData.Inventory.GetRoomInteriorItemSO(interior.itemName);
+                        int maxCapacity = boxSO != null ? boxSO.slotCount : 0;
+
+                        // 4. 이 상자 안에 이미 들어있는 아이템 총합 확인 (만들어둔 헬퍼 함수 재활용)
+                        int currentCount = GetItemCountInSpecificBox(targetType, interior.ID);
+
+                        // 5. 빈자리가 있다면 DB에 직접 꽂아넣기!
+                        if (currentCount < maxCapacity)
+                        {
+                            // DB 수량 증가 함수 (기존에 소모할 때 쓰시던 AdjustMaterialCount의 양수 버전)
+                            // ※ 주의: 유저님의 GameData 스크립트에 있는 실제 함수 이름에 맞게 수정해주세요!
+                            gameData.Inventory.AdjustMaterialCount(interior.ID, itemName, amountToAdd);
+                            
+                            Debug.Log($"[CrossScene] 낚시 성공! 보이지 않는 씬이지만 DB의 {interior.ID}번 {targetType}에 '{itemName}' 저장 완료!");
+                            return true; // 수납 성공
+                        }
+                    }
+                }
+            }
+        }
+
+        Debug.LogWarning($"[CrossScene] 배치된 모든 {targetType}이(가) 꽉 찼거나 없습니다!");
+        return false;
+    }
+    
+    public bool ConsumeMaterialFromAnyStorage(string itemName, int countToRemove)
+    {
+        int remaining = countToRemove;
+        var inventory = ServiceLocator.Get<GameData>().Inventory;
+
+        // 1. 방에 배치된 모든 가구 순회 (이제 DB를 뒤질 필요 없이 화면에 있는 가구 리스트 사용)
+        foreach (Transform child in furnitureParent)
+        {
+            if (child.TryGetComponent<WR_StorageController>(out var controller))
+            {
+                // 2. 재료함이거나 개인제작함인 경우만 체크
+                if (controller.myStorageType == StorageUIController.StorageType.Material || 
+                    controller.myStorageType == StorageUIController.StorageType.CraftBox)
+                {
+                    // 3. 해당 상자 안의 아이템 가져오기
+                    var itemsInBox = inventory.GetMaterialItems(controller.myStorageID);
+                    if (itemsInBox == null) continue;
+
+                    // 4. 리스트 역순 순회하며 차감
+                    for (int i = itemsInBox.Count - 1; i >= 0; i--)
+                    {
+                        if (itemsInBox[i].itemName == itemName)
+                        {
+                            int deductAmount = Mathf.Min(itemsInBox[i].count, remaining);
+                            
+                            // DB에서 수량 차감
+                            inventory.AdjustMaterialCount(controller.myStorageID, itemName, -deductAmount);
+                            remaining -= deductAmount;
+
+                            // ★ 가구의 총 용량 갱신 (빈자리가 생겼으니 다시 계산)
+                            controller.UpdateTotalItemCount();
+
+                            // 다 뺐으면 성공!
+                            if (remaining <= 0) return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 제작 전에 검사하므로 여기까지 올 일은 없겠지만, 혹시 모를 예외 처리
+        Debug.LogWarning($"[InteriorManager] {itemName} 재료가 {remaining}개 부족하여 다 소모하지 못했습니다!");
+        return false;
+    }
+
+    public bool HasAnyEmptySpace(StorageUIController.StorageType type)
+    {
+        var gameData = ServiceLocator.Get<GameData>();
+
+        // 1. 방에 배치된 실제 가구(프리팹)들을 순회합니다. (타입 검사를 위해)
+        foreach (Transform child in furnitureParent)
+        {
+            if (child.TryGetComponent<WR_StorageController>(out var controller))
+            {
+                // 2. 내가 찾고 있는 타입(예: 이불장)이 맞는지 필터링!
+                if (controller.myStorageType == type)
+                {
+                    // 이름 뒤에 (Clone)이 붙어있을 수 있으니 안전하게 떼고 SO 검색
+                    string itemName = child.name.Replace("(Clone)", "").Trim();
+                    var boxSO = gameData.Inventory.GetRoomInteriorItemSO(itemName);
+                    
+                    if (boxSO != null)
+                    {
+                        // 3. '이 상자(ID)' 안에 들어있는 아이템들의 총 개수를 구합니다.
+                        int currentCount = GetItemCountInSpecificBox(type, controller.myStorageID);
+
+                        // 4. 최대 용량보다 적게 들어있다면 빈자리가 있는 것!
+                        if (currentCount < boxSO.slotCount)
+                        {
+                            return true; // 하나라도 여유 있는 상자를 발견하면 즉시 true 반환!
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 다 뒤졌는데도 자리가 없다면
+        return false;
+    }
+
+    private int GetItemCountInSpecificBox(StorageUIController.StorageType type, int boxID)
+    {
+        int count = 0;
+        var inventory = ServiceLocator.Get<GameData>().Inventory;
+
+        if (type == StorageUIController.StorageType.Material || type == StorageUIController.StorageType.CraftBox)
+        {
+            var items = inventory.GetMaterialItems(boxID);
+            // ※ 만약 용량 기준이 '칸 수'라면 count++ 로, '누적 개수'라면 count += item.count 로 쓰시면 됩니다!
+            if (items != null) foreach (var item in items) count += item.count; 
+        }
+        else if (type == StorageUIController.StorageType.Blanket)
+        {
+            var items = inventory.GetBlanketsInBox(boxID);
+            if (items != null) foreach (var item in items) count += item.count;
+        }
+        else if (type == StorageUIController.StorageType.Snack)
+        {
+            var items = inventory.GetSnackItems(boxID);
+            if (items != null) foreach (var item in items) count += item.count;
+        }
+        
+        return count;
+    }
+
+    /// <summary>
+    /// 방 전체를 뒤져서 특정 타입(StorageType)의 특정 아이템(targetItemName) 총 개수를 반환합니다.
+    /// </summary>
+    public int GetTotalItemCountInRoom(StorageUIController.StorageType type, string targetItemName)
+    {
+        int totalCount = 0;
+        var gameData = ServiceLocator.Get<GameData>();
+
+        var roomInteriors = gameData.Interior.GetCurrentRoomInterior();
+
+        if (roomInteriors == null || roomInteriors.Count == 0) return 0;
+
+        foreach (var interior in roomInteriors)
+        {
+            if (interior.ID != -1) 
+            {
+                // ★ 타입에 따라 DB에서 꺼내오는 서랍(List)을 다르게 지정합니다!
+                if (type == StorageUIController.StorageType.Material || type == StorageUIController.StorageType.CraftBox)
+                {
+                    var items = gameData.Inventory.GetMaterialItems(interior.ID);
+                    if (items != null)
+                    {
+                        foreach (var item in items)
+                            if (item.itemName == targetItemName) totalCount += item.count;
+                    }
+                }
+                else if (type == StorageUIController.StorageType.Blanket)
+                {
+                    var items = gameData.Inventory.GetBlanketsInBox(interior.ID);
+                    if (items != null)
+                    {
+                        foreach (var item in items)
+                            if (item.itemName == targetItemName) totalCount += item.count;
+                    }
+                }
+                else if (type == StorageUIController.StorageType.Snack)
+                {
+                    var items = gameData.Inventory.GetSnackItems(interior.ID);
+                    if (items != null)
+                    {
+                        foreach (var item in items)
+                            if (item.itemName == targetItemName) totalCount += item.count;
+                    }
+                }
+            }
+        }
+
+        return totalCount; 
+    }
+
+    // ============================= 가구 인벤토리 =============================
+
+    public void OnClickRoomInteriorInventoryButton()
+    {
+        if (RoomInteriorInventoryPanel != null)
+        {
+            RoomInteriorInventoryPanel.SetActive(true);
+        }
+    }
+
+    public void OnClickFurnitureInventoryButton()
+    {
+        PopulateRoomFurnitureInventory();
+    }
+
+
+    public void PopulateRoomFurnitureInventory()
+    {
+
+        // 0. 인스펙터 연결 확인
+        if (RoomInteriorInventoryContent == null || RoomInteriorInventorySlotPrefab == null)
+        {
+            Debug.LogError("<color=red>[가구 인벤토리-에러]</color> Content나 Prefab이 인스펙터에 연결되지 않았습니다! 하이어라키를 확인해주세요.");
+            return;
+        }
+
+        // 기존 슬롯 파괴
+        int childCount = RoomInteriorInventoryContent.childCount;
+
+        foreach (Transform child in RoomInteriorInventoryContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 1. 데이터 가져오기
+        var roomList = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemInventory();   
+        
+        if (roomList == null)
+        {
+            Debug.LogWarning("<color=orange>[가구 인벤토리-실패]</color> DB에서 가져온 roomList가 아예 null입니다! (DB 초기화 문제일 수 있음)");
+            return;
+        }
+
+        Debug.Log($"<color=yellow>[가구 인벤토리]</color> DB에서 가져온 가구 보유 개수: {roomList.Count}개");
+
+        // 2. 새 데이터로 슬롯 생성
+        int spawnCount = 0;
+        foreach (var item in roomList)
+        {
+            // 여기서 item이 null인지 혹시 몰라서 체크
+            if (item == null) continue; 
+
+            var slot = Instantiate(RoomInteriorInventorySlotPrefab, RoomInteriorInventoryContent);
+            var slotController = slot.GetComponent<RoomInteriorInventorySlot>();
+            
+            if (slotController != null)
+            {
+                slotController.SetItem(item);
+                spawnCount++;
+            }
+        }
+
+        // 레이아웃 즉시 새로고침 (스크롤 꼬임 방지)
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(RoomInteriorInventoryContent.GetComponent<RectTransform>());
+    }
+
+    public void PlaceFurnitureFromInventory(string itemName)
+    {
+        var gameData = ServiceLocator.Get<GameData>();
+
+        // 1. SO에서 이 가구가 차지할 가로/세로 칸 수 가져오기
+        var so = gameData.Inventory.GetRoomInteriorItemSO(itemName);
+        int itemWidth = so != null ? so.itemWidth : 1;
+        int itemHeight = so != null ? so.itemHeight : 1;
+
+        // 2. 맵 정중앙 인덱스 계산
+        int centerIndex = (gridHeight / 2) * gridWidth + (gridWidth / 2);
+        int spawnIndex = -1; // 최종적으로 소환될 위치
+        
+        // 먼저 정중앙이 비어있는지 확인 (우선순위 1)
+        if (!CheckIfPlacementInvalid(centerIndex, itemWidth, itemHeight, -1))
+        {
+            spawnIndex = centerIndex;
+        }
+        else
+        {
+            // 중앙이 꽉 찼으면, 0번 칸부터 빈자리 싹 다 뒤지기
+            for (int i = 0; i < gridWidth * gridHeight; i++)
+            {
+                if (!CheckIfPlacementInvalid(i, itemWidth, itemHeight, -1))
+                {
+                    spawnIndex = i;
+                    break; // 빈자리 찾았으면 즉시 중단!
+                }
+            }
+        }
+
+        // =========================================================
+        // 4. 소환 및 DB 처리
+        // =========================================================
+        
+        if (spawnIndex == -1)
+        {
+            Debug.LogWarning("방에 가구를 놓을 빈 공간이 1칸도 없습니다!");
+            return;
+        }
+
+        gameData.Inventory.RemoveRoomInteriorItem(itemName, 1);
+        InstallFurniture(spawnIndex, itemName);
+
+        PopulateRoomFurnitureInventory();
+
+        if (RoomInteriorInventoryPanel != null)
+        {
+            RoomInteriorInventoryPanel.SetActive(false);
         }
     }
 }
