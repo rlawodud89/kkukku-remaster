@@ -14,14 +14,16 @@ public class ShopStorageDataManager : MonoBehaviour
 
     public Pathfinding pathfinding;
     public CashierManager cashierManager;
+
+    public ShopInteriorManager interiorManager;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         // 가게 그리드 설정 불러오기
-        pathfinding.totalGridHeight = 6;
-        pathfinding.totalGridWidth = 10;
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out pathfinding.totalGridWidth, out pathfinding.totalGridHeight);
         pathfinding.CalculateGridOrigin();
 
         interiorData = new ShopInteriorData();
@@ -89,6 +91,12 @@ public class ShopStorageDataManager : MonoBehaviour
 
         cashierManager.cashierPosIndex = interiorData.Casher.placement;
         cashierManager.cashierWidth = interiorData.Casher.Width;
+
+        if (interiorManager != null)
+        {
+            interiorManager.InitializeShopInterior(); // 맵에 가구 소환!
+        }
+
     }
 
     private void LoadInteriorData()

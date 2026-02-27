@@ -156,6 +156,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - tool
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44b26b03878f8d24384985a4a9dfe5dd
+    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAE30\uBCF8\uBC14\uB2E5\uD0C0\uC77C.asset"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4813aec0d0a3a4a44baf523c9cd80abe
     m_Address: Assets/ScriptableObjects/Customer/Frog.asset
     m_ReadOnly: 0
