@@ -2746,6 +2746,8 @@ MonoBehaviour:
   minSpawnTime: 3
   maxSpawnTime: 8
   maxCustomers: 10
+  spawnInitCustomers: 3
+  averageShoppingTime: 20
   shopSceneName: BlanketShop
 --- !u!4 &1080789366
 Transform:

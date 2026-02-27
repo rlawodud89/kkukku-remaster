@@ -12,14 +12,15 @@ public class FallingFishUI : MonoBehaviour
     
     private Vector3 targetScale = Vector3.one; // 최종 크기 (1,1,1)
     private float growTimer = 0f; // 타이머
-
+    public string itemName; // 어떤 아이템인지 저장 (획득 시 사용)
     private float speed;
     private FishingManagerUI manager;
     private float targetY;
     private RectTransform myRect; // 매번 GetComponent 하면 느리니까 캐싱
 
-    public void Setup(float fallSpeed, FishingManagerUI uiManager, float barY, Sprite sprite)
+    public void Setup(float fallSpeed, FishingManagerUI uiManager, float barY, Sprite sprite, string itemName)
     {
+        this.itemName = itemName;
         speed = fallSpeed;
         manager = uiManager;
         targetY = barY;
@@ -34,8 +35,6 @@ public class FallingFishUI : MonoBehaviour
             myRect.localScale = startScale;
             growTimer = 0f; // 타이머 초기화
             
-            // (선택사항) 만약 기본 크기가 너무 크다면 여기서 고정해주세요.
-            // myRect.sizeDelta = new Vector2(100f, 100f); 
         }
     }
 
