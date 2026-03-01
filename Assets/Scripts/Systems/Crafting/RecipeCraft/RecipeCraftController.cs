@@ -192,7 +192,7 @@ public class RecipeCraftController : MonoBehaviour
         string finalItemName = (resultItem != null) ? resultItem.itemName : "엉성한 이불";
         
         // 이불장에 수납 시도
-        bool isAdded = InteriorManager.Instance.TryAddToAnyStorage(
+        bool isAdded = RoomInteriorManager.Instance.TryAddToAnyStorage(
             StorageUIController.StorageType.Blanket, 
             finalItemName, 
             1
@@ -292,9 +292,9 @@ public class RecipeCraftController : MonoBehaviour
                 );
 
                 // 2. 맵에 배치된 가구의 현재 용량(totalItemCount) 상태도 최신화!
-                if (InteriorManager.Instance != null)
+                if (RoomInteriorManager.Instance != null)
                 {
-                    var targetBox = InteriorManager.Instance.GetStorageBoxByID(boxID);
+                    var targetBox = RoomInteriorManager.Instance.GetStorageBoxByID(boxID);
                     if (targetBox != null)
                     {
                         targetBox.UpdateTotalItemCount();

@@ -42,7 +42,7 @@ public class BlanketCraftController : MonoBehaviour
             string ingredientName = pair.itemName;
             int requiredCount = pair.count;
             Sprite icon = StorageUIController.Instance.GetIconSprite(StorageUIController.StorageType.Material, ingredientName); 
-            int haveCount = InteriorManager.Instance.GetTotalItemCountInRoom(StorageUIController.StorageType.Material, ingredientName);
+            int haveCount = RoomInteriorManager.Instance.GetTotalItemCountInRoom(StorageUIController.StorageType.Material, ingredientName);
             FillEmptySlot(ingredientName, icon, requiredCount, haveCount);
         }
     }
@@ -109,7 +109,7 @@ public class BlanketCraftController : MonoBehaviour
         }
 
         // ★ 4. 안전장치: 이불장에 넣을 빈자리가 최소 1개라도 있는지 미리 확인!
-        bool hasEmptySpace = InteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
+        bool hasEmptySpace = RoomInteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
         if (!hasEmptySpace)
         {
             Debug.LogWarning("이불장에 빈자리가 없습니다! 이불을 먼저 팔아주세요.");
@@ -128,7 +128,7 @@ public class BlanketCraftController : MonoBehaviour
             foreach (var slot in slots)
             {
                 if (slot.IsEmpty) continue;
-                InteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty); 
+                RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty); 
             }
             Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
 
@@ -144,7 +144,7 @@ public class BlanketCraftController : MonoBehaviour
         string finalItemName = resultItem.itemName;
 
         // 위에서 이미 빈자리가 있는지 검사했으므로, 여기선 무조건 성공합니다!
-        bool isAdded = InteriorManager.Instance.TryAddToAnyStorage(
+        bool isAdded = RoomInteriorManager.Instance.TryAddToAnyStorage(
             StorageUIController.StorageType.Blanket, 
             finalItemName, 
             1

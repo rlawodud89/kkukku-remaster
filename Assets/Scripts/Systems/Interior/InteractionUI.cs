@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,16 +45,23 @@ public class InteractionUI : MonoBehaviour
     public void HideMenu()
     {
         menuPanel.SetActive(false);
-        // targetFurniture = null; // 여기서 널 처리하면 드래그 후 다시 열 때 문제될 수 있음
+        targetFurniture = null; 
     }
 
     public void OnClickStore()
     {
         if (targetFurniture != null)
         {
-            // 1. 매니저에게 수거하라고 명령! (DB 처리 + 화면 파괴까지 다 해줌)
-            InteriorManager.Instance.StoreSelectedFurniture();
-            
+            if (RoomInteriorManager.Instance)
+             {
+            RoomInteriorManager.Instance.StoreSelectedFurniture();
+             }
+
+            if (ShopInteriorManager.Instance)
+            {
+                //ShopInteriorManager.Instance.StoreSelectedFurniture();
+            }
+
             // 2. 내 타겟 비우고 UI 메뉴 닫기
             targetFurniture = null;
             HideMenu();
@@ -65,9 +73,15 @@ public class InteractionUI : MonoBehaviour
     {
         if (targetFurniture != null)
         {
-            // 1. 매니저에게 현재 위치로 DB 업데이트(확정)하라고 명령!
-            InteriorManager.Instance.ConfirmFurnitureMove(); 
+            if (RoomInteriorManager.Instance)
+            {
+            RoomInteriorManager.Instance.ConfirmFurnitureMove(); 
+            }
             
+            if (ShopInteriorManager.Instance)
+            {
+                //ShopInteriorManager.Instance.ConfirmFurnitureMove(); 
+            }
             // 2. 내 타겟 비우고 UI 메뉴 닫기
             targetFurniture = null;
             HideMenu();

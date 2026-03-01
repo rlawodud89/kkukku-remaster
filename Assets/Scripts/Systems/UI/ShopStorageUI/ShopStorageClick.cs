@@ -43,6 +43,9 @@ public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (ShopInteriorManager.Instance.IsEditMode) return; // 편집 모드에서는 클릭 무시
+
+        
         Debug.Log(storageID + "번 이불장 클릭됨!");
 
         if (storagePanel != null)

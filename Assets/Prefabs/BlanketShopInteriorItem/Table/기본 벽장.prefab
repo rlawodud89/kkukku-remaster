@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1932577003219381865}
   - component: {fileID: 1548777201807932507}
   - component: {fileID: 5808638372781180943}
+  - component: {fileID: 8587562391501880897}
+  - component: {fileID: 4710821638083277117}
   m_Layer: 8
   m_Name: "\uAE30\uBCF8 \uBCBD\uC7A5"
   m_TagString: Untagged
@@ -54,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: db4c4505493ee8f4faa5735f05b48b14, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,3 +149,35 @@ MonoBehaviour:
   storageID: 0
   emptySprite: {fileID: 21300000, guid: 8d9a0a08bc3fccb4db03d1357ae4f353, type: 3}
   filledSprite: {fileID: 21300000, guid: aab0ad6c431d5c640bd039df79e56732, type: 3}
+--- !u!114 &8587562391501880897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673913281668456721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46af4dd8f50a8c94188a593d3b7b586a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragThreshold: 0.5
+  myID: -1
+--- !u!114 &4710821638083277117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673913281668456721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25fca991af2cd3941b7ac80083802dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myStorageID: 0
+  myType: 5
+  myStorageType: 5
+  totalItemCount: 0
+  maxCapacity: 0
+  storageUIController: {fileID: 0}

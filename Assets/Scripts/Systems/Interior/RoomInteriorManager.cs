@@ -4,23 +4,16 @@ using UnityEngine;
 using UnityEngine.UI; 
 using System.Linq;
 
-public class InteriorManager : MonoBehaviour
+public class RoomInteriorManager : MonoBehaviour
 {
-    public static InteriorManager Instance;
+    public static RoomInteriorManager Instance;
     public bool IsEditMode { get; private set; } = false;
 
     [Header("UI Reference")]
-    [SerializeField] private Button editModeButton;
     [SerializeField] private Button interiorStorageButton;
     [SerializeField] public Grid mainGrid; // ★ 인스펙터 연결 필수
-    [SerializeField] private Sprite editModeOnSprite;
-    [SerializeField] private Sprite editModeOffSprite;
     [SerializeField] private TextMeshProUGUI buttonText;
 
-    [Header("Inventory UI")]
-    [SerializeField] private GameObject RoomInteriorInventoryPanel;
-    [SerializeField] private Transform RoomInteriorInventoryContent; 
-    [SerializeField] private GameObject RoomInteriorInventorySlotPrefab;
     
 
     [Header("Prefabs & Parents")]
@@ -85,28 +78,17 @@ public class InteriorManager : MonoBehaviour
         //interiorDB.AddRoomInterior(18, "고양이");
     }
 
-    public void ToggleEditMode()
+    public void TurnOnEditMode()
     {
-        IsEditMode = !IsEditMode;
-        UpdateUI();
+        IsEditMode = true;
     }
 
-    private void UpdateUI()
+    public void TurnOffEditMode()
     {
-        if (IsEditMode)
-        {
-            if (buttonText) buttonText.text = "가구 배치 모드";
-            if (editModeButton && editModeOnSprite) editModeButton.image.sprite = editModeOnSprite;
-            if (interiorStorageButton) interiorStorageButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            if (buttonText) buttonText.text = "가구 배치 모드 종료";
-            if (editModeButton && editModeOffSprite) editModeButton.image.sprite = editModeOffSprite;
-            if (interiorStorageButton) interiorStorageButton.gameObject.SetActive(false);
-            // ★ 편집 모드 끝날 때 전체 상태 저장 (선택 사항)
-            SaveAllFurniture(); 
-        }
+        IsEditMode = false;
+        DeselectCurrent();
+        HideGridHighlight();
+        currentSelectedFurniture = null;
     }
 
     // =================================================================
@@ -300,7 +282,7 @@ public void SpawnFurniture()
 
         // 2. 새로운 녀석 선택
         currentSelectedFurniture = furniture;
-        InteriorManager.Instance.UpdateGridHighlight(furniture.transform.position, myID, furniture.gameObject.name);
+        UpdateGridHighlight(furniture.transform.position, myID, furniture.gameObject.name);
         // 3. 켜기
         if (currentSelectedFurniture != null)
         {
@@ -402,6 +384,7 @@ public void SpawnFurniture()
                 {
                     Debug.LogWarning($"🚨 [수거 불가] 상자 안에 아이템이 {itemCount}개 들어있습니다! 먼저 비워주세요.");
                     InteractionUI.Instance.HideMenu();
+
                     return; 
                 }
             }
@@ -802,121 +785,57 @@ public void SpawnFurniture()
         return totalCount; 
     }
 
-    // ============================= 가구 인벤토리 =============================
 
-    public void OnClickRoomInteriorInventoryButton()
-    {
-        if (RoomInteriorInventoryPanel != null)
-        {
-            RoomInteriorInventoryPanel.SetActive(true);
-        }
-    }
-
-    public void OnClickFurnitureInventoryButton()
-    {
-        PopulateRoomFurnitureInventory();
-    }
-
-
-    public void PopulateRoomFurnitureInventory()
-    {
-
-        // 0. 인스펙터 연결 확인
-        if (RoomInteriorInventoryContent == null || RoomInteriorInventorySlotPrefab == null)
-        {
-            Debug.LogError("<color=red>[가구 인벤토리-에러]</color> Content나 Prefab이 인스펙터에 연결되지 않았습니다! 하이어라키를 확인해주세요.");
-            return;
-        }
-
-        // 기존 슬롯 파괴
-        int childCount = RoomInteriorInventoryContent.childCount;
-
-        foreach (Transform child in RoomInteriorInventoryContent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // 1. 데이터 가져오기
-        var roomList = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemInventory();   
-        
-        if (roomList == null)
-        {
-            Debug.LogWarning("<color=orange>[가구 인벤토리-실패]</color> DB에서 가져온 roomList가 아예 null입니다! (DB 초기화 문제일 수 있음)");
-            return;
-        }
-
-        Debug.Log($"<color=yellow>[가구 인벤토리]</color> DB에서 가져온 가구 보유 개수: {roomList.Count}개");
-
-        // 2. 새 데이터로 슬롯 생성
-        int spawnCount = 0;
-        foreach (var item in roomList)
-        {
-            // 여기서 item이 null인지 혹시 몰라서 체크
-            if (item == null) continue; 
-
-            var slot = Instantiate(RoomInteriorInventorySlotPrefab, RoomInteriorInventoryContent);
-            var slotController = slot.GetComponent<RoomInteriorInventorySlot>();
-            
-            if (slotController != null)
-            {
-                slotController.SetItem(item);
-                spawnCount++;
-            }
-        }
-
-        // 레이아웃 즉시 새로고침 (스크롤 꼬임 방지)
-        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(RoomInteriorInventoryContent.GetComponent<RectTransform>());
-    }
-
-    public void PlaceFurnitureFromInventory(string itemName)
+    public void DragDropFurnitureFromInventory(string itemName, Vector3 dropWorldPos)
     {
         var gameData = ServiceLocator.Get<GameData>();
 
-        // 1. SO에서 이 가구가 차지할 가로/세로 칸 수 가져오기
-        var so = gameData.Inventory.GetRoomInteriorItemSO(itemName);
-        int itemWidth = so != null ? so.itemWidth : 1;
-        int itemHeight = so != null ? so.itemHeight : 1;
+        // 1. 드롭한 마우스 위치를 작업실 전용 그리드 인덱스(번호)로 변환
+        // (InteriorManager에 있는 기존 기준점 보정 로직을 그대로 태웁니다)
+        int dropIndex = WorldToGrid(dropWorldPos);
 
-        // 2. 맵 정중앙 인덱스 계산
-        int centerIndex = (gridHeight / 2) * gridWidth + (gridWidth / 2);
-        int spawnIndex = -1; // 최종적으로 소환될 위치
-        
-        // 먼저 정중앙이 비어있는지 확인 (우선순위 1)
-        if (!CheckIfPlacementInvalid(centerIndex, itemWidth, itemHeight, -1))
+        // 2. 맵 밖으로 던졌으면 무시 (-1 반환 시)
+        if (dropIndex == -1)
         {
-            spawnIndex = centerIndex;
-        }
-        else
-        {
-            // 중앙이 꽉 찼으면, 0번 칸부터 빈자리 싹 다 뒤지기
-            for (int i = 0; i < gridWidth * gridHeight; i++)
-            {
-                if (!CheckIfPlacementInvalid(i, itemWidth, itemHeight, -1))
-                {
-                    spawnIndex = i;
-                    break; // 빈자리 찾았으면 즉시 중단!
-                }
-            }
-        }
-
-        // =========================================================
-        // 4. 소환 및 DB 처리
-        // =========================================================
-        
-        if (spawnIndex == -1)
-        {
-            Debug.LogWarning("방에 가구를 놓을 빈 공간이 1칸도 없습니다!");
+            Debug.LogWarning("🚨 [작업실] 맵 바깥으로는 가구를 놓을 수 없습니다!");
             return;
         }
 
-        gameData.Inventory.RemoveRoomInteriorItem(itemName, 1);
-        InstallFurniture(spawnIndex, itemName);
-
-        PopulateRoomFurnitureInventory();
-
-        if (RoomInteriorInventoryPanel != null)
+        // 3. 인벤토리 SO 데이터에서 가구 크기(가로/세로 칸 수) 가져오기
+        var so = gameData.Inventory.GetRoomInteriorItemSO(itemName);
+        if (so == null)
         {
-            RoomInteriorInventoryPanel.SetActive(false);
+            Debug.LogError($"🚨 [작업실] '{itemName}'의 SO 데이터를 찾을 수 없어 크기를 알 수 없습니다!");
+            return;
         }
+        
+        int itemWidth = so.itemWidth;
+        int itemHeight = so.itemHeight;
+
+        // 4. 겹침 및 벽 충돌 검사! 
+        // (새로 설치하는 거니까 기존 가구 ID를 뜻하는 파라미터에는 -1을 넣습니다)
+        if (CheckIfPlacementInvalid(dropIndex, itemWidth, itemHeight, -1))
+        {
+            Debug.LogWarning("🚨 [작업실] 그 자리에는 이미 다른 가구가 있거나 맵을 벗어납니다!");
+            // TODO: 화면 중앙에 "여긴 놓을 수 없어요!" 같은 토스트 알림 띄우기
+            return;
+        }
+
+        // 5. 자리가 정상이라면 인벤토리 가방에서 1개 빼기
+        // (주의: GameData 스크립트 안에 있는 실제 감소 함수 이름으로 맞춰주세요)
+        gameData.Inventory.RemoveRoomInteriorItem(itemName, 1);
+
+        // 6. DB에 추가하고 화면에 실제 가구 뿅! 하고 소환하기
+        // (기존에 맵 불러올 때 쓰시던 InstallFurniture 함수를 그대로 재활용합니다)
+        InstallFurniture(dropIndex, itemName);
+
+        // 7. 열려있는 작업실 인벤토리 UI 즉시 새로고침 (슬롯의 남은 개수 -1 반영)
+        RoomInventoryManager uiManager = FindObjectOfType<RoomInventoryManager>();
+        if (uiManager != null)
+        {
+            uiManager.RefreshUI();
+        }
+
+        Debug.Log($"✅ [작업실 설치 완료] '{itemName}' 가구가 {dropIndex}번 칸에 완벽하게 설치되었습니다!");
     }
 }

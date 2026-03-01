@@ -7,7 +7,7 @@ public class FishingManagerUI : MonoBehaviour
 {   
     public static FishingManagerUI Instance;
 
-    private InteriorManager interiorManager; // 수납장에 아이템 넣으려고 매니저 참조해둠
+    private RoomInteriorManager interiorManager; // 수납장에 아이템 넣으려고 매니저 참조해둠
 
     [Header("Item Data (Drag & Drop Here)")]
     public List<MaterialItemSO> allItems = new List<MaterialItemSO>();
@@ -69,7 +69,7 @@ public class FishingManagerUI : MonoBehaviour
     private void Start()
     {
         // 씬에 있는 InteriorManager를 찾아와서 저장해둡니다.
-        interiorManager = InteriorManager.Instance;
+        interiorManager = RoomInteriorManager.Instance;
 
         if (interiorManager == null)
         {

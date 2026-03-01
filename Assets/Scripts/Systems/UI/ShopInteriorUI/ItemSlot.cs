@@ -98,14 +98,42 @@ public class ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             Destroy(ghostIcon);
 
-            // 가구(0)는 다른 분이 담당하시니까 우리는 무시합니다!
-            if (myCategory == 0) return;
+            RoomInventoryManager roomUIManager = FindObjectOfType<RoomInventoryManager>();
+            InventoryManager shopUIManager = FindObjectOfType<InventoryManager>();
 
-            // 맵에 타일/벽지를 설치하라고 매니저에게 마우스 위치와 함께 전달
-            InventoryManager manager = FindObjectOfType<InventoryManager>();
-            if (manager != null)
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPoint.z = 0;
+
+            // =========================================================
+            // 💡 2. 가구 탭 (0) - 각각의 인테리어 매니저에게 전달
+            // =========================================================
+            if (myCategory == 0)
             {
-                manager.PlaceTileOnMap(currentItemName, myCategory, Input.mousePosition);
+                if (roomUIManager != null && RoomInteriorManager.Instance != null)
+                {
+                    RoomInteriorManager.Instance.DragDropFurnitureFromInventory(currentItemName, worldPoint);
+                }
+                else if (shopUIManager != null && ShopInteriorManager.Instance != null)
+                {
+                    // [이불가게]
+                    ShopInteriorManager.Instance.DragDropFurnitureFromInventory(currentItemName, worldPoint);
+                }
+                
+                return; // 가구 배치는 여기서 종료!
+            }
+
+            // =========================================================
+            // 💡 3. 타일/벽지 탭 (1, 2) - 각각의 UI 매니저에게 전달
+            // =========================================================
+            if (roomUIManager != null)
+            {
+                // [작업실] RoomInventoryManager의 타일 설치 함수 호출
+                roomUIManager.PlaceTileOnMap(currentItemName, myCategory, Input.mousePosition);
+            }
+            else if (shopUIManager != null)
+            {
+                // [이불가게] InventoryManager의 타일 설치 함수 호출
+                shopUIManager.PlaceTileOnMap(currentItemName, myCategory, Input.mousePosition);
             }
         }
     }

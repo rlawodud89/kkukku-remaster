@@ -66,7 +66,6 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            Debug.LogWarning($"[StorageController] '{myStorageType}' 가구의 SO 데이터를 찾을 수 없습니다! 용량이 0으로 세팅됩니다.");
             maxCapacity = 0; 
         }
     }
@@ -150,12 +149,15 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
     // ==========================================
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (myStorageType==StorageUIController.StorageType.None)
+        {
+            return;
+        }
         if (StorageUIController.Instance.IsPopupOpen) return;
         
         // 편집 모드 체크
-        if (InteriorManager.Instance != null && InteriorManager.Instance.IsEditMode) 
+        if (RoomInteriorManager.Instance != null && RoomInteriorManager.Instance.IsEditMode) 
         {
-            Debug.Log("[Click Test] 현재 편집 모드이므로 팝업을 열지 않습니다.");
             return;
         }
 
