@@ -106,8 +106,30 @@ public class InventoryManager : MonoBehaviour
     // --- 화면 그리기 로직 ---
     public void RefreshUI()
     {
+
+        placedFurnitureCount.Clear(); 
+    
+    var data = ShopStorageDataManager.Instance.interiorData;
+    
+    // 일반 인테리어, 테이블, 계산대 모두 합쳐서 개수 세기
+    var allPlaced = new List<Interiorinfo>();
+    if (data.Casher != null) allPlaced.Add(data.Casher);
+    allPlaced.AddRange(data.Interior);
+    allPlaced.AddRange(data.Table);
+
+    foreach (var item in allPlaced)
+    {
+        string name = item.prefab.name; // 혹은 itemName
+        if (placedFurnitureCount.ContainsKey(name)) placedFurnitureCount[name]++;
+        else placedFurnitureCount[name] = 1;
+    }
+
+    // 2. DB에서 최신 가방 데이터 가져오기
+    this.furnitureList = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemInventory();
         int startIndex = currentPage * itemsPerPage;
         Debug.Log($"<color=cyan>[UI 새로고침]</color> 카테고리: {currentCategory}, 페이지: {currentPage}, 시작 인덱스: {startIndex}");
+
+
 
         for (int i = 0; i < slots.Length; i++)
         {
