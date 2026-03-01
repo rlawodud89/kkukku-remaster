@@ -87,6 +87,25 @@ public class Pathfinding : MonoBehaviour
         if (wallTilemap != null && wallTilemap.HasTile(pos)) return false;
 
         return true;
+    }   
+    
+    // ==========================================
+    // ★ 추가할 함수: 2D 좌표를 1차원 인덱스로 변환
+    // ==========================================
+    public int PosToIndex(Vector3Int pos)
+    {
+        // 1. 기준점에서 얼마나 떨어져 있는지 계산
+        int x = pos.x - gridOrigin.x;
+        int y = gridOrigin.y - pos.y; // y는 아래로 갈수록 좌표가 작아지므로 빼는 순서가 반대입니다.
+
+        // 2. 맵의 전체 크기(totalGridWidth, Height)를 벗어났는지 검사
+        if (x < 0 || x >= totalGridWidth || y < 0 || y >= totalGridHeight)
+        {
+            return -1; // 맵 바깥임
+        }
+
+        // 3. 1차원 인덱스로 변환해서 반환
+        return (y * totalGridWidth) + x;
     }
 
     public List<Vector3Int> FindPath(Vector3Int startPos, Vector3Int targetPos)

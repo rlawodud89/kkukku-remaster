@@ -109,9 +109,9 @@ public class EmployeeController : MonoBehaviour
         // =========================================================
         
         // 2. 맵에 배치된 실제 간식 상자의 용량(totalItemCount) 갱신
-        if (InteriorManager.Instance != null)
+        if (RoomInteriorManager.Instance != null)
         {
-            var targetBox = InteriorManager.Instance.GetStorageBoxByID(inventoryID);
+            var targetBox = RoomInteriorManager.Instance.GetStorageBoxByID(inventoryID);
             if (targetBox != null)
             {
                 targetBox.UpdateTotalItemCount(); // 상자에 1칸 빈자리가 생김!

@@ -3,17 +3,12 @@ using UnityEngine.EventSystems;
 
 public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [Header("Dependencies")]
-    // [변경] Grid 컴포넌트 직접 참조 대신 매니저를 통합니다.
     private Camera mainCamera;
     private SpriteRenderer spriteRenderer;
 
     [Header("Settings")]
-    // [중요] Pivot이 Bottom-Left면 사이즈 보정 계산이 필요 없으므로 objectSize는 단순 데이터용입니다.
-    [SerializeField] private Vector2Int objectSize = new Vector2Int(1, 1);
     [SerializeField] private float dragThreshold = 0.5f; 
 
-    // 쉐이더 제어용 변수
     private MaterialPropertyBlock mpb;
     private static readonly int OutlineAlphaID = Shader.PropertyToID("_OutlineAlpha");
 
@@ -22,7 +17,6 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
     private Vector3 dragOffset;
     private Vector3 startDragPos;
     public int myID = -1;
-
 
     private void Start()
     {
@@ -34,8 +28,33 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
         {
             myID = script.myStorageID;
         }
-        // Grid 변수는 이제 SnapToGrid에서 InteriorManager를 직접 쓰므로 제거해도 됩니다.
     }
+
+    // =================================================================
+    // ★ 씬 자동 판별 도우미 함수 (작업실인지 가게인지 알아서 판단합니다!)
+    // =================================================================
+    private bool IsEditModeActive()
+    {
+        if (RoomInteriorManager.Instance != null && RoomInteriorManager.Instance.IsEditMode) return true;
+        if (ShopInteriorManager.Instance != null && ShopInteriorManager.Instance.IsEditMode) return true;
+        return false;
+    }
+
+    private void RouteSelectFurniture()
+    {
+        if (RoomInteriorManager.Instance != null) RoomInteriorManager.Instance.SelectFurniture(this);
+        else if (ShopInteriorManager.Instance != null) ShopInteriorManager.Instance.SelectFurniture(this);
+    }
+
+    private void RouteUpdateHighlight(Vector3 targetPos)
+    {
+        // (Clone) 글자가 붙어있으면 에러가 날 수 있으니 깔끔하게 떼고 보냅니다.
+        string itemName = gameObject.name.Replace("(Clone)", "").Trim(); 
+        
+        if (RoomInteriorManager.Instance != null) RoomInteriorManager.Instance.UpdateGridHighlight(targetPos, myID, itemName);
+        else if (ShopInteriorManager.Instance != null) ShopInteriorManager.Instance.UpdateGridHighlight(targetPos, myID, itemName);
+    }
+    // =================================================================
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -45,7 +64,7 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (InteriorManager.Instance == null || !InteriorManager.Instance.IsEditMode) return;
+        if (!IsEditModeActive()) return;
 
         isDragging = true;
         isRealDrag = false;
@@ -53,11 +72,9 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
         startDragPos = mainCamera.ScreenToWorldPoint(eventData.position);
         startDragPos.z = 0;
         
-        // [중요] 드래그 오프셋 계산
-        // 내 현재 위치(BottomLeft)와 마우스 찍은 위치의 차이
         dragOffset = transform.position - startDragPos;
 
-        InteriorManager.Instance.SelectFurniture(this);
+        RouteSelectFurniture();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -73,7 +90,7 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
             if (distance < dragThreshold) return; 
             
             isRealDrag = true;
-            InteractionUI.Instance.HideMenu();
+            if (InteractionUI.Instance != null) InteractionUI.Instance.HideMenu();
         }
 
         if (isRealDrag)
@@ -81,8 +98,8 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
             Vector3 targetPos = currentPos + dragOffset;
             SnapToGrid(targetPos);
             
-            // ★ 매니저에게 내 '이름(itemName)'도 같이 넘겨서 크기를 물어보게 합니다!
-            InteriorManager.Instance.UpdateGridHighlight(targetPos, myID, gameObject.name);
+            // ★ 수정됨: targetPos가 아니라 보정된 위치(transform.position)를 넘겨줍니다!
+            RouteUpdateHighlight(transform.position); 
         }
     }
 
@@ -92,7 +109,8 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
 
         if (isRealDrag)
         {
-            InteractionUI.Instance.OpenMenu(this);
+            // 드래그가 끝났을 때 상호작용 UI 열기
+            if (InteractionUI.Instance != null) InteractionUI.Instance.OpenMenu(this);
         }
         else
         {
@@ -103,9 +121,12 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
 
     private void HandleClick()
     {
-        if (InteriorManager.Instance == null || !InteriorManager.Instance.IsEditMode) return;
-        InteriorManager.Instance.SelectFurniture(this);
-        InteractionUI.Instance.OpenMenu(this);
+        if (!IsEditModeActive()) return;
+        
+        RouteSelectFurniture();
+        
+        // 클릭했을 때 상호작용 UI 열기
+        if (InteractionUI.Instance != null) InteractionUI.Instance.OpenMenu(this);
     }
 
     public void SetHighlight(bool isOn)
@@ -118,29 +139,27 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
     }
 
     // =================================================================
-    // ★ [핵심 수정] InteriorManager와 로직 통일 (이상한 움직임 해결)
+    // ★ 씬에 맞춰서 스냅(자석) 기능도 알아서 분기 처리!
     // =================================================================
     private void SnapToGrid(Vector3 targetWorldPos)
     {
-        if (InteriorManager.Instance == null) return;
+        if (RoomInteriorManager.Instance != null)
+        {
+            // [작업실 로직]
+            int gridIndex = RoomInteriorManager.Instance.WorldToGrid(targetWorldPos);
+            if (gridIndex == -1) return;
+            Vector3 finalPos = RoomInteriorManager.Instance.GridToWorld(gridIndex);
+            transform.position = new Vector3(finalPos.x, finalPos.y, transform.position.z);
+        }
+        else if (ShopInteriorManager.Instance != null)
+        {
+            // [가게 로직] 가게 타일맵에 맞춰서 부드럽게 스냅
+            Vector3Int cellPos = ShopInteriorManager.Instance.floorTilemap.WorldToCell(targetWorldPos);
+            int gridIndex = ShopStorageDataManager.Instance.pathfinding.PosToIndex(cellPos);
+            if (gridIndex == -1) return;
 
-        // 1. 현재 좌표가 "몇 번 그리드"인지 매니저에게 물어봅니다.
-        // (매니저가 -2.8 기준점 로직을 갖고 있으므로 이게 가장 정확합니다)
-        int gridIndex = InteriorManager.Instance.WorldToGrid(targetWorldPos);
-
-        // 2. 범위를 벗어났다면 이동하지 않습니다. (혹은 가장자리로 Clamp 가능)
-        if (gridIndex == -1) return;
-
-        // 3. 그 그리드 번호의 "정확한 좌표(Bottom-Left)"를 받아옵니다.
-        Vector3 finalPos = InteriorManager.Instance.GridToWorld(gridIndex);
-
-        // 4. 적용 (Width/Height 보정 계산 삭제함 -> Pivot이 구석이니까 필요 없음!)
-        transform.position = new Vector3(finalPos.x, finalPos.y, transform.position.z);
-    }
-
-    public void StoreInInventory()
-    {
-        InteriorManager.Instance.RemoveFurnitureData(this);
-        Destroy(gameObject);
+            Vector3 finalPos = ShopInteriorManager.Instance.floorTilemap.CellToWorld(cellPos);
+            transform.position = new Vector3(finalPos.x, finalPos.y, transform.position.z);
+        }
     }
 }

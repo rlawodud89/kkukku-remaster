@@ -29,7 +29,7 @@ public class WR_StorageListUI : MonoBehaviour
     public void RefreshStorageList()
     {
         // 1. 매니저 찾기
-        InteriorManager manager = FindObjectOfType<InteriorManager>();
+        RoomInteriorManager manager = FindObjectOfType<RoomInteriorManager>();
         if (manager == null)
         {
             Debug.LogError("[StorageList] InteriorManager를 찾을 수 없습니다!");

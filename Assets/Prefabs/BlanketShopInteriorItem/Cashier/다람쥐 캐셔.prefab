@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7640927643725394851}
   - component: {fileID: 461043308145506764}
+  - component: {fileID: -1651321881544824994}
+  - component: {fileID: -8212440528386450285}
   m_Layer: 8
   m_Name: "\uB2E4\uB78C\uC950 \uCE90\uC154"
   m_TagString: Untagged
@@ -84,3 +86,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-1651321881544824994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8517081223441355561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46af4dd8f50a8c94188a593d3b7b586a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectSize: {x: 1, y: 1}
+  dragThreshold: 0.5
+  myID: -1
+--- !u!114 &-8212440528386450285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8517081223441355561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25fca991af2cd3941b7ac80083802dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myStorageID: 0
+  myType: 5
+  myStorageType: 5
+  totalItemCount: 0
+  maxCapacity: 0
+  storageUIController: {fileID: 0}

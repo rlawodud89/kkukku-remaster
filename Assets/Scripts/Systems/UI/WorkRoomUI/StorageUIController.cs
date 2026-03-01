@@ -30,7 +30,7 @@ public class StorageUIController : MonoBehaviour
     [SerializeField] private GameObject blockerObj;
 
     public bool IsPopupOpen { get; private set; } = false;
-    public enum StorageType { Blanket, Material, Snack, CraftBox, Employee }
+    public enum StorageType { Blanket, Material, Snack, CraftBox, Employee, None }
     
     // 제작으로 인해 display 업데이트
     private int currentOpenBoxID = -1;
@@ -108,7 +108,7 @@ public class StorageUIController : MonoBehaviour
             case StorageType.Employee:
                 EmployeePanel.SetActive(true);
 
-                var clickedBox = InteriorManager.Instance.GetEmployeeControllerByID(id);
+                var clickedBox = RoomInteriorManager.Instance.GetEmployeeControllerByID(id);
                 if (clickedBox != null && clickedBox.TryGetComponent<EmployeeController>(out var empController))
                 {
                     BlanketCraftController.Instance.setCurrentEmployee(empController);
