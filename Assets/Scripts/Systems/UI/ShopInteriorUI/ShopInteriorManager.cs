@@ -375,31 +375,49 @@ public class ShopInteriorManager : MonoBehaviour
             string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim(); 
             var gameData = ServiceLocator.Get<GameData>();
 
-            // 1. DB 처리
+            // 1. DB 처리 (가방에 아이템 추가 및 맵 데이터 삭제)
             gameData.Interior.RemoveShopInterior(targetID); 
             gameData.Inventory.AddShopInteriorItem(itemName, 1); 
 
-            // 2. 로컬 리스트(가게 데이터)에서 삭제
             var data = ShopStorageDataManager.Instance.interiorData;
-            var targetData = data.Interior.Find(x => x.ID == targetID);
-            if (targetData != null) data.Interior.Remove(targetData);
-            
-            // 테이블이나 계산대라면?
-            var targetTable = data.Table.Find(x => x.ID == targetID);
-            if (targetTable != null) data.Table.Remove(targetTable);
 
-            // 3. 실제 화면에서 파괴 및 길찾기 맵 갱신
+            // 일반 인테리어 리스트에서 찾아서 삭제
+            if (data.Interior != null)
+            {
+                var targetInterior = data.Interior.Find(x => x.ID == targetID);
+                if (targetInterior != null) data.Interior.Remove(targetInterior);
+            }
+            
+            // 테이블 리스트에서 찾아서 삭제
+            if (data.Table != null)
+            {
+                var targetTable = data.Table.Find(x => x.ID == targetID);
+                if (targetTable != null) data.Table.Remove(targetTable);
+            }
+
+            // 계산대인 경우 처리
+            if (data.Casher != null && data.Casher.ID == targetID)
+            {
+                data.Casher = null;
+            }
+
+            // 3. 실제 화면에서 오브젝트 파괴 및 길찾기 맵 갱신
             Destroy(currentSelectedFurniture.gameObject);
             ShopStorageDataManager.Instance.pathfinding.BuildObstacleMap(data);
 
             Debug.Log($"✅ [수거 완료] '{itemName}' 가구를 보관함으로 넣었습니다!");
+            
+            // 4. 선택 해제
             DeselectCurrent();
             
+            // 5. ★ UI 새로고침 (이제 data에서 지웠으므로 숫자가 바로 올라갑니다!)
             InventoryManager uiManager = FindObjectOfType<InventoryManager>();
-            if (uiManager != null) uiManager.RefreshUI();
+            if (uiManager != null) 
+            {
+                uiManager.RefreshUI();
+            }
         }
     }
-
 
 }
 

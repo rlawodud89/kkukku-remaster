@@ -85,6 +85,17 @@ public class RoomInventoryManager : MonoBehaviour
     // --- 화면 그리기 로직 ---
     public void RefreshUI()
     {
+        placedFurnitureCount.Clear(); // 일단 싹 비웁니다.
+        
+        var placedList = RoomInteriorManager.Instance.currentPlacedList;
+        foreach (var placed in placedList)
+        {
+            if (placedFurnitureCount.ContainsKey(placed.itemName))
+                placedFurnitureCount[placed.itemName]++;
+            else
+                placedFurnitureCount[placed.itemName] = 1;
+        }
+
         int startIndex = currentPage * itemsPerPage;
 
         for (int i = 0; i < slots.Length; i++)

@@ -3953,8 +3953,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InteriorManager, Assembly-CSharp
+      - m_Target: {fileID: 879208772}
+        m_TargetAssemblyTypeName: ShopInteriorManager, Assembly-CSharp
         m_MethodName: ConfirmFurnitureMove
         m_Mode: 1
         m_Arguments:

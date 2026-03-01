@@ -40,6 +40,7 @@ public class RoomInteriorManager : MonoBehaviour
 
     public List<RoomInteriorPlaced> currentPlacedList = new List<RoomInteriorPlaced>();
 
+    RoomInventoryManager uiManager;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -55,6 +56,9 @@ public class RoomInteriorManager : MonoBehaviour
 
         // 2. [로드] 저장된 데이터 화면에 뿌리기
         SpawnFurniture(); 
+
+        
+        uiManager = FindObjectOfType<RoomInventoryManager>();
     }
 
     // ★ 테스트가 끝나면 나중에 지우면 되는 함수입니다.
@@ -396,12 +400,11 @@ public void SpawnFurniture()
             gameData.Interior.RemoveRoomInterior(targetID); 
             gameData.Inventory.AddRoomInteriorItem(itemName, 1); 
 
-            // 로컬 리스트 처리
             var targetData = currentPlacedList.Find(x => x.ID == targetID);
             if (targetData != null) currentPlacedList.Remove(targetData);
 
-            // 실제 화면에서 오브젝트 파괴
             Destroy(currentSelectedFurniture.gameObject);
+            uiManager.RefreshUI();
 
             Debug.Log($"✅ [수거 완료] 빈 '{itemName}' 가구를 보관함으로 넣었습니다!");
 
@@ -451,6 +454,9 @@ public void SpawnFurniture()
             ServiceLocator.Get<GameData>().Interior.TransferRoomInterior(targetID, newGridIndex);
 
             Debug.Log($"✅ [이동 완료] ID: {targetID} 가구가 {newGridIndex}번 칸으로 이동 저장되었습니다!");
+
+
+            uiManager.RefreshUI();
 
             // 6. 저장 완료되었으니 선택 해제 (테두리 끄기 등)
             DeselectCurrent();
@@ -790,8 +796,6 @@ public void SpawnFurniture()
     {
         var gameData = ServiceLocator.Get<GameData>();
 
-        // 1. 드롭한 마우스 위치를 작업실 전용 그리드 인덱스(번호)로 변환
-        // (InteriorManager에 있는 기존 기준점 보정 로직을 그대로 태웁니다)
         int dropIndex = WorldToGrid(dropWorldPos);
 
         // 2. 맵 밖으로 던졌으면 무시 (-1 반환 시)
@@ -812,8 +816,6 @@ public void SpawnFurniture()
         int itemWidth = so.itemWidth;
         int itemHeight = so.itemHeight;
 
-        // 4. 겹침 및 벽 충돌 검사! 
-        // (새로 설치하는 거니까 기존 가구 ID를 뜻하는 파라미터에는 -1을 넣습니다)
         if (CheckIfPlacementInvalid(dropIndex, itemWidth, itemHeight, -1))
         {
             Debug.LogWarning("🚨 [작업실] 그 자리에는 이미 다른 가구가 있거나 맵을 벗어납니다!");
@@ -821,20 +823,13 @@ public void SpawnFurniture()
             return;
         }
 
-        // 5. 자리가 정상이라면 인벤토리 가방에서 1개 빼기
-        // (주의: GameData 스크립트 안에 있는 실제 감소 함수 이름으로 맞춰주세요)
+
         gameData.Inventory.RemoveRoomInteriorItem(itemName, 1);
 
-        // 6. DB에 추가하고 화면에 실제 가구 뿅! 하고 소환하기
-        // (기존에 맵 불러올 때 쓰시던 InstallFurniture 함수를 그대로 재활용합니다)
         InstallFurniture(dropIndex, itemName);
 
-        // 7. 열려있는 작업실 인벤토리 UI 즉시 새로고침 (슬롯의 남은 개수 -1 반영)
-        RoomInventoryManager uiManager = FindObjectOfType<RoomInventoryManager>();
-        if (uiManager != null)
-        {
-            uiManager.RefreshUI();
-        }
+        uiManager.RefreshUI();
+
 
         Debug.Log($"✅ [작업실 설치 완료] '{itemName}' 가구가 {dropIndex}번 칸에 완벽하게 설치되었습니다!");
     }

@@ -59,7 +59,7 @@ public class InteractionUI : MonoBehaviour
 
             if (ShopInteriorManager.Instance)
             {
-                //ShopInteriorManager.Instance.StoreSelectedFurniture();
+                ShopInteriorManager.Instance.StoreSelectedFurniture();
             }
 
             // 2. 내 타겟 비우고 UI 메뉴 닫기
@@ -80,7 +80,7 @@ public class InteractionUI : MonoBehaviour
             
             if (ShopInteriorManager.Instance)
             {
-                //ShopInteriorManager.Instance.ConfirmFurnitureMove(); 
+                ShopInteriorManager.Instance.ConfirmFurnitureMove(); 
             }
             // 2. 내 타겟 비우고 UI 메뉴 닫기
             targetFurniture = null;
