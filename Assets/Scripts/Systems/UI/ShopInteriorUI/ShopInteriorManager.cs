@@ -203,25 +203,17 @@ public class ShopInteriorManager : MonoBehaviour
         HideGridHighlight();
     }
 
-// ==========================================
-    // ★ 수정된 하이라이트 로직 (Top-Left 기준점 보정)
-    // ==========================================
-    public void UpdateGridHighlight(Vector3 targetPos, int furnitureID, string itemName)
+   public void UpdateGridHighlight(Vector3 targetPos, int furnitureID, string itemName)
     {
         if (gridHighlightObj == null) return;
 
-        // 1. SO 데이터 가져오기 (크기를 알아야 기준점을 보정할 수 있습니다)
-        var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+        var so = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemSO(itemName);
         int itemWidth = so != null ? so.itemWidth : 1; 
         int itemHeight = so != null ? so.itemHeight : 1;
 
-        // 2. targetPos는 가구의 왼쪽 아래(Bottom-Left)입니다.
+
         Vector3Int bottomLeftCell = floorTilemap.WorldToCell(targetPos);
-
-        // 3. ✨ 핵심: 가게 길찾기는 'Top-Left' 기준이므로, 높이만큼 Y를 더해줍니다!
         Vector3Int topLeftCell = new Vector3Int(bottomLeftCell.x, bottomLeftCell.y + itemHeight - 1, 0);
-
-        // 4. 보정된 Top-Left 좌표로 인덱스를 구합니다.
         int startGridIndex = ShopStorageDataManager.Instance.pathfinding.PosToIndex(topLeftCell);
 
         if (startGridIndex == -1)
@@ -230,16 +222,22 @@ public class ShopInteriorManager : MonoBehaviour
             return;
         }
 
-        // 5. 하이라이트 크기 및 위치 적용
         Vector3 cellSize = floorTilemap.layoutGrid.cellSize;
-        gridHighlightObj.localScale = new Vector3(itemWidth * cellSize.x, itemHeight * cellSize.y, 1f);
+        Vector3 tilemapScale = floorTilemap.transform.lossyScale; 
+        
+        // 하이라이트 오브젝트 자체의 크기도 타일맵 스케일에 맞춰 줄여줍니다.
+        gridHighlightObj.localScale = new Vector3(itemWidth * cellSize.x * tilemapScale.x, itemHeight * cellSize.y * tilemapScale.y, 1f);
 
-        Vector3 cellBottomLeft = floorTilemap.CellToWorld(bottomLeftCell);
-        gridHighlightObj.position = cellBottomLeft + new Vector3(itemWidth * cellSize.x * 0.5f, itemHeight * cellSize.y * 0.5f, 0f);
+        Vector3 cellCenterPos = floorTilemap.GetCellCenterWorld(bottomLeftCell);
+
+        // 위치 오프셋에도 타일맵 스케일 곱하기
+        float offsetX = (itemWidth - 1) * (cellSize.x * tilemapScale.x) * 0.5f;
+        float offsetY = (itemHeight - 1) * (cellSize.y * tilemapScale.y) * 0.5f;
+
+        gridHighlightObj.position = cellCenterPos + new Vector3(offsetX, offsetY, 0f);
         
         gridHighlightObj.gameObject.SetActive(true);
 
-        // 6. 겹침 검사
         bool isInvalid = CheckIfPlacementInvalid(startGridIndex, itemWidth, itemHeight, furnitureID);
         if (highlightSprite) highlightSprite.color = isInvalid ? colorInvalid : colorValid;
     }
@@ -258,7 +256,7 @@ public class ShopInteriorManager : MonoBehaviour
             string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim();
             
             // 크기 가져오기
-            var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+            var so = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemSO(itemName);
             int itemWidth = so != null ? so.itemWidth : 1;
             int itemHeight = so != null ? so.itemHeight : 1;
 
@@ -365,13 +363,27 @@ public class ShopInteriorManager : MonoBehaviour
         if (currentSelectedFurniture == furniture) DeselectCurrent();
     }
 
-    public void StoreSelectedFurniture()
+   public void StoreSelectedFurniture()
     {
         if (currentSelectedFurniture == null) return;
 
         if (currentSelectedFurniture.TryGetComponent<WR_StorageController>(out var script))
         {
             int targetID = script.myStorageID;
+
+            // =================================================================
+            // ✨ [수거 방어 로직] 유저님이 제안하신 코드 적용!
+            // =================================================================
+            bool hasBlanket = ServiceLocator.Get<GameData>().ShopState.IsBlanketOnShopTable(targetID);
+
+            if (hasBlanket)
+            {
+                Debug.LogWarning("🚨 [수거 불가] 진열대에 이불이 남아있습니다! 먼저 비워주세요.");
+                InteractionUI.Instance.HideMenu();
+                return; // ❌ 여기서 함수를 종료하여 철거를 막습니다.
+            }
+            // =================================================================
+
             string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim(); 
             var gameData = ServiceLocator.Get<GameData>();
 
@@ -405,12 +417,12 @@ public class ShopInteriorManager : MonoBehaviour
             Destroy(currentSelectedFurniture.gameObject);
             ShopStorageDataManager.Instance.pathfinding.BuildObstacleMap(data);
 
-            Debug.Log($"✅ [수거 완료] '{itemName}' 가구를 보관함으로 넣었습니다!");
+            Debug.Log($"✅ [수거 완료] 빈 '{itemName}' 가구를 보관함으로 넣었습니다!");
             
             // 4. 선택 해제
             DeselectCurrent();
             
-            // 5. ★ UI 새로고침 (이제 data에서 지웠으므로 숫자가 바로 올라갑니다!)
+            // 5. UI 새로고침
             InventoryManager uiManager = FindObjectOfType<InventoryManager>();
             if (uiManager != null) 
             {
@@ -418,7 +430,6 @@ public class ShopInteriorManager : MonoBehaviour
             }
         }
     }
-
 }
 
 public class FurnitureItem
