@@ -254,6 +254,7 @@ public class ShopStoragePanel : MonoBehaviour
         ClearList();
 
         // 3. 패널 비활성화
+        UIEventManager.ShowMainUI();
         gameObject.SetActive(false);
     }
 

@@ -51,6 +51,7 @@ public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
 
         if (storagePanel != null)
         {
+            UIEventManager.HideMainUI();
             storagePanel.OpenStorage(storageID);
         }
     }
