@@ -5731,6 +5731,8 @@ MonoBehaviour:
   gridWidth: 8
   gridHeight: 6
   cellSize: 0.7
+  floorTilemap: {fileID: 1203836156}
+  wallTilemap: {fileID: 728686464}
   gridHighlightObj: {fileID: 623707519}
   highlightSprite: {fileID: 623707518}
   colorValid: {r: 0, g: 1, b: 0, a: 0.5}

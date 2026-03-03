@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI; 
 using System.Linq;
+using UnityEngine.Tilemaps;
 
 public class RoomInteriorManager : MonoBehaviour
 {
@@ -24,6 +25,10 @@ public class RoomInteriorManager : MonoBehaviour
     [SerializeField] private int gridWidth = 8;  
     [SerializeField] private int gridHeight = 6; 
     [SerializeField] private float cellSize = 0.7f; 
+
+    [Header("타일맵 연결 (바닥/벽지)")]
+    public Tilemap floorTilemap; 
+    public Tilemap wallTilemap;
 
     [Header("Grid Highlight")]
     public Transform gridHighlightObj;      // 방금 만든 GridHighlight 객체 연결
@@ -50,19 +55,116 @@ public class RoomInteriorManager : MonoBehaviour
 
     private void Start()
     {
-
-        // 1. [테스트용] 강제로 데이터 집어넣기
-        //InjectTestData(); 
-
-        // 2. [로드] 저장된 데이터 화면에 뿌리기
         SpawnFurniture(); 
-
+        InitializeRoomTiles(); // ✨ 씬 시작 시 바닥/벽지 로드
         
         uiManager = FindObjectOfType<RoomInventoryManager>();
     }
 
-    // ★ 테스트가 끝나면 나중에 지우면 되는 함수입니다.
+    public void InitializeRoomTiles()
+    {
+        // ※ TilePositionType.ROOM_FLOOR / ROOM_WALL 부분은 유저님의 실제 Enum 이름에 맞게 수정해주세요!
+        FloorItem currentFloor = ServiceLocator.Get<GameData>().Interior.GetCurrentFloorTile(TilePositionType.ROOM_FLOOR);
+        if (currentFloor != null) PlaceFloorEntirely(currentFloor);
+
+        WallpaperItem currentWallpaper = ServiceLocator.Get<GameData>().Interior.GetCurrentWallTile(TilePositionType.ROOM_WALL);
+        if (currentWallpaper != null) PlaceWallpaperEntirely(currentWallpaper);
+    }
+
+    public void PlaceFloorEntirely(FloorItem floorItem)
+    {
+        if (floorItem == null || floorItem.tileBase == null || floorTilemap == null) return;
+        BoundsInt bounds = floorTilemap.cellBounds;
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        {
+            if (floorTilemap.HasTile(pos)) floorTilemap.SetTile(pos, floorItem.tileBase);
+        }
+    }
+
+    public void PlaceWallpaperEntirely(WallpaperItem wallpaperItem)
+    {
+        if (wallpaperItem == null || wallpaperItem.wallTiles.Length < 3 || wallTilemap == null) return;
+        BoundsInt bounds = wallTilemap.cellBounds;
+        int minY = int.MaxValue;
+        int maxX = int.MinValue;
+        HashSet<int> wallXCoords = new HashSet<int>();
+
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        {
+            if (wallTilemap.HasTile(pos))
+            {
+                wallXCoords.Add(pos.x);
+                if (pos.x > maxX) maxX = pos.x;
+                if (pos.y < minY) minY = pos.y;
+            }
+        }
+
+        if (wallXCoords.Count == 0) return;
+
+        foreach (int x in wallXCoords)
+        {
+            for (int y = bounds.yMin; y <= bounds.yMax; y++) wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
+
+            Vector3Int basePos = new Vector3Int(x, minY, 0);
+            bool isSecondFromRight = (x == maxX - 1);
+
+            if (!isSecondFromRight) wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
+            Vector3Int middlePos = basePos + new Vector3Int(0, 1, 0);
+            wallTilemap.SetTile(middlePos, isSecondFromRight ? wallpaperItem.wallTiles[1] : wallpaperItem.wallTiles[0]);
+            Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
+            wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
+        }
+    }
     
+
+    // =================================================================
+    // ★ 바닥/벽지 교체 및 드래그 앤 드롭 적용 로직
+    // =================================================================
+
+    public void ChangeRoomFloor(string itemName)
+    {
+        var gameData = ServiceLocator.Get<GameData>();
+        
+        // 1. DB 업데이트 (TilePositionType 확인 필수!)
+        gameData.Interior.SetTileInterior(TilePositionType.ROOM_FLOOR, itemName);
+        
+        // 2. 화면에 즉시 적용
+        FloorItem newFloor = gameData.Interior.GetCurrentFloorTile(TilePositionType.ROOM_FLOOR);
+        if (newFloor != null) PlaceFloorEntirely(newFloor);
+    }
+
+    public void ChangeRoomWallpaper(string itemName)
+    {
+        var gameData = ServiceLocator.Get<GameData>();
+        
+        // 1. DB 업데이트 
+        gameData.Interior.SetTileInterior(TilePositionType.ROOM_WALL, itemName);
+        
+        // 2. 화면에 즉시 적용
+        WallpaperItem newWallpaper = gameData.Interior.GetCurrentWallTile(TilePositionType.ROOM_WALL);
+        if (newWallpaper != null) PlaceWallpaperEntirely(newWallpaper);
+    }
+
+    public void PlaceTileOnMap(string itemName, int category, Vector3 mousePos)
+    {
+        if (category == 1) // 타일(바닥)
+        {
+            // 같은 스크립트 안에 있으므로 Instance 없이 바로 호출
+            ChangeRoomFloor(itemName);
+            Debug.Log($"[작업실] {itemName} 바닥을 깔았습니다!");
+        }
+        else if (category == 2) // 벽지
+        {
+            ChangeRoomWallpaper(itemName);
+            Debug.Log($"[작업실] {itemName} 벽지를 발랐습니다!");
+        }
+
+        // ✨ UI 매니저를 통해 UI 갱신! (현재 장착된 타일을 회색으로 만들기 위함)
+        if (uiManager != null) 
+        {
+            uiManager.RefreshUI(); 
+        }
+    }
     private void InjectTestData()
     {
         var interiorDB = ServiceLocator.Get<GameData>().Interior;

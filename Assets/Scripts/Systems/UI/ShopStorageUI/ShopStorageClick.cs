@@ -39,6 +39,7 @@ public class ShopStorageClick : MonoBehaviour, IPointerClickHandler
         {
             spriteRenderer.sprite = emptySprite; // 이불 없음 (품절)
         }
+        
     }
 
     public void OnPointerClick(PointerEventData eventData)

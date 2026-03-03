@@ -142,7 +142,7 @@ public class InventoryManager : MonoBehaviour
                     var item = furnitureList[itemIndex];
 
                     int placedCount = placedFurnitureCount.ContainsKey(item.itemName) ? placedFurnitureCount[item.itemName] : 0;
-                    int availableCount = item.quantity - placedCount;
+                    int availableCount = item.quantity;
 
                     // 첫 번째 슬롯(i=0)일 때만 샘플로 자세한 정보를 찍어봅니다. 너무 많이 찍히면 보기 힘드니까요!
                     if (i == 0)
