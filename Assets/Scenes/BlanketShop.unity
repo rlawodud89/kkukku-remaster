@@ -783,6 +783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasToShow: {fileID: 1555080995}
   canvasToHide: {fileID: 947979101}
+  MainUI: 0
 --- !u!1 &178034011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasToShow: {fileID: 947979101}
   canvasToHide: {fileID: 1555080995}
+  MainUI: 1
 --- !u!114 &347228072
 MonoBehaviour:
   m_ObjectHideFlags: 0

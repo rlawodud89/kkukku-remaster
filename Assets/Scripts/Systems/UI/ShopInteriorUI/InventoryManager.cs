@@ -32,6 +32,8 @@ public class InventoryManager : MonoBehaviour
 
     public void OnClickInteriorButton()
     {
+        UIEventManager.HideMainUI();
+
         Debug.Log("<color=yellow>=========================================</color>");
         Debug.Log("<color=yellow>[인벤토리 디버그 시작]</color> 인벤토리 버튼 클릭됨!");
 
