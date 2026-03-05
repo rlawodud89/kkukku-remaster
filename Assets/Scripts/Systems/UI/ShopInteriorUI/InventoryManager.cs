@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -107,13 +108,11 @@ public class InventoryManager : MonoBehaviour
 
     // --- 화면 그리기 로직 ---
     public void RefreshUI()
-    {
-
-        placedFurnitureCount.Clear(); 
-    
+{
+    placedFurnitureCount.Clear(); 
     var data = ShopStorageDataManager.Instance.interiorData;
     
-    // 일반 인테리어, 테이블, 계산대 모두 합쳐서 개수 세기
+    // 1. 씬에 설치된 가구 개수 세기 (기존 코드 유지)
     var allPlaced = new List<Interiorinfo>();
     if (data.Casher != null) allPlaced.Add(data.Casher);
     allPlaced.AddRange(data.Interior);
@@ -121,41 +120,74 @@ public class InventoryManager : MonoBehaviour
 
     foreach (var item in allPlaced)
     {
-        string name = item.prefab.name; // 혹은 itemName
+        // 이름에 "(Clone)"이 붙어있을 수 있으니 떼어줍니다.
+        string name = item.prefab.name.Replace("(Clone)", "").Trim(); 
         if (placedFurnitureCount.ContainsKey(name)) placedFurnitureCount[name]++;
         else placedFurnitureCount[name] = 1;
     }
 
-    // 2. DB에서 최신 가방 데이터 가져오기
-    this.furnitureList = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemInventory();
-        int startIndex = currentPage * itemsPerPage;
-        Debug.Log($"<color=cyan>[UI 새로고침]</color> 카테고리: {currentCategory}, 페이지: {currentPage}, 시작 인덱스: {startIndex}");
+    // 2. 가방(DB)에 남은 가구 가져오기
+    var bagList = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemInventory();
 
+    // ✨ 3. [핵심] 씬 + 가방을 합친 '진짜 전체 가구 리스트' 만들기
+    this.furnitureList = new List<FurnitureItem>();
 
-
-        for (int i = 0; i < slots.Length; i++)
+    // A. 가방에 1개라도 있는 가구들 먼저 리스트에 등록
+    if (bagList != null)
+    {
+        foreach (var bagItem in bagList)
         {
-            int itemIndex = startIndex + i;
+            this.furnitureList.Add(new FurnitureItem {
+                itemName = bagItem.itemName,
+                itemImage = bagItem.itemImage,
+                quantity = bagItem.quantity, // 보관함에 남은 개수
+                prefab = bagItem.prefab
+            });
+        }
+    }
 
-            if (currentCategory == 0) // ================= 가구 탭 =================
+    // B. 가방엔 없는데(0개) 씬에만 있는 가구 찾아내서 '0개짜리'로 끼워넣기!
+    foreach (var placedName in placedFurnitureCount.Keys)
+    {
+        // 방금 만든 리스트에 이 가구가 없다면? (= 가방에 0개 남아서 리스트에서 지워진 상태)
+        if (!this.furnitureList.Exists(x => x.itemName == placedName))
+        {
+            // SO(데이터)에서 원본 이미지와 정보를 가져와서 수량을 0으로 넣습니다.
+            var so = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemSO(placedName);
+            if (so != null)
             {
-                if (furnitureList != null && itemIndex < furnitureList.Count)
-                {
-                    var item = furnitureList[itemIndex];
-
-                    int placedCount = placedFurnitureCount.ContainsKey(item.itemName) ? placedFurnitureCount[item.itemName] : 0;
-                    int availableCount = item.quantity;
-
-                    // 첫 번째 슬롯(i=0)일 때만 샘플로 자세한 정보를 찍어봅니다. 너무 많이 찍히면 보기 힘드니까요!
-                    if (i == 0)
-                    {
-                        Debug.Log($"   -> [슬롯 0번 가구 샘플] 이름: {item.itemName}, 보유량: {item.quantity}, 설치됨: {placedCount}, 남은개수: {availableCount}");
-                    }
-
-                    slots[i].UpdateSlot(item.itemImage, item.itemName, 0, availableCount, true, false);
-                }
-                else { slots[i].UpdateSlot(null, "", 0, 0, false, false); }
+                this.furnitureList.Add(new FurnitureItem {
+                    itemName = placedName,
+                    itemImage = so.image, // 💡 SO 스크립트에 있는 이미지 변수명으로 맞춰주세요!
+                    quantity = 0,             // 🔥 핵심: 보관함엔 없으니까 0개!
+                    prefab = so.prefab        // 💡 SO 스크립트에 있는 프리팹 변수명
+                });
             }
+        }
+    }
+
+    // =========================================================
+    // 이제 슬롯 그리기 시작!
+    int startIndex = currentPage * itemsPerPage;
+
+    for (int i = 0; i < slots.Length; i++)
+    {
+        int itemIndex = startIndex + i;
+
+        if (currentCategory == 0) // 가구 탭
+        {
+            if (furnitureList != null && itemIndex < furnitureList.Count)
+            {
+                var item = furnitureList[itemIndex];
+                
+                // 🔥 이제 복잡한 뺄셈 없이 그냥 아이템 개수(quantity) 쓰면 끝입니다!
+                int availableCount = item.quantity; 
+
+                slots[i].UpdateSlot(item.itemImage, item.itemName, 0, availableCount, true, false);
+            }
+            else { slots[i].UpdateSlot(null, "", 0, 0, false, false); }
+        }
+            
             else if (currentCategory == 1) // ================= 타일 탭 =================
             {
                 if (floorList != null && itemIndex < floorList.Count)
