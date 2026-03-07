@@ -35,5 +35,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Loading.unity
     guid: 461e9dd2c3fe2524bb5c0f953b727114
+  - enabled: 1
+    path: Assets/Scenes/Ending.unity
+    guid: 714167cb2582e754fb5544d717b81939
+  - enabled: 1
+    path: Assets/Scenes/MistForest.unity
+    guid: 8c4ac8cfa106e3443849ce0577547141
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: f159fd80c729d2148bfd7bb3428b6716, type: 2}
