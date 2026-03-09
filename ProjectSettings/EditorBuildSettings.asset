@@ -30,6 +30,8 @@ EditorBuildSettings:
     path: Assets/Scenes/WorkRoom.unity
     guid: 700069948372ba945a981bf0f71fafe4
   - enabled: 1
+    path: Assets/Scenes/Prolog.unity
+    guid: f794714f744c5b6498a9d63e9c67ddab
     path: Assets/Scenes/SleepingGarden.unity
     guid: 5e9de8d87a7a2ba4c9ae3bfd42a526d4
   - enabled: 1

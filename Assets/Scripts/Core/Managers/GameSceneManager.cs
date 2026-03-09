@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -31,6 +32,43 @@ public class GameSceneManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    public GameObject storeNamePanel;
+
+    public void OnStartButtonClick()
+    {
+        if (PlayerPrefs.HasKey("StoreName"))
+        {
+            Debug.Log("기존 유저입니다. 게임 씬으로 이동합니다.");
+            SceneManager.LoadScene("BlanketShop");
+        }
+        else
+        {
+            // 데이터가 없다면 처음인 유저 -> 이름 설정 패널 띄우기
+            Debug.Log("처음 온 유저입니다. 이름 설정창을 띄웁니다.");
+            
+            SceneManager.LoadScene("Prolog");
+            //storeNamePanel.SetActive(true);
+            //SceneManager.LoadScene("BlanketShop");
+        }
+    }
+
+    public void AfterProlog()
+    {
+        if (PlayerPrefs.HasKey("StoreName"))
+        {
+            Debug.Log("기존 유저입니다. 게임 씬으로 이동합니다.");
+            SceneManager.LoadScene("BlanketShop");
+        }
+        else
+        {
+            // 데이터가 없다면 처음인 유저 -> 이름 설정 패널 띄우기
+            Debug.Log("처음 온 유저입니다. 이름 설정창을 띄웁니다.");
+            
+            storeNamePanel.SetActive(true);
+            SceneManager.LoadScene("BlanketShop");
         }
     }
 }
