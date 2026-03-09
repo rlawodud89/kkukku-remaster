@@ -10,7 +10,7 @@ public class SnackSlotUI : MonoBehaviour
     [SerializeField] private SnackDragHandler dragScript; // 안쪽 자식 스크립트 연결
 
     // 외부(팝업 매니저)에서 이 함수를 호출해서 데이터를 넣어줍니다.
-    public void SetSlotData(Sprite icon, int count, int staminaAmount)
+    public void SetSlotData(int storageID, string itemName, Sprite icon, int count, int staminaAmount)
     {
         // 1. 아이콘 이미지 변경
         if (snackIconImage != null)
@@ -22,6 +22,8 @@ public class SnackSlotUI : MonoBehaviour
         if (dragScript != null)
         {
             dragScript.staminaRecoverAmount = staminaAmount;
+            dragScript.mySnackName = itemName; // 아이템 이름도 전달 (필요하면)
+            dragScript.myStorageID = storageID;
         }
         
         // 3. 개수 텍스트 변경

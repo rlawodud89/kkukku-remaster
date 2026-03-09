@@ -16,3 +16,6 @@ MonoBehaviour:
   tileType: 1
   image: {fileID: 0}
   price: 0
+  tileBase: {fileID: 0}
+  topTileBase: {fileID: 0}
+  bottomTileBase: {fileID: 0}

@@ -23,6 +23,6 @@ public class MapSpotButton : MonoBehaviour
     void GoToScene()
     {
         // 씬 이동
-        SceneManager.LoadScene(sceneName);
+        LoadingSceneManager.LoadScene(sceneName);
     }
 }
