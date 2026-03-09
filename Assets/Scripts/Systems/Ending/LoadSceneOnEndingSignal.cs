@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadSceneOnSignal : MonoBehaviour
+public class LoadSceneOnEndingSignal : MonoBehaviour
 {
     [SerializeField] private string nextSceneName = "Work_Shop";
 
