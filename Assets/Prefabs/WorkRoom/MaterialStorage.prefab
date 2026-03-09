@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46af4dd8f50a8c94188a593d3b7b586a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grid: {fileID: 0}
   objectSize: {x: 1, y: 1}
   dragThreshold: 0.5
-  myID: -1
 --- !u!114 &-8438732450985770341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,8 +117,6 @@ MonoBehaviour:
   myStorageID: 0
   myType: 1
   myStorageType: 1
-  totalItemCount: 0
-  maxCapacity: 0
   storageUIController: {fileID: 0}
 --- !u!60 &8105987124951785006
 PolygonCollider2D:

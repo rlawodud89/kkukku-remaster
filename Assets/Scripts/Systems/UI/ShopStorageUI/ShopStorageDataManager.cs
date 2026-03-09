@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,16 +13,14 @@ public class ShopStorageDataManager : MonoBehaviour
 
     public Pathfinding pathfinding;
     public CashierManager cashierManager;
-
-    public ShopInteriorManager interiorManager;
-
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         // 가게 그리드 설정 불러오기
-        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out pathfinding.totalGridWidth, out pathfinding.totalGridHeight);
+        pathfinding.totalGridHeight = 6;
+        pathfinding.totalGridWidth = 10;
         pathfinding.CalculateGridOrigin();
 
         interiorData = new ShopInteriorData();
@@ -91,12 +88,6 @@ public class ShopStorageDataManager : MonoBehaviour
 
         cashierManager.cashierPosIndex = interiorData.Casher.placement;
         cashierManager.cashierWidth = interiorData.Casher.Width;
-
-        if (interiorManager != null)
-        {
-            interiorManager.InitializeShopInterior(); // 맵에 가구 소환!
-        }
-
     }
 
     private void LoadInteriorData()
@@ -160,15 +151,12 @@ public class ShopStorageDataManager : MonoBehaviour
         return false;
     }
 
-    public event Action<int, int> OnTableDataChanged;
-
     public void UpdateTableData(int tableID, int itemIndex, int changeAmount)
     {
         if (GetTableClass(tableID, out var table))
         {
             ServiceLocator.Get<GameData>().ShopState.AdjustShopTableBlanketCount(tableID, table.itemName[itemIndex], changeAmount);
             table.count[itemIndex] += changeAmount;
-            OnTableDataChanged?.Invoke(tableID, itemIndex);
         }
     }
 

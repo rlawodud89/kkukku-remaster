@@ -57,13 +57,11 @@ public class PanelItemImg : MonoBehaviour,
 
         CancelPress();
     }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log($"{name} DRAG");
         CancelPress();
     }
-
 
     private IEnumerator LongPressRoutine()
     {
@@ -76,7 +74,6 @@ public class PanelItemImg : MonoBehaviour,
             yield break;
 
         descriptionPanel.Show(description, transform as RectTransform);
-        TutorialEventBus.Raise(TutorialID.StoreDescription);
     }
 
 

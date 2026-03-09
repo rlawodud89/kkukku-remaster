@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: PersonalCraftBox
   roomInteriorType: 4
-  image: {fileID: -1746070222, guid: dedadcc12e5305b46ad1830bb356c0a2, type: 3}
+  image: {fileID: 21300000, guid: dedadcc12e5305b46ad1830bb356c0a2, type: 3}
   prefab: {fileID: 4696338278954778362, guid: c3a2b90112eb2f74a970f039edb83e85, type: 3}
   price: 0
-  itemWidth: 2
+  itemWidth: 1
   itemHeight: 1
   slotCount: 0
   maxStamina: 0

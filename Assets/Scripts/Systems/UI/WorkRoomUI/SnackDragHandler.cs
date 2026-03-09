@@ -5,8 +5,6 @@ using UnityEngine.UI;
 public class SnackDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [HideInInspector] public int staminaRecoverAmount = 0; // 부모가 세팅해줄 예정
-    [HideInInspector] public string mySnackName;
-    [HideInInspector] public int myStorageID; // 이 간식이 원래 어디 저장고에 있던 건지 (사용 후 개수 조정 위해)
     
     private GameObject dragGhost; // 드래그할 때 따라다닐 임시 아이콘
     private Canvas parentCanvas;
@@ -67,9 +65,12 @@ public class SnackDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             // 직원 스크립트 찾기
             EmployeeController employee = hit.collider.GetComponent<EmployeeController>();
             if (employee != null)
-            {             
-                employee.EatSnack(myStorageID, mySnackName, staminaRecoverAmount);
+            {
+                employee.RestoreStamina(staminaRecoverAmount);
                 Debug.Log($"냠냠! 스태미나 {staminaRecoverAmount} 회복!");
+                
+                // (선택) 여기서 아이템 소모 처리를 하려면 부모나 매니저에게 알려야 함
+                // GetComponentInParent<SnackSlotUI>().OnItemUsed(); 
             }
         }
 

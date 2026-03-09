@@ -14,7 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uAE30\uBCF8\uB09A\uC2DC\uB300"
   toolType: 1
-  image: {fileID: 1559008399, guid: e3774dcf66e8e5742a1b132c68ddc869, type: 3}
-  price: 0
-  needClickCount: 0
-  bonusCatchCount: 1
+  image: {fileID: 0}
+  timeLimit: 0

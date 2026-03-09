@@ -114,6 +114,8 @@ public class InteriorAggregate : IAggregate
             }
         }
 
+
+
         // 작업실 인테리어
         foreach (var (ID, change) in roomPlacedChanges)
         {
@@ -128,10 +130,10 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
-                            { "ID", insertInterior.ID }, 
                             { "gridNumber", insertInterior.gridNumber },
                             { "itemName", insertInterior.itemName },
-                            { "interiorType", insertInterior.interiorType }
+                            { "interiorType", insertInterior.interiorType },
+                            { "ID", insertInterior.ID }
                         }
                     };
 
@@ -148,7 +150,7 @@ public class InteriorAggregate : IAggregate
                         {
                             { "gridNumber", updateInterior.gridNumber },
                             { "itemName", updateInterior.itemName },
-                            { "interiorType", updateInterior.interiorType }
+                            { "interiorType", updateInterior.interiorType },
                         },
                         Conditions = new Dictionary<string, object>
                         {
@@ -184,7 +186,8 @@ public class InteriorAggregate : IAggregate
                 Table = "TileInteriorPlaced",
                 Values = new Dictionary<string, object>
                 {
-                    { "itemName", tile.itemName }
+                    { "itemName", tile.itemName
+}
                 },
                 Conditions = new Dictionary<string, object>
                 {
@@ -451,38 +454,6 @@ public class InteriorAggregate : IAggregate
     public TileInteriorItemSO GetCurrentTileInterior(TilePositionType tilePositionType)
     {
         return tileInteriorSOs[tilePlaced[tilePositionType].itemName];
-    }
-
-    public FloorItem GetCurrentFloorTile(TilePositionType tilePositionType)
-    {
-        var tileSO = tileInteriorSOs[tilePlaced[tilePositionType].itemName];
-
-        if (tileSO.tileType != TileInteriorType.FLOOR)
-            return null;
-
-        return new FloorItem
-        {
-            itemName = tileSO.itemName,
-            itemImage = tileSO.image,
-            tileBase = tileSO.tileBase
-        };
-    }
-
-    public WallpaperItem GetCurrentWallTile(TilePositionType tilePositionType)
-    {
-        var tileSO = tileInteriorSOs[tilePlaced[tilePositionType].itemName];
-
-        if (tileSO.tileType != TileInteriorType.WALL)
-            return null;
-
-        WallpaperItem wallpaperItem = new WallpaperItem();
-        wallpaperItem.itemName = tileSO.itemName;
-        wallpaperItem.itemImage = tileSO.image;
-        wallpaperItem.wallTiles[0] = tileSO.tileBase;
-        wallpaperItem.wallTiles[1] = tileSO.topTileBase;
-        wallpaperItem.wallTiles[2] = tileSO.bottomTileBase;
-
-        return wallpaperItem;
     }
 
     public void SetTileInterior(TilePositionType tilePositionType, string itemName)

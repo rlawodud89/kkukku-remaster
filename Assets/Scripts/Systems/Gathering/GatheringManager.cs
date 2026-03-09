@@ -149,8 +149,6 @@ public class GatheringManager : MonoBehaviour
             return;
         }
 
-        TutorialEventBus.Raise(TutorialID.GatheringItem);
-
         snackBoxData[currentSnackBoxIndex].count++;
 
         ServiceLocator.Get<GameData>().Inventory.AdjustSnackCount(

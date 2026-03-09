@@ -10,7 +10,7 @@ public class NPCAI : MonoBehaviour
     public CustomerData myData;
     public Tilemap walkTilemap; // 바닥 타일맵
     public Pathfinding pathfinding; // A* 스크립트 연결을 위해 추가
-    public float moveSpeed = 1f;
+    public float moveSpeed = 2f;
     private SpriteRenderer sr;
     private Animator animator;
     private Vector3 lastPosition;
@@ -35,99 +35,6 @@ public class NPCAI : MonoBehaviour
     private int selectedItemIndex;    // 그 가구의 몇 번째 칸인지
     private string selectedItemName;  // 물건 이름
     private int priceToPay;           // 내야 할 돈
-
-
-    void Awake()
-    {
-        sr = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-
-        // Pathfinding은 Awake에서 미리 찾아둡니다. 
-        // (Start에서 찾으면 늦을 수 있음)
-        if (pathfinding == null)
-        {
-            pathfinding = FindObjectOfType<Pathfinding>();
-            if (pathfinding != null) walkTilemap = pathfinding.walkTilemap;
-        }
-    }
-
-    // 💡 [추가] 생성되자마자 즉시 호출될 초기화 함수
-    public void SetupSurvivor(CustomerData data)
-    {
-        myData = data;
-
-        // 데이터 매니저가 혹시라도 준비 안 됐을 경우를 대비한 안전장치
-        if (ShopStorageDataManager.Instance == null) return;
-
-        // 생존자(기존 손님)라면 즉시 위치 이동
-        if (myData.isSurvivor)
-        {
-            // 1. 쇼핑 중이었던 경우
-            if (myData.currentState == CustomerData.State.Deciding ||
-                myData.currentState == CustomerData.State.MovingToWardrobe)
-            {
-                Interiorinfo targetTable = GetAnyTableInfo(); // 랜덤 테이블 or 기존 타겟
-                if (targetTable != null)
-                {
-                    Vector3 standPos = GetSmartInteractionPos(targetTable);
-                    if (standPos != Vector3.zero)
-                    {
-                        transform.position = standPos; // ✨ 순간이동!
-                        SetFaceToFurniture(targetTable);
-
-                        // 이미 자리를 잡았으니 걸어가는 애니메이션 끄기
-                        if (animator != null) animator.SetFloat("Speed", 0f);
-                    }
-                }
-            }
-            // 2. 계산 중이었던 경우
-            else if (myData.currentState == CustomerData.State.Paying ||
-                     myData.currentState == CustomerData.State.MovingToCashier)
-            {
-                Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
-                transform.position = cashierPos; // ✨ 순간이동!
-                SetDirection(Vector3.up);
-                if (animator != null) animator.SetFloat("Speed", 0f);
-            }
-        }
-    }
-
-    void Start()
-    {
-        lastPosition = transform.position;
-
-        // SetupSurvivor에서 pathfinding을 못 찾았을 수도 있으니 재확인
-        if (pathfinding == null)
-        {
-            pathfinding = FindObjectOfType<Pathfinding>();
-            walkTilemap = pathfinding.walkTilemap;
-        }
-
-        // 기존 로직 유지
-        if (npcBaseData != null && npcBaseData.questProgress == 1)
-        {
-            currentBehavior = NPCBehavior.SpecialQuest;
-        }
-
-        StartCoroutine(InitAndStartBehavior());
-    }
-
-    IEnumerator InitAndStartBehavior()
-    {
-        // 0.5초 대기는 "새로 들어오는 손님"이나 "데이터 로딩 대기"를 위해 유지하되,
-        // 이미 자리를 잡은 생존자(Survivor)는 위치 이동 로직을 건너뛰게 해야 함
-        yield return new WaitForSeconds(0.5f);
-
-        if (ShopStorageDataManager.Instance == null || ShopStorageDataManager.Instance.interiorData == null)
-        {
-            Debug.LogError("가구 데이터 로드 실패");
-            yield break;
-        }
-
-        StartCoroutine(MainBehaviorRoutine());
-    }
-
-
 
     // 1. 캐릭터 클릭 감지
     void OnMouseDown()
@@ -160,7 +67,48 @@ public class NPCAI : MonoBehaviour
         yield return new WaitForSeconds(delay);
         speechBubble.SetActive(false);
     }
-   
+    void Start()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        lastPosition = transform.position;
+
+        // 씬에 있는 Pathfinding 스크립트를 자동으로 찾거나 인스펙터에서 할당하세요.
+        if (pathfinding == null)
+        {
+            pathfinding = FindObjectOfType<Pathfinding>();
+            walkTilemap = pathfinding.walkTilemap;
+        }
+
+        if (npcBaseData != null)
+        {
+            int progress = npcBaseData.questProgress;
+
+            // 2. 퀘스트 상태에 따른 행동 결정
+            if (progress == 1)
+            {
+                currentBehavior = NPCBehavior.SpecialQuest;
+            }
+        }
+
+        StartCoroutine(InitAndStartBehavior());
+    }
+
+    IEnumerator InitAndStartBehavior()
+    {
+        // 데이터 매니저가 로딩될 때까지 0.3~0.5초 정도 충분히 대기
+        yield return new WaitForSeconds(0.5f);
+
+        // 데이터가 여전히 비어있다면 에러 방지를 위해 한 번 더 체크
+        if (ShopStorageDataManager.Instance == null || ShopStorageDataManager.Instance.interiorData == null)
+        {
+            Debug.LogError("가구 데이터가 로드되지 않았습니다! NPC 행동을 중지합니다.");
+            yield break;
+        }
+
+        StartCoroutine(MainBehaviorRoutine());
+    }
+
 
 
     IEnumerator MainBehaviorRoutine()
@@ -179,46 +127,33 @@ public class NPCAI : MonoBehaviour
             // 3. 이동을 멈추고 플레이어를 기다림
             animator.SetFloat("Speed", 0f);
         }
-        if (currentBehavior != NPCBehavior.SpecialQuest)
+        else
         {
             if (myData.isSurvivor)
             {
-                // 💡 [수정] SetupSurvivor에서 이미 위치를 잡았으므로,
-                // 여기서는 '순간이동' 코드를 빼고 '행동(말풍선, 대기)'만 수행하도록 로직 간소화
-
                 myData.isSurvivor = false; // 플래그 해제
 
                 switch (myData.currentState)
                 {
                     case CustomerData.State.Deciding:
-                    case CustomerData.State.MovingToWardrobe: // 이 상태들도 그냥 구경하는 척
-                        yield return new WaitForSeconds(2f); // 고민하는 척
-
-                        // 이후 로직은 동일 (구매 시도 -> 계산대 이동)
-                        // 현재 서 있는 가구(랜덤으로 잡은 곳)의 ID를 찾아야 하는데,
-                        // 복잡하니까 그냥 바로 구매 시도 로직(GetAnyTableInfo 등 활용)으로 넘김
-                        Interiorinfo targetTable = GetRandomTableWithStock();
-                        if (targetTable != null && TryPickItem(targetTable.ID))
-                        {
-                            yield return StartCoroutine(GoToCashierRoutine());
-                        }
-                        else
-                        {
-                            yield return StartCoroutine(LeaveShop());
-                        }
+                        // 쇼핑 중 -> 랜덤 가구로 순간이동 -> 고민 시작
+                        yield return StartCoroutine(SurvivorDecidingRoutine());
                         break;
 
                     case CustomerData.State.Paying:
-                    case CustomerData.State.MovingToCashier: // 이미 계산대에 있음
-                        yield return new WaitForSeconds(1.5f);
-                        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay > 0 ? priceToPay : 100); // 가격 정보 없으면 기본값
-                        yield return StartCoroutine(LeaveShop());
+                        // 계산 중 -> 계산대로 순간이동 -> 계산 시작
+                        yield return StartCoroutine(SurvivorPayingRoutine());
+                        break;
+
+                    // 그 외(MoveToWardrobe 등)는 그냥 Deciding으로 퉁치거나 기본 로직
+                    default:
+                        yield return StartCoroutine(SurvivorDecidingRoutine());
                         break;
                 }
             }
             else
             {
-                // 신규 손님은 입구부터 걸어옴 (기존 유지)
+                // 2. 신규 손님 -> 입구부터 걸어오기
                 yield return StartCoroutine(NormalShopRoutine());
             }
         }
@@ -239,6 +174,8 @@ public class NPCAI : MonoBehaviour
                 SetFaceToFurniture(targetTable); // 방향 설정
                 animator.SetFloat("Speed", 0f);  // 멈춤
 
+                // 2. 🚨 시간 계산 안 함! 그냥 쿨하게 2초 고민함 (리셋)
+                ShowSpeechBubble("음... 뭘 살까?");
                 yield return new WaitForSeconds(2f);
 
                 // 3. 이후 로직은 똑같음 (집기 시도 -> 계산대 이동)
@@ -270,6 +207,8 @@ public class NPCAI : MonoBehaviour
         SetDirection(Vector3.up);
         animator.SetFloat("Speed", 0f);
 
+        // 3. 🚨 그냥 쿨하게 1.5초 계산 시작 (리셋)
+        ShowSpeechBubble("계산해주세요!");
         yield return new WaitForSeconds(1.5f);
 
         // 4. 돈 처리
@@ -500,7 +439,7 @@ public class NPCAI : MonoBehaviour
         }
     }
 
-
+    // 코드 중복을 줄이기 위해 계산대 이동 로직 분리
     IEnumerator GoToCashierAndPay()
     {
         Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
@@ -689,7 +628,7 @@ public class NPCAI : MonoBehaviour
                 // ---------------------------------------------------------
                 ShopStorageDataManager.Instance.UpdateTableData(selectedTableID, selectedItemIndex, -1);
 
-                //이불장 이미지가 비어야 하니까 즉시 갱신
+                // (선택사항) 이불장 이미지가 비어야 하니까 즉시 갱신
                 var allStorages = FindObjectsOfType<ShopStorageClick>();
                 foreach (var storage in allStorages)
                 {
