@@ -51,6 +51,15 @@ public class CountlessItemPanel : MonoBehaviour
     {
         buyPopup.SetItem(storeItemProvider, itemName, price, count);
         buyPopup.gameObject.SetActive(true);
+
+        TutorialEventBus.Raise(TutorialID.StoreItemBuy);
     }
 
+    public void EnableTutorialAnchors(bool enable)
+    {
+        foreach (var anchor in GetComponentsInChildren<TutorialAnchor>())
+        {
+            anchor.enabled = enable;
+        }
+    }
 }

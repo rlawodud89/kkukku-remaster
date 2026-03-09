@@ -66,6 +66,8 @@ public class ToolInventoryUI : MonoBehaviour
         toolPanel.SetActive(true);
 
         toolPerformer.ToolUIOn();
+
+        TutorialEventBus.Raise(TutorialID.ToolButton);
     }
 
     public void OnClickToolBackBtn()
