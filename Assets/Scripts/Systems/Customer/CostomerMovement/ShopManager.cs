@@ -187,7 +187,7 @@ public class ShopManager : MonoBehaviour
         if (soldCount > 0)
         {
             // 한 번에 골드 추가
-            GameManager.Instance.ChangeGold(totalEarned);
+            ServiceLocator.Get<GameData>().User.ChangeGold(totalEarned);
             Debug.Log($"💰 [정산 완료] {soldCount}개 판매, 총 {totalEarned}G 획득!");
 
             // (선택사항) 여기서 "부재중 수익 팝업"을 띄워주면 좋습니다.
