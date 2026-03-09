@@ -7,6 +7,6 @@ public class MoveToWorkRoom : MonoBehaviour
 {
     public void MoveScene()
     {
-        LoadingSceneManager.LoadScene("WorkRoom");
+        SceneManager.LoadScene("WorkRoom");
     }
 }

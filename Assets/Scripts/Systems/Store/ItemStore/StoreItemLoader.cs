@@ -14,7 +14,6 @@ public class StoreItemLoader : MonoBehaviour
 
     private IStoreItemProvider storeItemProvider;
 
-    public RectTransform Content => content;
 
     void Awake()
     {
@@ -27,7 +26,6 @@ public class StoreItemLoader : MonoBehaviour
         // 패널 보일 때마다 현재 아이템 상황 가져와서 UI 생성
         // 레벨 변화 등의 이유로 아이템 현황 변경되어도, 그 상황 그대로 보여줌
     }
-
 
 
     private void LoadItemPanel()
@@ -45,8 +43,6 @@ public class StoreItemLoader : MonoBehaviour
                 CountableItemPanel ui = item.GetComponent<CountableItemPanel>();
                 ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price,
                     popup, descriptionPanel);
-
-                ui.EnableTutorialAnchors(false);
             }
         }
         else
@@ -57,25 +53,6 @@ public class StoreItemLoader : MonoBehaviour
                 CountlessItemPanel ui = item.GetComponent<CountlessItemPanel>();
                 ui.SetItem(storeItemProvider, data.itemName, data.itemSprite, data.price,
                     popup, descriptionPanel);
-
-                ui.EnableTutorialAnchors(false);
-            }
-        }
-
-        // 첫 번째 슬롯만 튜토리얼 활성화
-        if (content.childCount > 0)
-        {
-            var first = content.GetChild(0);
-
-            if (storeItemProvider.isCountable)
-            {
-                var countable = first.GetComponent<CountableItemPanel>();
-                countable.EnableTutorialAnchors(true);
-            }
-            else
-            {
-                var countless = first.GetComponent<CountlessItemPanel>();
-                countless.EnableTutorialAnchors(true);
             }
         }
     }

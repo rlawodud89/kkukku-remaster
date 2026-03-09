@@ -6,13 +6,19 @@ public class NPCSpawner : MonoBehaviour
     public static NPCSpawner Instance;
     public Transform entranceTransform; // 가게 입구
 
-    private int lastSpawnedIndex = -1;
-
     void Awake()
     {
         if (Instance == null) Instance = this;
     }
 
+    void Start()
+    {
+        // 가게 씬이 시작될 때 매니저에 저장된 데이터를 기반으로 NPC들을 다시 소환함
+        foreach (var data in ShopManager.Instance.activeCustomers)
+        {
+            SpawnNPC(data);
+        }
+    }
 
     Vector3 GetEntrancePosition()
     {
@@ -33,30 +39,20 @@ public class NPCSpawner : MonoBehaviour
         }
 
         int targetIndex;
+
         if (data.prefabIndex == -1)
         {
-            if (npcPrefab.Length > 1) // 프리팹 종류가 2개 이상일 때만 다르게 뽑기 시도
-            {
-                // 이전 번호와 다를 때까지 계속 다시 뽑기
-                do
-                {
-                    targetIndex = Random.Range(0, npcPrefab.Length);
-                }
-                while (targetIndex == lastSpawnedIndex);
-            }
-            else
-            {
-                targetIndex = Random.Range(0, npcPrefab.Length);
-                data.prefabIndex = targetIndex;
-            }
-
+            // 랜덤으로 외형을 정하고, 데이터에 영구 저장합니다.
+            targetIndex = Random.Range(0, npcPrefab.Length);
             data.prefabIndex = targetIndex;
-            lastSpawnedIndex = targetIndex; // 지금 뽑힌 번호를 기억해둠
         }
         else
         {
+            // 2. 이미 외형이 정해진 손님(씬 재진입)이라면 저장된 번호를 사용합니다.
             targetIndex = data.prefabIndex;
         }
+
+
 
 
         // 결정된 번호의 프리팹을 소환
@@ -67,7 +63,6 @@ public class NPCSpawner : MonoBehaviour
         if (npcAI != null)
         {
             npcAI.myData = data;
-            npcAI.SetupSurvivor(data);
         }
     }
 }

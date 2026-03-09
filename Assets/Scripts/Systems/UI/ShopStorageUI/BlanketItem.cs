@@ -48,11 +48,11 @@ public class BlanketItem : MonoBehaviour, IPointerClickHandler
     {
         if (isBlanket)
         {
-            amountText.text = currentAmount.ToString();
+            amountText.text = $"{currentAmount} / {max}";
         }
         else
         {
-            amountText.text = $"{currentAmount} / {max}";
+            amountText.text = currentAmount.ToString();
         }
     }
 

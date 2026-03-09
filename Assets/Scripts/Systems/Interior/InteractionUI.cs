@@ -1,4 +1,3 @@
-using System.Data.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,26 +44,16 @@ public class InteractionUI : MonoBehaviour
     public void HideMenu()
     {
         menuPanel.SetActive(false);
-        targetFurniture = null; 
+        // targetFurniture = null; // 여기서 널 처리하면 드래그 후 다시 열 때 문제될 수 있음
     }
 
+    // [보관 버튼] 클릭 시
     public void OnClickStore()
     {
         if (targetFurniture != null)
         {
-            if (RoomInteriorManager.Instance)
-             {
-            RoomInteriorManager.Instance.StoreSelectedFurniture();
-             }
-
-            if (ShopInteriorManager.Instance)
-            {
-                ShopInteriorManager.Instance.StoreSelectedFurniture();
-            }
-
-            // 2. 내 타겟 비우고 UI 메뉴 닫기
+            targetFurniture.StoreInInventory(); // 가구한테 "너 들어가" 명령
             targetFurniture = null;
-            HideMenu();
         }
     }
 
@@ -73,17 +62,8 @@ public class InteractionUI : MonoBehaviour
     {
         if (targetFurniture != null)
         {
-            if (RoomInteriorManager.Instance)
-            {
-            RoomInteriorManager.Instance.ConfirmFurnitureMove(); 
-            }
-            
-            if (ShopInteriorManager.Instance)
-            {
-                ShopInteriorManager.Instance.ConfirmFurnitureMove(); 
-            }
-            // 2. 내 타겟 비우고 UI 메뉴 닫기
-            targetFurniture = null;
+            // 매니저를 통해 선택 해제 (확정)
+            InteriorManager.Instance.DeselectCurrent(); 
             HideMenu();
         }
     }

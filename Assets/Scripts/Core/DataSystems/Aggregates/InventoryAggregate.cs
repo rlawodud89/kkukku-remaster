@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class InventoryAggregate : IAggregate
 {
@@ -1005,20 +1004,6 @@ public class InventoryAggregate : IAggregate
         return true;
     }
 
-    public List<ToolItemSO> GetAllToolItems(ToolType toolType)
-    {
-        var toolList = toolInventory.Values.Where(i => i.toolType == toolType).ToList();
-
-        var result = new List<ToolItemSO>();
-        foreach (var tool in toolList)
-        {
-            result.Add(toolSOs[tool.toolName]);
-        }
-
-        return result;
-    }
-
-
     public bool AddShopInteriorItem(string itemName, int count)
     {
         int currentCount = 0;
@@ -1169,89 +1154,18 @@ public class InventoryAggregate : IAggregate
     }
 
 
-    public List<FurnitureItem> GetShopInteriorItemInventory()
+    public List<ToolItemSO> GetAllToolItems(ToolType toolType)
     {
-        List<FurnitureItem> list = new();
+        var toolList = toolInventory.Values.Where(i => i.toolType == toolType).ToList();
 
-        foreach (var (itemName, inven) in shopInteriorInventory)
+        var result = new List<ToolItemSO>();
+        foreach (var tool in toolList)
         {
-            var itemSO = shopInteriorSOs[itemName];
-
-            list.Add(new FurnitureItem
-            {
-                itemName = itemName,
-                itemImage = itemSO.image,
-                gridSize = { x = itemSO.itemWidth, y = itemSO.itemHeight },
-                quantity = inven.count,
-                prefab = itemSO.prefab
-            });
+            result.Add(toolSOs[tool.toolName]);
         }
 
-        return list;
+        return result;
     }
 
-    public List<FurnitureItem> GetRoomInteriorItemInventory()
-    {
-        List<FurnitureItem> list = new();
 
-        foreach (var (itemName, inven) in roomInteriorInventory)
-        {
-            var itemSO = roomInteriorSOs[itemName];
-
-            list.Add(new FurnitureItem
-            {
-                itemName = itemName,
-                itemImage = itemSO.image,
-                gridSize = { x = itemSO.itemWidth, y = itemSO.itemHeight },
-                quantity = inven.count,
-                prefab = itemSO.prefab
-            });
-        }
-
-        return list;
-    }
-
-    public List<FloorItem> GetFloorTileItemInventory()
-    {
-        List<FloorItem> list = new();
-
-        foreach (var (itemName, inven)
-            in tileInventory.
-            Where(i => i.Value.tileType == TileInteriorType.FLOOR))
-        {
-            var itemSO = tileInteriorSOs[itemName];
-
-            list.Add(new FloorItem
-            {
-                itemName = itemName,
-                itemImage = itemSO.image,
-                tileBase = itemSO.tileBase
-            });
-        }
-
-        return list;
-    }
-
-    public List<WallpaperItem> GetWallTileItemInventory()
-    {
-        List<WallpaperItem> list = new();
-
-        foreach (var (itemName, inven)
-            in tileInventory.
-            Where(i => i.Value.tileType == TileInteriorType.WALL))
-        {
-            var itemSO = tileInteriorSOs[itemName];
-
-            WallpaperItem wallpaperItem = new();
-            wallpaperItem.itemName = itemName;
-            wallpaperItem.itemImage = itemSO.image;
-            wallpaperItem.wallTiles[0] = itemSO.tileBase;
-            wallpaperItem.wallTiles[1] = itemSO.topTileBase;
-            wallpaperItem.wallTiles[2] = itemSO.bottomTileBase;
-
-            list.Add(wallpaperItem);
-        }
-
-        return list;
-    }
 }
