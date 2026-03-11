@@ -68,6 +68,8 @@ public class UserAggregate : IAggregate
                 { "shopLevel", user.shopLevel },
                 { "bgmVol", user.bgmVol },
                 { "sfxVol", user.sfxVol },
+                { "startState", user.startState },
+                { "isWatchEnding", user.isWatchEnding },
             },
             Conditions = new Dictionary<string, object>
             {
@@ -257,5 +259,27 @@ public class UserAggregate : IAggregate
     {
         x = shopLevelSize[user.shopLevel].x;
         y = shopLevelSize[user.shopLevel].y;
+    }
+
+    public StartStateType GetStartState()
+    {
+        return user.startState;
+    }
+
+    public void SetStartState(StartStateType startState)
+    {
+        user.startState = startState;
+        MarkDirty();
+    }
+
+    public bool GetIsWatchEnding()
+    {
+        return user.isWatchEnding;
+    }
+
+    public void SetIsWatchEnding(bool isWatchEnding)
+    {
+        user.isWatchEnding = isWatchEnding;
+        MarkDirty();
     }
 }
