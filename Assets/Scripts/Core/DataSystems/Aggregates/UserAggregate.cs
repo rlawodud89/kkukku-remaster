@@ -109,8 +109,8 @@ public class UserAggregate : IAggregate
         interiorLevelInventoryCount.Add(3, 40);
 
         shopLevelSize.Add(1, (10, 6));
-        shopLevelSize.Add(2, (30, 30));
-        shopLevelSize.Add(3, (40, 40));
+        shopLevelSize.Add(2, (14, 7));
+        shopLevelSize.Add(3, (16, 8));
     }
 
 
