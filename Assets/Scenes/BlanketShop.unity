@@ -3267,6 +3267,11 @@ MonoBehaviour:
   highlightSprite: {fileID: 117807335}
   colorValid: {r: 0, g: 1, b: 0, a: 0.5}
   colorInvalid: {r: 1, g: 0, b: 0, a: 0.5}
+  gridStartPos: {x: -5, y: 1, z: 0}
+  gridWidth: 0
+  gridHeight: 0
+  doorObject: {fileID: 1917857404}
+  doorOffsetY: 0.1
 --- !u!114 &879208773
 MonoBehaviour:
   m_ObjectHideFlags: 0

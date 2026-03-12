@@ -211,7 +211,7 @@ public class NPCAI : MonoBehaviour
                     case CustomerData.State.Paying:
                     case CustomerData.State.MovingToCashier: // 이미 계산대에 있음
                         yield return new WaitForSeconds(1.5f);
-                        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay > 0 ? priceToPay : 100); // 가격 정보 없으면 기본값
+                        GameManager.Instance.ChangeGold(priceToPay > 0 ? priceToPay : 100); // 가격 정보 없으면 기본값
                         yield return StartCoroutine(LeaveShop());
                         break;
                 }
@@ -273,7 +273,7 @@ public class NPCAI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // 4. 돈 처리
-        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay); // (priceToPay는 데이터에서 복구하거나 랜덤값)
+        GameManager.Instance.ChangeGold(priceToPay); // (priceToPay는 데이터에서 복구하거나 랜덤값)
 
         // 5. 퇴장
         yield return StartCoroutine(LeaveShop());
@@ -513,7 +513,7 @@ public class NPCAI : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay);
+        GameManager.Instance.ChangeGold(priceToPay);
         Debug.Log($"[판매] {priceToPay}G 획득!");
 
         yield return StartCoroutine(LeaveShop());

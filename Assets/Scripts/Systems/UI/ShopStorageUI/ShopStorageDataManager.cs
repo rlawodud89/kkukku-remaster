@@ -94,6 +94,7 @@ public class ShopStorageDataManager : MonoBehaviour
 
         if (interiorManager != null)
         {
+            ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out interiorManager.gridWidth, out interiorManager.gridHeight);
             interiorManager.InitializeShopInterior(); // 맵에 가구 소환!
         }
 
