@@ -50,6 +50,8 @@ public class QuestManager : MonoBehaviour
         
         //GenerateDailyQuests(0);
         LoadQuestsFromDB();
+
+        var targetQuest = myActiveQuests.Find(x => x.data.questID == 1);
         
     }
 
@@ -168,5 +170,69 @@ public class QuestManager : MonoBehaviour
 
         UpdateUI();
         Debug.Log($"{myActiveQuests.Count}개의 퀘스트를 DB에서 성공적으로 불러왔습니다.");
+    }
+
+    // 퀘스트 진행도 올리는 함수
+    public void UpdateQuestProgressByID(int targetQuestID, int amount = 1)
+    {
+        // 진행 중인 퀘스트 리스트에서 ID가 일치하는 퀘스트를 찾음
+        Quest targetQuest = myActiveQuests.Find(q => q.data.questID == targetQuestID);
+
+        if (targetQuest != null)
+        {
+            // 이미 완료된 퀘스트라면 무시
+            if (targetQuest.isCompleted)
+            {
+                Debug.Log($"[QuestManager] {targetQuestID}는 이미 완료된 퀘스트입니다.");
+                return;
+            }
+
+            // 진행도 증가 및 완료 체크 
+            targetQuest.AddProgress(amount);
+
+            // 4. DB에 저장 (ID 기반으로 업데이트)
+            ServiceLocator.Get<GameData>().Quest.SaveQuest(targetQuestID, targetQuest.currentCount, targetQuest.isCompleted, targetQuest.isRewarded);
+
+            // UI 갱신
+            UpdateUI();
+            
+            Debug.Log($"<color=green>[QuestManager]</color> {targetQuestID} 업데이트 완료! 현재: {targetQuest.currentCount}");
+        }
+        else
+        {
+            Debug.LogWarning($"[QuestManager] ID가 {targetQuestID}인 진행 중인 퀘스트를 찾을 수 없습니다.");
+        }
+    }
+
+    // SO 데이터를 직접 넣어서 찾는 방식
+    public void UpdateQuestProgress(QuestDataSO targetSO)
+    {
+        UpdateQuestProgressByID(targetSO.questID, 1);
+    }
+
+    // 퀘스트 보상 수령 함수
+    public void CompleteQuest(int targetQuestID)
+    {
+        var targetQuest = myActiveQuests.Find(x => x.data.questID == targetQuestID);
+        if (targetQuest != null)
+        {
+            if(targetQuest.isCompleted && !targetQuest.isRewarded)
+            {
+                targetQuest.ReceiveReward();
+
+                // DB 저장
+                ServiceLocator.Get<GameData>().Quest.SaveQuest(targetQuestID, targetQuest.currentCount, targetQuest.isCompleted, targetQuest.isRewarded);
+
+                Debug.Log($"<color=yellow>[QuestManager]</color> {targetQuestID} 보상 처리 완료.");
+            }
+            else
+            {
+                Debug.LogWarning($"[QuestManager] {targetQuestID}는 아직 완료되지 않았거나 이미 보상을 받았습니다.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[QuestManager] ID가 {targetQuestID}인 퀘스트를 찾을 수 없습니다.");
+        }
     }
 }
