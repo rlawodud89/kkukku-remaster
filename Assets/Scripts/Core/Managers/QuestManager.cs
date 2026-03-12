@@ -46,12 +46,33 @@ public class QuestManager : MonoBehaviour
         allQuestDatas=Resources.LoadAll<QuestDataSO>("ScriptableObjects/Quest").ToList();
         Debug.Log($"총 {allQuestDatas.Count}개의 퀘스트를 불러왔습니다.");
 
-        
-
         // 테스트용
+        
         //GenerateDailyQuests(0);
         LoadQuestsFromDB();
+        
     }
+
+    void OnEnable()
+    {
+        GameManager.OnPhaseChangedEvent += HandlePhaseChanged;
+    }
+
+    void OnDisable()
+    {
+        GameManager.OnPhaseChangedEvent -= HandlePhaseChanged;
+    }
+
+    // 아침 되면 퀘스트 리셋
+    private void HandlePhaseChanged(DayPhase phase)
+    {
+        if (phase == DayPhase.Morning)
+        {
+            GenerateDailyQuests(0);
+            //LoadQuestsFromDB();
+        }
+    }
+
 
     // 플레이어에게 퀘스트 부여하는 함수 (아침마다 호출)
     public void GenerateDailyQuests(int playerLevel)
