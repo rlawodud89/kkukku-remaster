@@ -312,6 +312,8 @@ public class SaveRepository
         user.shopLevel = 1;
         user.bgmVol = 50;
         user.sfxVol = 50;
+        user.startState = StartStateType.PROLOG;
+        user.isWatchEnding = false;
         connection.Insert(user);
 
         // TileInteriorInventory

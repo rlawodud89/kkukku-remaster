@@ -20,8 +20,8 @@ public class UserAggregate : IAggregate
 
     // === 기타 데이터 ===
 
-    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
-    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
+    private Dictionary<int, int> interiorLevelInventoryCount = new();
+    private Dictionary<int, (int width, int height, Vector3 startPos)> shopLevelSize = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -68,6 +68,8 @@ public class UserAggregate : IAggregate
                 { "shopLevel", user.shopLevel },
                 { "bgmVol", user.bgmVol },
                 { "sfxVol", user.sfxVol },
+                { "startState", user.startState },
+                { "isWatchEnding", user.isWatchEnding },
             },
             Conditions = new Dictionary<string, object>
             {
@@ -106,9 +108,15 @@ public class UserAggregate : IAggregate
         interiorLevelInventoryCount.Add(2, 30);
         interiorLevelInventoryCount.Add(3, 40);
 
-        shopLevelSize.Add(1, (10, 6));
-        shopLevelSize.Add(2, (30, 30));
-        shopLevelSize.Add(3, (40, 40));
+        shopLevelSize.Add(1,
+            (10, 6, new Vector3 { x = -5, y = 1 })
+            );
+        shopLevelSize.Add(2,
+            (14, 7, new Vector3 { x = -7, y = 1 })
+            );
+        shopLevelSize.Add(3,
+            (16, 8, new Vector3 { x = -8, y = 2 })
+            );
     }
 
 
@@ -178,10 +186,14 @@ public class UserAggregate : IAggregate
         return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
     }
 
-    public (int level, (int x, int y) size) GetShopLevel()
+    public (int level, int width, int height) GetShopLevel()
     {
-        return (user.shopLevel, shopLevelSize[user.shopLevel]);
+        return (user.shopLevel,
+            shopLevelSize[user.shopLevel].width,
+            shopLevelSize[user.shopLevel].height
+            );
     }
+
 
     public void ChangeItemShopLevel(int amount)
     {
@@ -253,9 +265,38 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
-    public void GetCurrentShopGridSize(out int x, out int y)
+    public void GetCurrentShopGridSize(out int width, out int height)
     {
-        x = shopLevelSize[user.shopLevel].x;
-        y = shopLevelSize[user.shopLevel].y;
+        width = shopLevelSize[user.shopLevel].width;
+        height = shopLevelSize[user.shopLevel].height;
+    }
+
+    public void GetCurrentShopGridSize(out int width, out int height, out Vector3 startPos)
+    {
+        width = shopLevelSize[user.shopLevel].width;
+        height = shopLevelSize[user.shopLevel].height;
+        startPos = shopLevelSize[user.shopLevel].startPos;
+    }
+
+    public StartStateType GetStartState()
+    {
+        return user.startState;
+    }
+
+    public void SetStartState(StartStateType startState)
+    {
+        user.startState = startState;
+        MarkDirty();
+    }
+
+    public bool GetIsWatchEnding()
+    {
+        return user.isWatchEnding;
+    }
+
+    public void SetIsWatchEnding(bool isWatchEnding)
+    {
+        user.isWatchEnding = isWatchEnding;
+        MarkDirty();
     }
 }

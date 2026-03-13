@@ -316,6 +316,20 @@ public class QuestAggregate : IAggregate
         return true;
     }
 
+    public void ClearQuest()
+    {
+        foreach (var questID in questBox.Keys)
+        {
+            MergeChange(questChanges,
+                questID,
+                SaveOperation.DELETE);
+        }
+
+        questBox.Clear();
+        MarkDirty();
+    }
+
+
     public SpecialQuestSO GetSpeicalQuestSO(string questName)
     {
         if (specialQuestSOs.TryGetValue(questName, out var specialQuestSO)) return specialQuestSO;
