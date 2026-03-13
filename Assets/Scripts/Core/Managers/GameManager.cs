@@ -64,6 +64,38 @@ public class GameManager : MonoBehaviour
     public DayPhase currentPhase;
     public static event Action<DayPhase> OnPhaseChangedEvent;
 
+    [Header("디버그 도구")]
+    [Range(0, 23)] public int debugHour; // 인스펙터 슬라이더로 조절
+    public bool useDebugTime = false;   // 체크하면 시간을 강제로 고정/조절 가능
+
+    // 인스펙터에서 값이 바뀔 때 실행되는 유니티 콜백
+    private void OnValidate()
+    {
+        if (useDebugTime && Application.isPlaying)
+        {
+            SetGameTime(debugHour, 0);
+        }
+    }
+
+    // 특정 시간으로 워프하는 함수
+    public void SetGameTime(int targetHour, int targetMinute = 0)
+    {
+        // gameTime 계산: (시간 * 3600) + (분 * 60)
+        // 현재 날짜(Day)는 유지하고 시간만 바꾸고 싶다면 날짜 값을 유지하는 로직이 필요할 수 있습니다.
+        float dayInSeconds = 86400f;
+        float currentDayCount = (int)(gameTime / dayInSeconds);
+        
+        gameTime = (currentDayCount * dayInSeconds) + (targetHour * 3600) + (targetMinute * 60);
+        
+        // 즉시 UI와 페이즈 업데이트
+        hour = targetHour;
+        minute = targetMinute;
+        UpdateDayPhase();
+        UpdateTimeUI(hour, minute);
+        
+        Debug.Log($"<color=yellow>[Debug]</color> 시간을 {targetHour:D2}:{targetMinute:D2}로 설정했습니다.");
+    }
+
 
     void Start()
     {

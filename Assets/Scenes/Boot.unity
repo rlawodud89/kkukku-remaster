@@ -216,6 +216,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1641979066}
+        m_TargetAssemblyTypeName: QuestManager, Assembly-CSharp
+        m_MethodName: UpdateQuestProgress
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: dc436ece668b7ca43be28cd699d1acb1, type: 2}
+          m_ObjectArgumentAssemblyTypeName: QuestDataSO, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5115751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1270,7 +1282,9 @@ MonoBehaviour:
   timeUI: {fileID: 189411556}
   timeText: {fileID: 1096038750}
   clockHand: {fileID: 1470643713}
-  currentPhase: 0
+  currentPhase: 3
+  debugHour: 0
+  useDebugTime: 0
 --- !u!4 &246216292
 Transform:
   m_ObjectHideFlags: 0
@@ -1303,7 +1317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &248995983
 Transform:
   m_ObjectHideFlags: 0
