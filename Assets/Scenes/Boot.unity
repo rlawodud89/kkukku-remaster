@@ -1728,6 +1728,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8955165206635540296, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8955165206635540296, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
+      propertyPath: m_MinValue
+      value: 0.001
+      objectReference: {fileID: 0}
     - target: {fileID: 9111335615970701896, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
