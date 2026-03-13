@@ -11,7 +11,9 @@ public class GatheringToolStoreProvider : IStoreItemProvider
 
     public GatheringToolStoreProvider()
     {
-        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("기본채집망"));
+        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("초급채집망"));
+        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("중급채집망"));
+        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("고급채집망"));
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()
