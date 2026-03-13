@@ -96,11 +96,29 @@ public class GameManager : MonoBehaviour
         Debug.Log($"<color=yellow>[Debug]</color> 시간을 {targetHour:D2}:{targetMinute:D2}로 설정했습니다.");
     }
 
+    // gameTime(초 단위)을 직접 받아서 시간을 설정하는 오버로딩 함수
+    public void SetGameTime(float targetGameTime)
+    {
+        // 1. 전달받은 초 단위 시간을 그대로 적용
+        gameTime = targetGameTime;
+        
+        // 2. 적용된 초 단위 시간을 바탕으로 시/분 역산
+        hour = (int)(gameTime / 3600) % 24;
+        minute = (int)(gameTime / 60) % 60;
+        
+        // 3. 즉시 UI와 페이즈 업데이트
+        UpdateDayPhase();
+        UpdateTimeUI(hour, minute);
+
+        Debug.Log($"<color=yellow>[Debug]</color> 시간을 {hour:D2}:{minute:D2} (총 {gameTime}초)로 설정했습니다.");
+    }
+
 
     void Start()
     {
         LoadGameData();
     }
+
 
     void Update()
     {
@@ -176,6 +194,31 @@ public class GameManager : MonoBehaviour
         timeUI.gameObject.SetActive(false);
 
         currentCoroutine = null;
+    }
+
+    // 현재 시간 저장
+    // 게임 종료, 씬 이동, 또는 일시정지 될 때 호출해주면 됩니다.
+    public void SaveCurrentTime()
+    {
+        PlayerPrefs.SetFloat("SavedGameTime", gameTime);
+        PlayerPrefs.Save(); // 즉시 디바이스에 물리적 저장
+        
+        Debug.Log($"<color=green>게임 시간 저장 완료: {hour:D2}:{minute:D2}</color>");
+    }
+
+    // PC/에디터에서 게임을 끌 때 자동 저장
+    private void OnApplicationQuit()
+    {
+        SaveCurrentTime();
+    }
+
+    // 모바일에서 홈 버튼을 눌러 백그라운드로 나갈 때 자동 저장
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            SaveCurrentTime();
+        }
     }
 
     

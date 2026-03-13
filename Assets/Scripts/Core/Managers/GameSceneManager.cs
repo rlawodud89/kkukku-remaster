@@ -43,6 +43,12 @@ public class GameSceneManager : MonoBehaviour
         {
             Debug.Log("기존 유저입니다. 게임 씬으로 이동합니다.");
             SceneManager.LoadScene("BlanketShop");
+
+            // 저장된 시간으로 설정
+            float savedTime = PlayerPrefs.GetFloat("SavedGameTime", 21600f);
+            GameManager.Instance.SetGameTime(savedTime);
+            Debug.Log($"저장된 시간 불러오기 완료!");
+
         }
         else
         {
@@ -69,6 +75,9 @@ public class GameSceneManager : MonoBehaviour
             
             storeNamePanel.SetActive(true);
             SceneManager.LoadScene("BlanketShop");
+
+            // 시간을 아침으로 설정
+            GameManager.Instance.SetGameTime(6,0);
         }
     }
 }
