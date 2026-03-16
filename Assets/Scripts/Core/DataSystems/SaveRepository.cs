@@ -63,22 +63,27 @@ public class SaveRepository
 
     public void Save(IAggregate aggregate)
     {
-        foreach (var data in aggregate.ToSavePayloads())
+        var payloads = aggregate.ToSavePayloads();
+
+        // 1. DELETE
+        foreach (var data in payloads)
         {
-            switch (data.Operation)
-            {
-                case SaveOperation.INSERT:
-                    ExecuteInsert(data);
-                    break;
+            if (data.Operation == SaveOperation.DELETE)
+                ExecuteDelete(data);
+        }
 
-                case SaveOperation.UPDATE:
-                    ExecuteUpdate(data);
-                    break;
+        // 2. UPDATE
+        foreach (var data in payloads)
+        {
+            if (data.Operation == SaveOperation.UPDATE)
+                ExecuteUpdate(data);
+        }
 
-                case SaveOperation.DELETE:
-                    ExecuteDelete(data);
-                    break;
-            }
+        // 3. INSERT
+        foreach (var data in payloads)
+        {
+            if (data.Operation == SaveOperation.INSERT)
+                ExecuteInsert(data);
         }
 
         aggregate.ClearDirty();
