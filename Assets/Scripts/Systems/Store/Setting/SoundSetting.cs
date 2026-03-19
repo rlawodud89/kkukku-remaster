@@ -40,7 +40,7 @@ public class SoundSetting : MonoBehaviour
         PlayerPrefs.SetFloat(BGM_KEY, value); 
         PlayerPrefs.Save(); // 즉시 물리적 저장
 
-        audioMixer.SetFloat("BGM", Mathf.Log10(bgmSlider.value) * 20);
+        //audioMixer.SetFloat("BGM", Mathf.Log10(bgmSlider.value) * 20);
     }
 
     // SFX 슬라이더 이벤트에 연결
@@ -50,17 +50,22 @@ public class SoundSetting : MonoBehaviour
         PlayerPrefs.SetFloat(SFX_KEY, value);
         PlayerPrefs.Save();
 
-        audioMixer.SetFloat("SFX", Mathf.Log10(sfxSlider.value) * 20);
+        //audioMixer.SetFloat("SFX", Mathf.Log10(sfxSlider.value) * 20);
     }
 
     private void ApplyBGMVolume(float volume)
     {
         // 실제 AudioSource나 AudioMixer의 볼륨을 조절하는 로직을 여기에 넣으세요.
-        Debug.Log($"BGM 볼륨 적용: {volume}");
+        float safeVolume = Mathf.Max(0.0001f, volume);
+        audioMixer.SetFloat("BGM", Mathf.Log10(safeVolume) * 20);
+        Debug.Log($"BGM 볼륨 적용 완료: {safeVolume}");
+        
     }
 
     private void ApplySFXVolume(float volume)
     {
-        Debug.Log($"SFX 볼륨 적용: {volume}");
+        float safeVolume = Mathf.Max(0.0001f, volume);
+        audioMixer.SetFloat("SFX", Mathf.Log10(safeVolume) * 20);
+        Debug.Log($"SFX 볼륨 적용 완료: {safeVolume}");
     }
 }

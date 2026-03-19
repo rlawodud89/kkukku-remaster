@@ -16,4 +16,6 @@ public class User
     public int shopLevel { get; set; }
     public int bgmVol { get; set; }
     public int sfxVol { get; set; }
+    public StartStateType startState { get; set; }
+    public bool isWatchEnding { get; set; }
 }

@@ -32,6 +32,7 @@ public class QuestSlotUI : MonoBehaviour
     public Sprite energySprite;
 
     public TMP_Text completeButton;  // 보상받기/진행중 버튼
+    public UnityEngine.UI.Image buttonImage;
 
     private Quest targetQuest; // 현재 슬롯이 표시하고 있는 퀘스트 참조
 
@@ -63,7 +64,12 @@ public class QuestSlotUI : MonoBehaviour
         
 
         // 퀘스트 완료 여부 표시
-        if (quest.isCompleted)
+        if (quest.isCompleted&& quest.isRewarded)
+        {
+            buttonImage.color = new Color(0.75f, 0.75f, 0.75f, 0.7f);
+            completeButton.text="보상받기";
+        }
+        else if(quest.isCompleted&& !quest.isRewarded)
         {
             completeButton.text="보상받기";
         }
@@ -72,7 +78,7 @@ public class QuestSlotUI : MonoBehaviour
             completeButton.text="진행중";
         }
 
-        RefreshUI();
+        //RefreshUI();
     }
 
     private void UpdateRewardUI(UnityEngine.UI.Image iconImage, TMP_Text amountText, Reward reward)
@@ -109,21 +115,27 @@ public class QuestSlotUI : MonoBehaviour
     // 보상 버튼 클릭헸을 때 실행될 함수
     public void OnRewardButtonClick()
     {
+        /*
         if (targetQuest != null && targetQuest.isCompleted && !targetQuest.isRewarded)
         {
             targetQuest.ReceiveReward(); // 데이터 갱신
             RefreshUI(); // UI 다시 그리기
-        }
+        }*/
+        
+        QuestManager.Instance.CompleteQuest(targetQuest.data.questID);
+        //RefreshUI();
+        Setup(targetQuest);
+        
     }
 
     // 상태에 따라 버튼 텍스트와 상호작용 여부를 업데이트
     private void RefreshUI()
     {
-        if (targetQuest.isRewarded)
+        if (targetQuest.isRewarded && targetQuest.isCompleted)
         {
             completeButton.GetComponentInParent<Button>().interactable = false;
         }
-        else if (targetQuest.isCompleted)
+        else if (!targetQuest.isRewarded && targetQuest.isCompleted)
         {
             completeButton.text = "보상받기";
         }

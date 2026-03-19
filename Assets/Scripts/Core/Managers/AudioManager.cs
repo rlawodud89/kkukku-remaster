@@ -60,10 +60,24 @@ public class AudioManager : MonoBehaviour
     {
         // BGM 시작
         //audioMixer.SetFloat("BGM", Mathf.Log10(gameManager.Get_BgSound()) * 20);
-        bgmAudioSource.Play();
+        //bgmAudioSource.Play();
         //Debug.Log("BGM Volume: " + bgmAudioSource.volume);
 
         //audioMixer.SetFloat("SFX", Mathf.Log10(gameManager.Get_EffectSound()) * 20);
+
+        float savedBGM = PlayerPrefs.GetFloat("BGM_Volume", 0.75f);
+        float savedSFX = PlayerPrefs.GetFloat("SFX_Volume", 0.75f);
+
+        // 0 레벨 에러 방지용 안전장치
+        float safeBGM = Mathf.Max(0.0001f, savedBGM);
+        float safeSFX = Mathf.Max(0.0001f, savedSFX);
+
+        // 믹서에 즉시 적용! (설정창을 안 켜도 여기서 무조건 한 번 맞춰줍니다)
+        if (audioMixer != null)
+        {
+            audioMixer.SetFloat("BGM", Mathf.Log10(safeBGM) * 20);
+            audioMixer.SetFloat("SFX", Mathf.Log10(safeSFX) * 20);
+        }
     }
 
     private void OnEnable()
@@ -80,14 +94,16 @@ public class AudioManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Prolog" || scene.name == "Start")
+        if (scene.name == "Boot"|| scene.name == "Prolog" || scene.name == "Start")
         {
-            bgmAudioSource.Pause();
+            bgmAudioSource.Stop();
         }
         else
         {
-            //bgmAudioSource.UnPause();
-            bgmAudioSource.Play();
+            if (!bgmAudioSource.isPlaying)
+            {
+                bgmAudioSource.Play();
+            }
         }
     }
 }

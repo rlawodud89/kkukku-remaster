@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c062fc5ac5cf354c96a6573e656b18b, type: 3}
-  m_Name: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
+  m_Name: "\uC911\uAE09\uCC44\uC9D1\uB9DD"
   m_EditorClassIdentifier: 
-  itemName: "\uCD08\uAE09\uCC44\uC9D1\uB9DD"
+  itemName: "\uC911\uAE09\uCC44\uC9D1\uB9DD"
   toolType: 0
-  image: {fileID: -1811446846, guid: ef0880e8a479fb9409b134c7440bb132, type: 3}
+  image: {fileID: 473357819, guid: 4219405533ca71f448438e3fed46f679, type: 3}
   price: 0
-  needClickCount: 4
+  needClickCount: 3
   bonusCatchCount: 0

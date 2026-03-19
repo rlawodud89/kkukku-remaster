@@ -32,7 +32,7 @@ public class UpgradePopup : MonoBehaviour
                 return;
             }
 
-            ServiceLocator.Get<GameData>().User.ChangeGold(-upgradeProvider.GetUpgradePrice());
+            GameManager.Instance.ChangeGold(-upgradeProvider.GetUpgradePrice());
         }
         else
         {
@@ -43,7 +43,7 @@ public class UpgradePopup : MonoBehaviour
                 return;
             }
 
-            ServiceLocator.Get<GameData>().User.ChangeMoonrock(-upgradeProvider.GetUpgradePrice());
+            GameManager.Instance.ChangeMoonRock(-upgradeProvider.GetUpgradePrice());
         }
 
         upgradeProvider.LevelUpgrade();

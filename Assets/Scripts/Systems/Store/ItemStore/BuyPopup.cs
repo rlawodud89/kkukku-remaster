@@ -63,8 +63,8 @@ public class BuyPopup : MonoBehaviour
 
         if (storeItemProvider.AddItem(itemName, count))
         {
-            if (storeItemProvider.isGold) ServiceLocator.Get<GameData>().User.ChangeGold(-(price * count));
-            else ServiceLocator.Get<GameData>().User.ChangeMoonrock(-(price * count));
+            if (storeItemProvider.isGold) GameManager.Instance.ChangeGold(-(price * count));
+            else GameManager.Instance.ChangeMoonRock(-(price * count));
         }
         else
         {

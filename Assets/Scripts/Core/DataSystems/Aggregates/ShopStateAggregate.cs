@@ -122,7 +122,8 @@ public class ShopStateAggregate : IAggregate
                             { "stamina", insertWorker.stamina },
                             { "workingItem", insertWorker.workingItem },
                             { "progress", insertWorker.progress },
-                            { "skill", insertWorker.skill }
+                            { "skill", insertWorker.skill },
+                            { "lastSceneTime", insertWorker.lastSceneTime }
                         }
                     };
 
@@ -140,7 +141,8 @@ public class ShopStateAggregate : IAggregate
                             { "stamina", updateWorker.stamina },
                             { "workingItem", updateWorker.workingItem },
                             { "progress", updateWorker.progress },
-                            { "skill", updateWorker.skill }
+                            { "skill", updateWorker.skill },
+                            { "lastSceneTime", updateWorker.lastSceneTime }
                         },
                         Conditions = new Dictionary<string, object>
                         {
@@ -318,7 +320,8 @@ public class ShopStateAggregate : IAggregate
             stamina = 0,
             workingItem = null,
             progress = 0,
-            skill = 0
+            skill = 0,
+            lastSceneTime = null
         });
 
         MergeChange(workerStateChanges,
@@ -341,6 +344,8 @@ public class ShopStateAggregate : IAggregate
         MarkDirty();
     }
 
+
+
     public void SaveAllWorkers(List<WorkerState> workerList)
     {
         foreach (WorkerState worker in workerList)
@@ -351,6 +356,7 @@ public class ShopStateAggregate : IAggregate
             workerdata.workingItem = worker.workingItem;
             workerdata.progress = worker.progress;
             workerdata.skill = worker.skill;
+            workerdata.lastSceneTime = worker.lastSceneTime;
 
             MergeChange(workerStateChanges,
             worker.workerID,
@@ -358,6 +364,18 @@ public class ShopStateAggregate : IAggregate
         }
 
         MarkDirty();
+    }
+
+    public WorkerState GetWorkerState(int workerID)
+    {
+        if (!workerState.ContainsKey(workerID)) return null;
+
+        return workerState[workerID];
+    }
+
+    public List<WorkerState> GetAllWorkers()
+    {
+        return workerState.Values.ToList();
     }
 
 
