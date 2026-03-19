@@ -28,21 +28,26 @@ public class ShopExpansionProvider : IUpgradeProvider
 
     public void LevelUpgrade()
     {
-        // 1. 업그레이드 전(과거)의 그리드 정보 DB에서 가져오기
-        // ✏️ (주의) 유저님의 실제 그리드 정보 가져오는 함수로 변경해주세요!
-        //var oldGrid = ServiceLocator.Get<GameData>().ShopInfo.GetShopGridData(currentLevel);
+        int oldwidth, oldheight;
+        Vector3 oldstartPos = new();
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out oldwidth, out oldheight, out oldstartPos);
 
-        // 2. 레벨업! (DB 반영)
+        // 🔎 1번 로그: 업그레이드 전 크기 확인
+        Debug.Log($"<color=orange>[확장 전]</color> 레벨: {currentLevel}, 크기: {oldwidth}x{oldheight}");
+
         ServiceLocator.Get<GameData>().User.ChangeShopLevel(1);
         currentLevel++;
 
-        // 3. 업그레이드 후(새로운)의 그리드 정보 DB에서 가져오기
-        //var newGrid = ServiceLocator.Get<GameData>().ShopInfo.GetShopGridData(currentLevel);
+        int newwidth, newheight;
+        Vector3 newstartPos = new();
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out newwidth, out newheight, out newstartPos);
 
-        // 4. DB 데이터를 바탕으로 가구 위치 일괄 재계산 및 덮어쓰기!
-        //UpdateFurnitureGridInDB(oldGrid.StartPos, oldGrid.Width, newGrid.StartPos, newGrid.Width);
+        // 🔎 2번 로그: 업그레이드 후 크기 확인 (여기서 크기가 안 늘어났으면 DB 함수가 범인!)
+        Debug.Log($"<color=green>[확장 후]</color> 레벨: {currentLevel}, 크기: {newwidth}x{newheight}");
 
-        // 5. 완료 이벤트 호출
+        // 🔎 3번 로그: 재계산 함수로 넘어가는지 확인
+        UpdateFurnitureGridInDB(Vector3Int.RoundToInt(oldstartPos), oldwidth, Vector3Int.RoundToInt(newstartPos), newwidth);
+
         UpgradeEvents.OnUpgradeLevelChanged?.Invoke(this);
     }
 

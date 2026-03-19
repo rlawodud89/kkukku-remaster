@@ -24,7 +24,7 @@ public class ShopInteriorManager : MonoBehaviour
     public Color colorInvalid = new Color(1, 0, 0, 0.5f);
 
     [Header("가게 그리드 설정 (Top-Left 기준)")]
-    public Vector3Int gridStartPos = new Vector3Int(-5, 1, 0); // 왼쪽 위 시작 좌표
+    public Vector3Int gridStartPos; // 왼쪽 위 시작 좌표
     public int gridWidth;
     public int gridHeight;
 
@@ -53,6 +53,7 @@ public class ShopInteriorManager : MonoBehaviour
     // ==========================================
     public void InitializeShopInterior()
     {
+
         PlaceAllFurnitures();
 
         FloorItem currentFloor = ServiceLocator.Get<GameData>().Interior.GetCurrentFloorTile(TilePositionType.SHOP_FLOOR);

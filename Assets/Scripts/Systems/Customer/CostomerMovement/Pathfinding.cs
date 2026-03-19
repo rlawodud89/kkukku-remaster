@@ -20,6 +20,12 @@ public class Pathfinding : MonoBehaviour
 
     private Vector3Int gridOrigin;
 
+    public void CalculateGridOrigin(Vector3Int dbStartPos)
+    {
+        gridOrigin = dbStartPos;
+        Debug.Log($"[Pathfinding] DB 기반 맵 기준점 설정 완료: {gridOrigin}");
+    }
+
     public void CalculateGridOrigin()
     {
         // 게임 시작 시, 타일맵이 실제로 그려진 영역의 '왼쪽 위' 좌표를 찾아냅니다.

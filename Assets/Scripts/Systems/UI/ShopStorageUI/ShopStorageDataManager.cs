@@ -23,8 +23,13 @@ public class ShopStorageDataManager : MonoBehaviour
         else Destroy(gameObject);
 
         // 가게 그리드 설정 불러오기
-        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out pathfinding.totalGridWidth, out pathfinding.totalGridHeight);
-        pathfinding.CalculateGridOrigin();
+        Vector3Int gridStartPos;
+        int gridWidth, gridHeight;
+        Vector3 gridStartpos1;
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out gridWidth, out gridHeight, out gridStartpos1);
+
+        gridStartPos = Vector3Int.RoundToInt(gridStartpos1);
+
 
         interiorData = new ShopInteriorData();
         interiorData.Table = new List<Interiorinfo>();
@@ -54,6 +59,11 @@ public class ShopStorageDataManager : MonoBehaviour
 
         // pathfinding 할당 확인
         if (pathfinding == null) pathfinding = FindObjectOfType<Pathfinding>();
+
+        pathfinding.totalGridWidth = gridWidth;
+        pathfinding.totalGridHeight = gridHeight;
+        pathfinding.CalculateGridOrigin(gridStartPos);
+
 
         //0. 현재 가게의 인테리어 정보 파악 및 불러오기. 이불장에 이불장 본인 id 적어두기.(shopStorageClick) => 인테리어 스크립트 따로 만들어서 해야할듯.
         LoadInteriorData();
@@ -94,7 +104,9 @@ public class ShopStorageDataManager : MonoBehaviour
 
         if (interiorManager != null)
         {
-            ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out interiorManager.gridWidth, out interiorManager.gridHeight);
+            interiorManager.gridWidth = gridWidth;
+            interiorManager.gridHeight = gridHeight;
+            interiorManager.gridStartPos = gridStartPos;
             interiorManager.InitializeShopInterior(); // 맵에 가구 소환!
         }
 
