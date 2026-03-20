@@ -137,6 +137,12 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public void SetShopName(string shopName)
+    {
+        user.shopName = shopName;
+        MarkDirty();
+    }
+
     public List<int> GetVolumeData()
     {
         List<int> volumeData = new List<int>();

@@ -119,6 +119,7 @@ public class TutorialManager : MonoBehaviour
     {
         HighlightSystem.Instance.Clear();
         TutorialDialogue.Instance.HideDialogue();
+        ServiceLocator.Get<GameData>().User.SetStartState(StartStateType.GAME);
         Debug.Log("Tutorial Finished");
     }
 }

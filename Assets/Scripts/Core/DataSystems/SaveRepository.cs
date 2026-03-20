@@ -304,7 +304,7 @@ public class SaveRepository
 
         // User
         User user = new User();
-        user.shopName = "";
+        user.shopName = null;
         user.level = 1;
         user.energy = 0;
         user.gold = 100;
