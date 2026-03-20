@@ -11,9 +11,11 @@ public class YarnStoreProvider : IStoreItemProvider
 
     public YarnStoreProvider()
     {
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("꿈실"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("별빛꿈실"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("은하꿈실"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("꿈실"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("별빛꿈실"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("은하꿈실"));
+
+        items = ServiceLocator.Get<GameData>().Store.GetMaterialStoreItemList(StoreType.YRAN_MATERIAL);
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()

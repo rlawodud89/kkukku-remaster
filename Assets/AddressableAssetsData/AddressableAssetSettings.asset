@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: e8f00f022f4061c49bb7041774fc577f
   m_currentHash:
     serializedVersion: 2
-    Hash: fe71d22bdd063c0906b74892e7ec2374
+    Hash: 118f3d788dad5db26c33938f9aa89fa0
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -97,6 +97,10 @@ MonoBehaviour:
     - specialQuest
     - letter
     - customer
+    - shopLevel
+    - interiorInventoryLevel
+    - storeItemList
+    - interiorStore
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: c9efe766ef781714ab77afb582f23930, type: 2}

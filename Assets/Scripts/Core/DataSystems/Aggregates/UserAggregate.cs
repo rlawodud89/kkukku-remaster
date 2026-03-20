@@ -13,15 +13,12 @@ public class UserAggregate : IAggregate
     // === SO 데이터 ===
 
     private Dictionary<string, ToolItemSO> toolSOs;
+    private Dictionary<int, ShopLevelSO> shopLevelSOs;
+    private Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs;
 
     // === 변경 사항 저장소 ===
 
     private HashSet<ToolType> updatedToolUsed = new();
-
-    // === 기타 데이터 ===
-
-    private Dictionary<int, int> interiorLevelInventoryCount = new();
-    private Dictionary<int, (int width, int height, Vector3 startPos)> shopLevelSize = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -97,26 +94,16 @@ public class UserAggregate : IAggregate
 
     }
 
-    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed, Dictionary<string, ToolItemSO> toolSOs)
+    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed,
+        Dictionary<string, ToolItemSO> toolSOs, Dictionary<int, ShopLevelSO> shopLevelSOs,
+        Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs)
     {
         this.user = user;
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
 
         this.toolSOs = toolSOs;
-
-        interiorLevelInventoryCount.Add(1, 20);
-        interiorLevelInventoryCount.Add(2, 30);
-        interiorLevelInventoryCount.Add(3, 40);
-
-        shopLevelSize.Add(1,
-            (10, 6, new Vector3 { x = -5, y = 1 })
-            );
-        shopLevelSize.Add(2,
-            (14, 7, new Vector3 { x = -7, y = 1 })
-            );
-        shopLevelSize.Add(3,
-            (16, 8, new Vector3 { x = -8, y = 2 })
-            );
+        this.shopLevelSOs = shopLevelSOs;
+        this.interiorInvenLevelSOs = interiorInvenLevelSOs;
     }
 
 
@@ -189,14 +176,14 @@ public class UserAggregate : IAggregate
 
     public (int level, int invenCount) GetInteriorInventoryLevel()
     {
-        return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+        return (user.interiorInventoryLevel, interiorInvenLevelSOs[user.interiorInventoryLevel].inventoryCount);
     }
 
     public (int level, int width, int height) GetShopLevel()
     {
         return (user.shopLevel,
-            shopLevelSize[user.shopLevel].width,
-            shopLevelSize[user.shopLevel].height
+            shopLevelSOs[user.shopLevel].width,
+            shopLevelSOs[user.shopLevel].height
             );
     }
 
@@ -273,15 +260,15 @@ public class UserAggregate : IAggregate
 
     public void GetCurrentShopGridSize(out int width, out int height)
     {
-        width = shopLevelSize[user.shopLevel].width;
-        height = shopLevelSize[user.shopLevel].height;
+        width = shopLevelSOs[user.shopLevel].width;
+        height = shopLevelSOs[user.shopLevel].height;
     }
 
     public void GetCurrentShopGridSize(out int width, out int height, out Vector3 startPos)
     {
-        width = shopLevelSize[user.shopLevel].width;
-        height = shopLevelSize[user.shopLevel].height;
-        startPos = shopLevelSize[user.shopLevel].startPos;
+        width = shopLevelSOs[user.shopLevel].width;
+        height = shopLevelSOs[user.shopLevel].height;
+        startPos = shopLevelSOs[user.shopLevel].startPos;
     }
 
     public StartStateType GetStartState()

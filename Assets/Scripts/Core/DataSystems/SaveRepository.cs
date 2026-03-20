@@ -18,6 +18,10 @@ public class SaveRepository
     private Dictionary<string, ToolItemSO> toolSOs;
     private Dictionary<string, SpecialQuestSO> specialQuestSOs;
     private Dictionary<string, NPCDataSO> customerSOs;
+    private Dictionary<int, ShopLevelSO> shopLevelSOs;
+    private Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs;
+    private Dictionary<StoreType, StoreItemListSO> storeItemListSOs;
+    private InteriorStoreSO interiorStoreSO;
 
 
     public SaveRepository(SQLiteConnection connection)
@@ -53,6 +57,18 @@ public class SaveRepository
         customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.npcID);
+        shopLevelSOs = Addressables.LoadAssetsAsync<ShopLevelSO>("shopLevel", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.level);
+        interiorInvenLevelSOs = Addressables.LoadAssetsAsync<InteriorInventoryLevelSO>("interiorInventoryLevel", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.level);
+        storeItemListSOs = Addressables.LoadAssetsAsync<StoreItemListSO>("storeItemList", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.storeType);
+        interiorStoreSO = Addressables.LoadAssetsAsync<InteriorStoreSO>("interiorStore", null)
+                .WaitForCompletion()
+                .FirstOrDefault();
 
     }
 
@@ -195,7 +211,7 @@ public class SaveRepository
         List<ToolUsed> toolUsed = connection.Table<ToolUsed>().ToList();
 
         var aggregate = new UserAggregate();
-        aggregate.LoadUserAggregate(user, toolUsed, toolSOs);
+        aggregate.LoadUserAggregate(user, toolUsed, toolSOs, shopLevelSOs, interiorInvenLevelSOs);
 
         return aggregate;
     }
@@ -271,7 +287,8 @@ public class SaveRepository
         List<StoreItemList> storeItemList = connection.Table<StoreItemList>().ToList();
 
         var aggreagte = new StoreAggregate();
-        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs);
+        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs,
+            storeItemListSOs, interiorStoreSO);
 
         return aggreagte;
     }

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ba3d54ed9d21347bcfea325812ab12, type: 3}
+  m_Name: WorkerList
+  m_EditorClassIdentifier: 
+  storeType: 3
+  materialItems: []
+  workerItems:
+  - {fileID: 11400000, guid: 80aafc7c48da6034084228e659b66c37, type: 2}
+  - {fileID: 11400000, guid: 1d7cf8d24461a5a41ab7cadd4564f980, type: 2}
+  - {fileID: 11400000, guid: c58363f7efb60c54e8c9d3d14878a611, type: 2}
+  toolItmes: []

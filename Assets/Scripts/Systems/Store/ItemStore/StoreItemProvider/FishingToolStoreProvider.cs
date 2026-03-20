@@ -11,8 +11,10 @@ public class FishingToolStoreProvider : IStoreItemProvider
 
     public FishingToolStoreProvider()
     {
-        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("초급낚시대"));
-        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("중급낚시대"));
+        //tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("초급낚시대"));
+        //tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("중급낚시대"));
+
+        tools = ServiceLocator.Get<GameData>().Store.GetToolStoreItemList(StoreType.FISHING_TOOL);
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()

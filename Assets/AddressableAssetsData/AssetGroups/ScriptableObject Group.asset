@@ -47,6 +47,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - tool
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e30974be889e904f81cdc06c095659c
+    m_Address: Assets/ScriptableObjects/GameData/InteriorStore.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - interiorStore
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fe06614638e5bb458d6cda198e4cc4e
+    m_Address: Assets/ScriptableObjects/GameData/ShopLevel/Level1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - shopLevel
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10de4ffd9e089a14ea5f6cba7512a05d
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uC5BC\uC74C \uAFC0 \uCCB4\uB9AC.asset"
     m_ReadOnly: 0
@@ -113,6 +125,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - tileInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d05ebfaf2fa1134bb806c2567ed3574
+    m_Address: Assets/ScriptableObjects/GameData/InteriorInventoryLevel/Level 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - interiorInventoryLevel
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30e1c0089e4e4c94c864ceea14dfa449
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD22C\uBA85\uD558\uACE0
       \uBE5B\uB098\uB294 \uBB3C\uBC29\uC6B8.asset"
@@ -153,12 +171,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4449e02aa9b4b794ba415acbfe198497
     m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uC6E8\uC778\uC2A4\uCF54\uD305\uD0C0\uC77C.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - tileInterior
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 44b26b03878f8d24384985a4a9dfe5dd
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Floor/\uAE30\uBCF8\uBC14\uB2E5\uD0C0\uC77C.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - tileInterior
@@ -205,6 +217,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cdfb6cdb68f26c4298d18e7ecb03218
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/YarnList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5da662b5fe9aaf6498fb77068a368ab4
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 2/\uCD08\uCF54 \uD401\uB4C0
       \uC194\uBC29\uC6B8.asset"
@@ -238,11 +256,23 @@ MonoBehaviour:
     m_SerializedLabels:
     - material
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b2c0939b5547034aa1a8e5a5542f448
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/GatheringToolList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6c30c9bf27deb5343b8012e4f10bb727
     m_Address: Assets/ScriptableObjects/Customer/Reindeer.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e1f913603e49d74d83347e68b0e736f
+    m_Address: Assets/ScriptableObjects/GameData/InteriorInventoryLevel/Level 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - interiorInventoryLevel
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 77955dafc1b415d4c98527479ccc5927
     m_Address: Assets/ScriptableObjects/Customer/Kangaroo.asset
@@ -301,6 +331,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - snack
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8150e7331a6953f4a974e32443a058bc
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/MoonpieceList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8156f2307f40d894a874bc797c0c19fa
     m_Address: "Assets/ScriptableObjects/Item/Snack/Level 3/\uBC18\uB527\uBD88 \uC824\uB9AC
       \uB9DD\uACE0.asset"
@@ -334,11 +370,23 @@ MonoBehaviour:
     m_SerializedLabels:
     - roomInterior
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83a0f72ee834e2b4ebd93604eac06917
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/CottonList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 86b75b664a1136c468be5ae6037bff47
     m_Address: "Assets/ScriptableObjects/Item/Tool/Gathering/\uC911\uAE09\uCC44\uC9D1\uB9DD.asset"
     m_ReadOnly: 0
     m_SerializedLabels:
     - tool
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a4481710970e0742b2153c5f5e15316
+    m_Address: Assets/ScriptableObjects/GameData/InteriorInventoryLevel/Level 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - interiorInventoryLevel
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c4b278102228c341a49f3963aa67c37
     m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uCD08\uAE09\uB09A\uC2DC\uB300.asset"
@@ -358,6 +406,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - material
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ba7fa75254b2a840917f4dbd9443578
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/FishingToolList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3173d7f57903cb41b71473d181fc910
     m_Address: "Assets/ScriptableObjects/Item/Material/Yarn/\uC740\uD558\uAFC8\uC2E4.asset"
@@ -389,6 +443,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - blanket
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2314f0fe925dc54392195b56737abe2
+    m_Address: Assets/ScriptableObjects/GameData/StoreItemList/WorkerList.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - storeItemList
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf955827781db0c45b8843f1f1d39dda
     m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uD558\uD2B8\uD0C0\uC77C.asset"
@@ -439,17 +499,17 @@ MonoBehaviour:
     m_SerializedLabels:
     - shopInterior
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cead3364b68af014ba911766659ca1eb
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uAE30\uBCF8\uBCBD\uD0C0\uC77C.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - tileInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d129595d257ad8b40a16e660bfa0eee4
     m_Address: Assets/ScriptableObjects/Customer/Alpaca.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - customer
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daf2104f115aa9d479832404f0f71d4c
+    m_Address: Assets/ScriptableObjects/GameData/ShopLevel/Level 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - shopLevel
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfc186803c4e055428a143f667d3e491
     m_Address: "Assets/ScriptableObjects/Item/Material/Cotton/\uCC9C\uACF5\uC6B4\uBB34\uC19C.asset"
@@ -468,6 +528,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - tileInterior
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6b6b5df22292934d9f2f66829b59fa3
+    m_Address: Assets/ScriptableObjects/GameData/ShopLevel/Level 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - shopLevel
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e746450314ca6fa409dd69d1f80fcc2c
     m_Address: "Assets/ScriptableObjects/Item/Material/Deco/\uD560\uBA38\uB2C8\uC758

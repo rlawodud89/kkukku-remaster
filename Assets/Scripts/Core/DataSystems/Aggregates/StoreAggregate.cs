@@ -14,6 +14,7 @@ public class StoreAggregate : IAggregate
     private Dictionary<string, ShopInteriorItemSO> shopInteriorSOs;
     private Dictionary<string, RoomInteriorItemSO> roomInteriorSOs;
     private Dictionary<string, TileInteriorItemSO> tileInteriorSOs;
+    private Dictionary<StoreType, StoreItemListSO> storeItemListSOs;
 
     // === 변경 사항 저장소 ===
 
@@ -21,7 +22,7 @@ public class StoreAggregate : IAggregate
 
     // === 기타 데이터 === 
 
-    private static int storeItemCount = 1;
+    private InteriorStoreSO interiorStoreSO;
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -84,13 +85,16 @@ public class StoreAggregate : IAggregate
     }
 
     public void LoadStoreAggregate(IEnumerable<StoreItemList> storeItemList, Dictionary<string, ShopInteriorItemSO> shopInteriorSOs,
-        Dictionary<string, RoomInteriorItemSO> roomInteriorSOs, Dictionary<string, TileInteriorItemSO> tileInteriorSOs)
+        Dictionary<string, RoomInteriorItemSO> roomInteriorSOs, Dictionary<string, TileInteriorItemSO> tileInteriorSOs,
+        Dictionary<StoreType, StoreItemListSO> storeItemListSOs, InteriorStoreSO interiorStoreSO)
     {
         this.storeItemList = storeItemList.ToDictionary(i => i.itemName);
 
         this.shopInteriorSOs = shopInteriorSOs;
         this.roomInteriorSOs = roomInteriorSOs;
         this.tileInteriorSOs = tileInteriorSOs;
+        this.storeItemListSOs = storeItemListSOs;
+        this.interiorStoreSO = interiorStoreSO;
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -136,13 +140,21 @@ public class StoreAggregate : IAggregate
 
     private ShopInteriorItemSO GetRandomShopInteriorItem()
     {
-        int randomIdx = UnityEngine.Random.Range(0, shopInteriorSOs.Count);
-        return shopInteriorSOs.ElementAt(randomIdx).Value;
+        ShopInteriorItemSO item = new ShopInteriorItemSO();
+
+        do
+        {
+            int randomIdx = UnityEngine.Random.Range(0, shopInteriorSOs.Count);
+            item = shopInteriorSOs.ElementAt(randomIdx).Value;
+        } while (item.shopInteriorType == ShopInteriorType.CASHER);
+
+
+        return item;
     }
 
     private RoomInteriorItemSO GetRandomRoomInteriorItem()
     {
-        RoomInteriorItemSO item = new();
+        RoomInteriorItemSO item = new RoomInteriorItemSO();
 
         do
         {
@@ -156,8 +168,15 @@ public class StoreAggregate : IAggregate
 
     private TileInteriorItemSO GetRandomTileInteriorItem()
     {
-        int randomIdx = UnityEngine.Random.Range(0, tileInteriorSOs.Count);
-        return tileInteriorSOs.ElementAt(randomIdx).Value;
+        TileInteriorItemSO item = new TileInteriorItemSO();
+
+        do
+        {
+            int randomIdx = UnityEngine.Random.Range(0, tileInteriorSOs.Count);
+            item = tileInteriorSOs.ElementAt(randomIdx).Value;
+        } while (item.itemName == "가게기본바닥타일" || item.itemName == "가게기본벽타일");
+
+        return item;
     }
 
 
@@ -209,6 +228,34 @@ public class StoreAggregate : IAggregate
         return list;
     }
 
+    public List<MaterialItemSO> GetMaterialStoreItemList(StoreType materialStoreType)
+    {
+        if (materialStoreType == StoreType.YRAN_MATERIAL
+            || materialStoreType == StoreType.COTTON_MATERIAL
+            || materialStoreType == StoreType.MOONPIECE_MATERIAL)
+        {
+            return storeItemListSOs[materialStoreType].materialItems;
+        }
+
+        else return null;
+    }
+
+    public List<RoomInteriorItemSO> GetWorkerStoreItemList()
+    {
+        return storeItemListSOs[StoreType.WORKER].workerItems;
+    }
+
+    public List<ToolItemSO> GetToolStoreItemList(StoreType toolStoreType)
+    {
+        if (toolStoreType == StoreType.FISHING_TOOL
+            || toolStoreType == StoreType.GATHERING_TOOL)
+        {
+            return storeItemListSOs[toolStoreType].toolItmes;
+        }
+
+        else return null;
+    }
+
     public void ResetAllStoreItemList()
     {
         foreach (var (itemName, item) in storeItemList)
@@ -223,7 +270,7 @@ public class StoreAggregate : IAggregate
 
         // 가게 인테리어
         int itemCount = 0;
-        while (itemCount < storeItemCount)
+        while (itemCount < interiorStoreSO.itemCount)
         {
             ShopInteriorItemSO shopItem = GetRandomShopInteriorItem();
 
@@ -244,7 +291,7 @@ public class StoreAggregate : IAggregate
 
         // 작업실 인테리어
         itemCount = 0;
-        while (itemCount < storeItemCount)
+        while (itemCount < interiorStoreSO.itemCount)
         {
             RoomInteriorItemSO roomItem = GetRandomRoomInteriorItem();
 
@@ -265,7 +312,7 @@ public class StoreAggregate : IAggregate
 
         // 타일 인테리어
         itemCount = 0;
-        while (itemCount < storeItemCount)
+        while (itemCount < interiorStoreSO.itemCount)
         {
             TileInteriorItemSO tileItem = GetRandomTileInteriorItem();
 

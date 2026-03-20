@@ -11,9 +11,11 @@ public class WorkerStoreProvider : IStoreItemProvider
 
     public WorkerStoreProvider()
     {
-        workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("여우"));
-        workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("고양이"));
-        workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("표범"));
+        //workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("여우"));
+        //workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("고양이"));
+        //workers.Add(ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO("표범"));
+
+        workers = ServiceLocator.Get<GameData>().Store.GetWorkerStoreItemList();
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()
