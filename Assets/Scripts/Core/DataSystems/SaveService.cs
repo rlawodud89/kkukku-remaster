@@ -5,6 +5,7 @@ public class SaveService
     private readonly SaveRepository repository;
     private readonly DirtyDataRegistry dirtyRegistry;
 
+    private bool isAutoSaveEnabled = false;
     private float saveInterval = 15f;
     private float timer;
 
@@ -18,6 +19,8 @@ public class SaveService
 
     public void Tick(float deltaTime)
     {
+        if (!isAutoSaveEnabled) return;
+
         timer += deltaTime;
         if (timer >= saveInterval)
         {
@@ -26,7 +29,7 @@ public class SaveService
         }
     }
 
-    public void Flush()
+    private void Flush()
     {
         if (!dirtyRegistry.HasDirtyData()) return;
 
@@ -45,6 +48,23 @@ public class SaveService
             repository.Rollback();
             throw;
         }
+    }
+
+    public void SaveNow()
+    {
+        Flush();
+        timer = 0f;
+    }
+
+    public void SetAutoSave(bool enabled)
+    {
+        isAutoSaveEnabled = enabled;
+        timer = 0f;
+    }
+
+    public void ResetTimer()
+    {
+        timer = 0f;
     }
 
     public float GetCurrentTimer()

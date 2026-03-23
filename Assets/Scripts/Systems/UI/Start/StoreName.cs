@@ -26,6 +26,8 @@ public class StoreName : MonoBehaviour
             this.gameObject.SetActive(false);
 
             if (TutorialLoader.Instance != null) TutorialLoader.Instance.TutorialStart();
+
+            ServiceLocator.Get<SaveService>().SaveNow();
         }
         else
         {

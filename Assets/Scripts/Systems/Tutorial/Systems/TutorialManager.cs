@@ -119,7 +119,11 @@ public class TutorialManager : MonoBehaviour
     {
         HighlightSystem.Instance.Clear();
         TutorialDialogue.Instance.HideDialogue();
+
         ServiceLocator.Get<GameData>().User.SetStartState(StartStateType.GAME);
+        ServiceLocator.Get<SaveService>().SaveNow();
+        ServiceLocator.Get<SaveService>().SetAutoSave(true);
+
         Debug.Log("Tutorial Finished");
     }
 }

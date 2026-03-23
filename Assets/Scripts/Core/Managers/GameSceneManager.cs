@@ -42,15 +42,18 @@ public class GameSceneManager : MonoBehaviour
         switch (ServiceLocator.Get<GameData>().User.GetStartState())
         {
             case StartStateType.PROLOG:
+                ServiceLocator.Get<SaveService>().SetAutoSave(false);
                 SceneManager.LoadScene("Prolog");
                 break;
 
             case StartStateType.TUTORIAL:
                 SceneManager.LoadScene("BlanketShop");
+                ServiceLocator.Get<SaveService>().SetAutoSave(false);
                 if (TutorialLoader.Instance != null) TutorialLoader.Instance.TutorialStart();
                 break;
 
             case StartStateType.GAME:
+                ServiceLocator.Get<SaveService>().SetAutoSave(true);
                 SceneManager.LoadScene("BlanketShop");
                 break;
         }
