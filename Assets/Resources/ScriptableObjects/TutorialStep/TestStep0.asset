@@ -15,5 +15,5 @@ MonoBehaviour:
   highlightTarget: 6
   dialogue: 
   showDialogue: 1
-  completeEvent: 1
-  autoProceed: 0
+  completeEvent: 0
+  autoProceed: 1

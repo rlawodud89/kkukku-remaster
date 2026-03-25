@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -26,11 +27,18 @@ public class TutorialManager : MonoBehaviour
     private void OnEnable()
     {
         TutorialEventBus.Subscribe(HandleEvent);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
         TutorialEventBus.Unsubscribe(HandleEvent);
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        HighlightSystem.Instance?.Clear();
     }
 
     private void Start()
@@ -45,6 +53,7 @@ public class TutorialManager : MonoBehaviour
         NextStep();
     }
 
+    private Coroutine currentCoroutine;
     public void NextStep()
     {
         currentStepIndex++;
@@ -56,7 +65,11 @@ public class TutorialManager : MonoBehaviour
         }
 
         currentStep = steps[currentStepIndex];
-        StartCoroutine(RunStep(currentStep));
+
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        currentCoroutine = StartCoroutine(RunStep(currentStep));
     }
 
     private IEnumerator RunStep(TutorialStep step)
@@ -65,7 +78,7 @@ public class TutorialManager : MonoBehaviour
         bool shouldBlockInput =
             step.completeEvent == TutorialID.DialogueNext;
 
-        TutorialInputBlocker.Instance.SetBlock(shouldBlockInput);
+        TutorialInputBlocker.Instance?.SetBlock(shouldBlockInput);
 
 
         // 하이라이트 처리
@@ -75,21 +88,23 @@ public class TutorialManager : MonoBehaviour
                 AnchorRegistry.HasAnchor(step.highlightTarget));
 
             var anchor = AnchorRegistry.GetAnchor(step.highlightTarget);
+            if (anchor == null)
+                yield break;
             RectTransform targetRect = anchor.GetComponent<RectTransform>();
 
-            HighlightSystem.Instance.Highlight(targetRect);
+            HighlightSystem.Instance?.Highlight(targetRect);
         }
         else
         {
-            HighlightSystem.Instance.Clear();
+            HighlightSystem.Instance?.Clear();
         }
 
 
         // 대사 처리
         if (step.showDialogue)
-            TutorialDialogue.Instance.ShowDialogue(step.dialogue);
+            TutorialDialogue.Instance?.ShowDialogue(step.dialogue);
         else
-            TutorialDialogue.Instance.HideDialogue();
+            TutorialDialogue.Instance?.HideDialogue();
 
 
         // 자동 진행
@@ -108,22 +123,28 @@ public class TutorialManager : MonoBehaviour
         if (currentStep.completeEvent != eventID)
             return;
 
-        HighlightSystem.Instance.Clear();
-        TutorialDialogue.Instance.HideDialogue();
-        TutorialInputBlocker.Instance.SetBlock(false);
+        HighlightSystem.Instance?.Clear();
+        TutorialDialogue.Instance?.HideDialogue();
+        TutorialInputBlocker.Instance?.SetBlock(false);
+
+
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
 
         NextStep();
     }
 
     private void EndTutorial()
     {
-        HighlightSystem.Instance.Clear();
-        TutorialDialogue.Instance.HideDialogue();
+        HighlightSystem.Instance?.Clear();
+        TutorialDialogue.Instance?.HideDialogue();
+        TutorialEventBus.Clear();
 
         ServiceLocator.Get<GameData>().User.SetStartState(StartStateType.GAME);
         ServiceLocator.Get<SaveService>().SaveNow();
         ServiceLocator.Get<SaveService>().SetAutoSave(true);
 
+        TutorialLoader.Instance?.TutorialInvisible();
         Debug.Log("Tutorial Finished");
     }
 }
