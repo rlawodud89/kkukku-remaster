@@ -4079,7 +4079,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1038772152}
   - component: {fileID: 1038772151}
-  - component: {fileID: 1038772150}
+  - component: {fileID: 1038772154}
   - component: {fileID: 1038772153}
   m_Layer: 0
   m_Name: TimelineManager
@@ -4088,19 +4088,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1038772150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1038772149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cda63d33dcb5474c90e61584d11d4cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextSceneName: Work_Shop
 --- !u!114 &1038772151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4134,8 +4121,8 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1038772150}
-          m_TargetAssemblyTypeName: LoadSceneOnSignal, Assembly-CSharp
+        - m_Target: {fileID: 1038772154}
+          m_TargetAssemblyTypeName: LoadSceneOnPrologSignal, Assembly-CSharp
           m_MethodName: LoadNextScene
           m_Mode: 1
           m_Arguments:
@@ -4170,10 +4157,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1038772149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a75f3d3542fe294c9cbcd53dc933a40, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b4f55b8ccb9238448fc6da868b26c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 498664957}
+--- !u!114 &1038772154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1038772149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22acc050b8adeb346ab9c4e1a3f00561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1061667968
 GameObject:
   m_ObjectHideFlags: 0

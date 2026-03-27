@@ -11,9 +11,11 @@ public class MoonpieceStoreProvider : IStoreItemProvider
 
     public MoonpieceStoreProvider()
     {
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("달조각"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("은빛달조각"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("천야달조각"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("달조각"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("은빛달조각"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("천야달조각"));
+
+        items = ServiceLocator.Get<GameData>().Store.GetMaterialStoreItemList(StoreType.MOONPIECE_MATERIAL);
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()

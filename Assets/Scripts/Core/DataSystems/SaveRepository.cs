@@ -18,6 +18,10 @@ public class SaveRepository
     private Dictionary<string, ToolItemSO> toolSOs;
     private Dictionary<string, SpecialQuestSO> specialQuestSOs;
     private Dictionary<string, NPCDataSO> customerSOs;
+    private Dictionary<int, ShopLevelSO> shopLevelSOs;
+    private Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs;
+    private Dictionary<StoreType, StoreItemListSO> storeItemListSOs;
+    private InteriorStoreSO interiorStoreSO;
 
 
     public SaveRepository(SQLiteConnection connection)
@@ -53,6 +57,18 @@ public class SaveRepository
         customerSOs = Addressables.LoadAssetsAsync<NPCDataSO>("customer", null)
                 .WaitForCompletion()
                 .ToDictionary(i => i.npcID);
+        shopLevelSOs = Addressables.LoadAssetsAsync<ShopLevelSO>("shopLevel", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.level);
+        interiorInvenLevelSOs = Addressables.LoadAssetsAsync<InteriorInventoryLevelSO>("interiorInventoryLevel", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.level);
+        storeItemListSOs = Addressables.LoadAssetsAsync<StoreItemListSO>("storeItemList", null)
+                .WaitForCompletion()
+                .ToDictionary(i => i.storeType);
+        interiorStoreSO = Addressables.LoadAssetsAsync<InteriorStoreSO>("interiorStore", null)
+                .WaitForCompletion()
+                .FirstOrDefault();
 
     }
 
@@ -63,22 +79,27 @@ public class SaveRepository
 
     public void Save(IAggregate aggregate)
     {
-        foreach (var data in aggregate.ToSavePayloads())
+        var payloads = aggregate.ToSavePayloads();
+
+        // 1. DELETE
+        foreach (var data in payloads)
         {
-            switch (data.Operation)
-            {
-                case SaveOperation.INSERT:
-                    ExecuteInsert(data);
-                    break;
+            if (data.Operation == SaveOperation.DELETE)
+                ExecuteDelete(data);
+        }
 
-                case SaveOperation.UPDATE:
-                    ExecuteUpdate(data);
-                    break;
+        // 2. UPDATE
+        foreach (var data in payloads)
+        {
+            if (data.Operation == SaveOperation.UPDATE)
+                ExecuteUpdate(data);
+        }
 
-                case SaveOperation.DELETE:
-                    ExecuteDelete(data);
-                    break;
-            }
+        // 3. INSERT
+        foreach (var data in payloads)
+        {
+            if (data.Operation == SaveOperation.INSERT)
+                ExecuteInsert(data);
         }
 
         aggregate.ClearDirty();
@@ -190,7 +211,7 @@ public class SaveRepository
         List<ToolUsed> toolUsed = connection.Table<ToolUsed>().ToList();
 
         var aggregate = new UserAggregate();
-        aggregate.LoadUserAggregate(user, toolUsed, toolSOs);
+        aggregate.LoadUserAggregate(user, toolUsed, toolSOs, shopLevelSOs, interiorInvenLevelSOs);
 
         return aggregate;
     }
@@ -266,7 +287,8 @@ public class SaveRepository
         List<StoreItemList> storeItemList = connection.Table<StoreItemList>().ToList();
 
         var aggreagte = new StoreAggregate();
-        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs);
+        aggreagte.LoadStoreAggregate(storeItemList, shopInteriorSOs, roomInteriorSOs, tileInteriorSOs,
+            storeItemListSOs, interiorStoreSO);
 
         return aggreagte;
     }
@@ -276,117 +298,157 @@ public class SaveRepository
 
     public void MakeDefaultDB()
     {
-        connection.CreateTable<User>();
-        connection.CreateTable<ShopInteriorInventory>();
-        connection.CreateTable<RoomInteriorInventory>();
-        connection.CreateTable<TileInteriorInventory>();
-        connection.CreateTable<ShopInteriorPlaced>();
-        connection.CreateTable<RoomInteriorPlaced>();
-        connection.CreateTable<TileInteriorPlaced>();
-        connection.CreateTable<MaterialInventory>();
-        connection.CreateTable<SnackInventory>();
-        connection.CreateTable<BlanketInventory>();
-        connection.CreateTable<BlanketRecipe>();
-        connection.CreateTable<BlanketRecord>();
-        connection.CreateTable<ShopTable>();
-        connection.CreateTable<WorkerState>();
-        connection.CreateTable<QuestBox>();
-        connection.CreateTable<SpecialQuestBox>();
-        connection.CreateTable<LetterBox>();
-        connection.CreateTable<ToolInventory>();
-        connection.CreateTable<ToolUsed>();
-        connection.CreateTable<StoreItemList>();
+        connection.RunInTransaction(() =>
+        {
+            // ==== 테이블 생성 ====
+            connection.CreateTable<User>();
 
-        // User
-        User user = new User();
-        user.shopName = "";
-        user.level = 1;
-        user.energy = 0;
-        user.gold = 100;
-        user.moonrock = 100;
-        user.playTime = 0;
-        user.endScene = "BlanketShop";
-        user.isOpen = false;
-        user.itemShopLevel = 1;
-        user.interiorInventoryLevel = 1;
-        user.shopLevel = 1;
-        user.bgmVol = 50;
-        user.sfxVol = 50;
-        user.startState = StartStateType.PROLOG;
-        user.isWatchEnding = false;
-        connection.Insert(user);
+            connection.CreateTable<ShopInteriorInventory>();
+            connection.CreateTable<RoomInteriorInventory>();
+            connection.CreateTable<TileInteriorInventory>();
 
-        // TileInteriorInventory
-        TileInteriorInventory floorTile = new TileInteriorInventory();
-        floorTile.itemName = "기본바닥타일";
-        floorTile.tileType = TileInteriorType.FLOOR;
-        connection.Insert(floorTile);
+            connection.CreateTable<ShopInteriorPlaced>();
+            connection.CreateTable<RoomInteriorPlaced>();
+            connection.CreateTable<TileInteriorPlaced>();
 
-        TileInteriorInventory wallTile = new TileInteriorInventory();
-        wallTile.itemName = "기본벽타일";
-        wallTile.tileType = TileInteriorType.WALL;
-        connection.Insert(wallTile);
+            connection.CreateTable<MaterialInventory>();
+            connection.CreateTable<SnackInventory>();
+            connection.CreateTable<BlanketInventory>();
 
-        // ShopInteriorPlaced
+            connection.CreateTable<BlanketRecipe>();
+            connection.CreateTable<BlanketRecord>();
 
-        // RoomInteriorPlaced
+            connection.CreateTable<ShopTable>();
 
-        // TileInteriorPlaced
-        TileInteriorPlaced shopfloor = new TileInteriorPlaced();
-        shopfloor.tilePosition = TilePositionType.SHOP_FLOOR;
-        shopfloor.itemName = "기본바닥타일";
-        connection.Insert(shopfloor);
+            connection.CreateTable<WorkerState>();
 
-        TileInteriorPlaced shopwall = new TileInteriorPlaced();
-        shopwall.tilePosition = TilePositionType.SHOP_WALL;
-        shopwall.itemName = "기본벽타일";
-        connection.Insert(shopwall);
+            connection.CreateTable<QuestBox>();
+            connection.CreateTable<SpecialQuestBox>();
+            connection.CreateTable<LetterBox>();
 
-        TileInteriorPlaced roomfloor = new TileInteriorPlaced();
-        roomfloor.tilePosition = TilePositionType.ROOM_FLOOR;
-        roomfloor.itemName = "기본바닥타일";
-        connection.Insert(roomfloor);
+            connection.CreateTable<ToolInventory>();
+            connection.CreateTable<ToolUsed>();
 
-        TileInteriorPlaced roomwall = new TileInteriorPlaced();
-        roomwall.tilePosition = TilePositionType.ROOM_WALL;
-        roomwall.itemName = "기본벽타일";
-        connection.Insert(roomwall);
+            connection.CreateTable<StoreItemList>();
 
-        // MaterialInventory
 
-        // BlanketRecipe
-        BlanketRecipe recipe = new BlanketRecipe();
-        recipe.itemName = "기본이불";
-        connection.Insert(recipe);
+            // ==== User 초기값 ====
+            var user = new User
+            {
+                shopName = "",
+                level = 1,
+                energy = 0,
+                gold = 100,
+                moonrock = 100,
+                playTime = 0,
+                endScene = "BlanketShop",
+                isOpen = false,
+                itemShopLevel = 1,
+                interiorInventoryLevel = 1,
+                shopLevel = 1,
+                bgmVol = 50,
+                sfxVol = 50,
+                startState = StartStateType.PROLOG,
+                isWatchEnding = false
+            };
+            connection.Insert(user);
 
-        // WorkerState
 
-        // QuestBox
+            // ==== 기본 인벤토리 ====
 
-        // ToolInventory
-        ToolInventory gatheringtool = new ToolInventory();
-        gatheringtool.toolName = "기본채집망";
-        gatheringtool.toolType = ToolType.GATHERING;
-        connection.Insert(gatheringtool);
+            // ShopInteriorInventory
 
-        ToolInventory fishingtool = new ToolInventory();
-        fishingtool.toolName = "기본낚시대";
-        fishingtool.toolType = ToolType.FISHING;
-        connection.Insert(fishingtool);
+            // RoomInteriorInventory
 
-        // ToolUsed
-        ToolUsed gatheringUsed = new ToolUsed();
-        gatheringUsed.toolType = ToolType.GATHERING;
-        gatheringUsed.toolName = "기본채집망";
-        connection.Insert(gatheringUsed);
+            // TileInteriorInventory
+            connection.Insert(new TileInteriorInventory
+            {
+                itemName = "기본바닥타일",
+                tileType = TileInteriorType.FLOOR
+            });
 
-        ToolUsed fishingUsed = new ToolUsed();
-        fishingUsed.toolType = ToolType.FISHING;
-        fishingUsed.toolName = "기본낚시대";
-        connection.Insert(fishingUsed);
+            connection.Insert(new TileInteriorInventory
+            {
+                itemName = "기본벽타일",
+                tileType = TileInteriorType.WALL
+            });
 
-        // StoreItemList
+            // MaterialInventory
 
+            // SnackInventory
+
+            // BlanketInventory
+
+            // ToolInventory
+            connection.Insert(new ToolInventory
+            {
+                toolName = "기본채집망",
+                toolType = ToolType.GATHERING
+            });
+
+            connection.Insert(new ToolInventory
+            {
+                toolName = "기본낚시대",
+                toolType = ToolType.FISHING
+            });
+
+
+            // ==== 기본 인테리어 배치 ====
+
+            // ShopInteriorPlaced
+
+            // RoomInteriorPlaced
+
+            // TileInteriorPlaced
+            connection.Insert(new TileInteriorPlaced
+            {
+                tilePosition = TilePositionType.SHOP_FLOOR,
+                itemName = "기본바닥타일"
+            });
+
+            connection.Insert(new TileInteriorPlaced
+            {
+                tilePosition = TilePositionType.SHOP_WALL,
+                itemName = "기본벽타일"
+            });
+
+            connection.Insert(new TileInteriorPlaced
+            {
+                tilePosition = TilePositionType.ROOM_FLOOR,
+                itemName = "기본바닥타일"
+            });
+
+            connection.Insert(new TileInteriorPlaced
+            {
+                tilePosition = TilePositionType.ROOM_WALL,
+                itemName = "기본벽타일"
+            });
+
+            
+            // ==== 기본 직원 ====
+            
+
+
+            // ==== 기본 레시피 ====
+            connection.Insert(new BlanketRecipe
+            {
+                itemName = "기본이불"
+            });
+
+
+            // ==== 현재 장착 도구 ====
+            connection.Insert(new ToolUsed
+            {
+                toolType = ToolType.GATHERING,
+                toolName = "기본채집망"
+            });
+
+            connection.Insert(new ToolUsed
+            {
+                toolType = ToolType.FISHING,
+                toolName = "기본낚시대"
+            });
+        });
     }
 
 }

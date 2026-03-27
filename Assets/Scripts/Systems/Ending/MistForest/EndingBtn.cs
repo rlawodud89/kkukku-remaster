@@ -7,7 +7,8 @@ public class EndingBtn : MonoBehaviour
 {
     public void OnClickEndingBtn()
     {
-        SceneManager.LoadScene("Ending");
+        UIEventManager.HideMainUI();
+        LoadingSceneManager.LoadScene("Ending");
     }
 
 }

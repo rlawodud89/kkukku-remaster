@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class InteriorAggregate : IAggregate
@@ -26,8 +25,8 @@ public class InteriorAggregate : IAggregate
 
     // === 기타 데이터 ===
 
-    private int nextShopInteriorID = 1;
-    private int nextRoomInteriorID = 1;
+    private IDPool shopInteriorIDPool = new();
+    private IDPool roomInteriorIDPool = new();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -128,7 +127,7 @@ public class InteriorAggregate : IAggregate
                         Table = "RoomInteriorPlaced",
                         Values = new Dictionary<string, object>
                         {
-                            { "ID", insertInterior.ID }, 
+                            { "ID", insertInterior.ID },
                             { "gridNumber", insertInterior.gridNumber },
                             { "itemName", insertInterior.itemName },
                             { "interiorType", insertInterior.interiorType }
@@ -206,8 +205,8 @@ public class InteriorAggregate : IAggregate
         this.roomInteriorSOs = roomInteriorSOs;
         this.tileInteriorSOs = tileInteriorSOs;
 
-        nextShopInteriorID = this.shopPlaced.Count == 0 ? 1 : this.shopPlaced.Keys.Max() + 1;
-        nextRoomInteriorID = this.roomPlaced.Count == 0 ? 1 : this.roomPlaced.Keys.Max() + 1;
+        shopInteriorIDPool.InitializeFromExisting(this.shopPlaced.Keys);
+        roomInteriorIDPool.InitializeFromExisting(this.roomPlaced.Keys);
     }
 
     private void MergeChange<TKey>(Dictionary<TKey, SaveOperation> changes, TKey key, SaveOperation newOp)
@@ -339,7 +338,7 @@ public class InteriorAggregate : IAggregate
 
         var newshopInterior = new ShopInteriorPlaced
         {
-            ID = nextShopInteriorID,
+            ID = shopInteriorIDPool.Generate(),
             gridNumber = gridNumber,
             itemName = itemName,
             interiorType = interiorType
@@ -353,8 +352,6 @@ public class InteriorAggregate : IAggregate
 
         MarkDirty();
 
-        nextShopInteriorID++;
-
         return newshopInterior.ID;
     }
 
@@ -367,7 +364,7 @@ public class InteriorAggregate : IAggregate
 
         var newroomInterior = new RoomInteriorPlaced
         {
-            ID = nextRoomInteriorID,
+            ID = roomInteriorIDPool.Generate(),
             gridNumber = gridNumber,
             itemName = itemName,
             interiorType = interiorType
@@ -381,8 +378,6 @@ public class InteriorAggregate : IAggregate
 
         MarkDirty();
 
-        nextRoomInteriorID++;
-
         if (interiorType == RoomInteriorType.WORKER) ServiceLocator.Get<GameData>().ShopState.AddWorkerState(newroomInterior.ID);
 
         return newroomInterior.ID;
@@ -390,9 +385,9 @@ public class InteriorAggregate : IAggregate
 
     public void RemoveShopInterior(int targetID)
     {
-        if (shopPlaced.ContainsKey(targetID))
+        if (shopPlaced.Remove(targetID))
         {
-            shopPlaced.Remove(targetID);
+            shopInteriorIDPool.Release(targetID);
 
             MergeChange(shopPlacedChanges,
                 targetID,
@@ -404,13 +399,15 @@ public class InteriorAggregate : IAggregate
 
     public void RemoveRoomInterior(int targetID)
     {
-        if (roomPlaced.ContainsKey(targetID))
+        if (roomPlaced.TryGetValue(targetID, out var placed))
         {
-            RoomInteriorItemSO interiorSO = roomInteriorSOs[roomPlaced[targetID].itemName];
+            RoomInteriorItemSO interiorSO = roomInteriorSOs[placed.itemName];
+
             if (interiorSO.roomInteriorType == RoomInteriorType.WORKER)
                 ServiceLocator.Get<GameData>().ShopState.RemoveWorkerState(targetID);
 
             roomPlaced.Remove(targetID);
+            roomInteriorIDPool.Release(targetID);
 
             MergeChange(roomPlacedChanges,
                 targetID,

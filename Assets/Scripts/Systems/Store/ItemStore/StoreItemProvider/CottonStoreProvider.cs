@@ -11,9 +11,11 @@ public class CottonStoreProvider : IStoreItemProvider
 
     public CottonStoreProvider()
     {
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("운무솜"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("햇빛운무솜"));
-        items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("천공운무솜"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("운무솜"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("햇빛운무솜"));
+        //items.Add(ServiceLocator.Get<GameData>().Inventory.GetMaterialItemSO("천공운무솜"));
+
+        items = ServiceLocator.Get<GameData>().Store.GetMaterialStoreItemList(StoreType.COTTON_MATERIAL);
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()
