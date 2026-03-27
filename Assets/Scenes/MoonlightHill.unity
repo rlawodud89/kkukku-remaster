@@ -3165,6 +3165,61 @@ MonoBehaviour:
   descriptionPanel: {fileID: 1758278094}
   countablePrefab: {fileID: 6668796002199582652, guid: af866a4eec93171439d75278f3b426c1, type: 3}
   countlessPrefab: {fileID: 6791349185190971465, guid: 871e2ac584b3698439ba0b50c0a26d47, type: 3}
+--- !u!1 &1186107646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1186107648}
+  - component: {fileID: 1186107647}
+  m_Layer: 0
+  m_Name: BackgroundTimeChanger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1186107647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186107646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58cbaab9674924242891688f88a500a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundImages:
+  - dayPhase: 0
+    background: {fileID: 2077829086}
+  - dayPhase: 1
+    background: {fileID: 2077829086}
+  - dayPhase: 2
+    background: {fileID: 406991469}
+  - dayPhase: 3
+    background: {fileID: 95690893}
+  backgroundObjects: []
+  objectColors: []
+--- !u!4 &1186107648
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186107646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 327.82593, y: 173.18835, z: 0.000004131986}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1268954929
 GameObject:
   m_ObjectHideFlags: 0
@@ -5532,3 +5587,4 @@ SceneRoots:
   - {fileID: 802077465}
   - {fileID: 1967788131}
   - {fileID: 598709455}
+  - {fileID: 1186107648}
