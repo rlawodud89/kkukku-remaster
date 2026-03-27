@@ -98,7 +98,6 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
             Vector3 targetPos = currentPos + dragOffset;
             SnapToGrid(targetPos);
             
-            // ★ 수정됨: targetPos가 아니라 보정된 위치(transform.position)를 넘겨줍니다!
             RouteUpdateHighlight(transform.position); 
         }
     }
@@ -145,7 +144,6 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
     {
         if (RoomInteriorManager.Instance != null)
         {
-            // [작업실 로직]
             int gridIndex = RoomInteriorManager.Instance.WorldToGrid(targetWorldPos);
             if (gridIndex == -1) return;
             Vector3 finalPos = RoomInteriorManager.Instance.GridToWorld(gridIndex);
@@ -153,7 +151,6 @@ public class FurnitureMobileDrag : MonoBehaviour, IPointerClickHandler, IBeginDr
         }
         else if (ShopInteriorManager.Instance != null)
         {
-            // [가게 로직] 가게 타일맵에 맞춰서 부드럽게 스냅
             Vector3Int cellPos = ShopInteriorManager.Instance.floorTilemap.WorldToCell(targetWorldPos);
             int gridIndex = ShopStorageDataManager.Instance.pathfinding.PosToIndex(cellPos);
             if (gridIndex == -1) return;
