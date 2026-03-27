@@ -939,8 +939,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -11.605501}
-  m_SizeDelta: {x: 20, y: 43.3072}
+  m_AnchoredPosition: {x: 0, y: -0.001698494}
+  m_SizeDelta: {x: 20, y: 18.3283}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &847457306
 MonoBehaviour:
@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.36320752, g: 0.29863957, b: 0.23471428, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1014,8 +1014,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.6533, y: -3.9}
-  m_SizeDelta: {x: 75.1755, y: 19.4651}
+  m_AnchoredPosition: {x: -0.0000010133, y: 0.00000047684}
+  m_SizeDelta: {x: 75.1755, y: 15.0785}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &854202668
 MonoBehaviour:
@@ -1039,15 +1039,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB09A\uC2DC \uADF8\uB9CC\uD558\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: cff2dac4a033ff1499ff28e8c088e568, type: 2}
-  m_sharedMaterial: {fileID: -3551800230396358788, guid: cff2dac4a033ff1499ff28e8c088e568, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6f3e7f7476ea5ec4d8f39e0180a65eb6, type: 2}
+  m_sharedMaterial: {fileID: -8628383430526681325, guid: 6f3e7f7476ea5ec4d8f39e0180a65eb6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1483,10 +1483,10 @@ RectTransform:
   - {fileID: 554284012}
   m_Father: {fileID: 1777649486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: -4.6737}
+  m_AnchorMin: {x: 1, y: 0.0852845}
+  m_AnchorMax: {x: 1, y: 0.9146423}
+  m_AnchoredPosition: {x: 8.300003, y: 2.0228004}
+  m_SizeDelta: {x: 20, y: 3.3263001}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1377413099
 MonoBehaviour:
@@ -1531,8 +1531,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 847457306}
   m_HandleRect: {fileID: 847457305}
   m_Direction: 2
-  m_Value: 1.0000033
-  m_Size: 0.15607132
+  m_Value: 1.0000035
+  m_Size: 0.15607134
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1550,7 +1550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1629,6 +1629,7 @@ MonoBehaviour:
   - {fileID: 5788206324561782486, guid: 03fd73e1ff5aea147908a56298665c0c, type: 3}
   - {fileID: 8101478425882817051, guid: ccaf84251b1b68346b6dbf9ebe4b1fa5, type: 3}
   - {fileID: 2196293096841948034, guid: 20d876c48b62d804d9737708e08e82f9, type: 3}
+  - {fileID: 4696338278954778362, guid: c3a2b90112eb2f74a970f039edb83e85, type: 3}
 --- !u!4 &1455369951
 Transform:
   m_ObjectHideFlags: 0
@@ -1838,8 +1839,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 42412923, guid: 8e676cbb35bc0e348918439f47be63b7, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2020,7 +2021,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2123,8 +2124,8 @@ Transform:
   m_GameObject: {fileID: 1821931649}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0263, y: -0.0492, z: 0}
-  m_LocalScale: {x: 0.65471965, y: 0.6505927, z: 1}
+  m_LocalPosition: {x: -0.0263, y: -0.0303, z: 0}
+  m_LocalScale: {x: 0.65471965, y: 0.65306497, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
