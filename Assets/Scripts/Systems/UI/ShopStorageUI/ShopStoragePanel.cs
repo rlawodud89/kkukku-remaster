@@ -120,7 +120,7 @@ public class ShopStoragePanel : MonoBehaviour
 
             var item = go.GetComponent<BlanketItem>();
 
-            item.SetupBlanketItem(id, j, s.count, s.max);
+            item.SetupBlanketItem(s.storageID, j, s.count, s.max);
             item.OnItemSelected = OnRightItemSelected;
             j++;
         }
