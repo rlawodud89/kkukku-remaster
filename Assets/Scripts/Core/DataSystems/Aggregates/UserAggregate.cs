@@ -57,6 +57,8 @@ public class UserAggregate : IAggregate
                 { "energy", user.energy },
                 { "gold", user.gold },
                 { "moonrock", user.moonrock },
+                { "todayGold", user.todayGold },
+                { "todayMoonrock", user.todayMoonrock },
                 { "playTime", user.playTime },
                 { "endScene", user.endScene },
                 { "isOpen", user.isOpen },
@@ -124,6 +126,14 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public void SetLevelEnergy(int level, float energy)
+    {
+        user.level = level;
+        user.energy = energy;
+
+        MarkDirty();
+    }
+
     public void SetShopName(string shopName)
     {
         user.shopName = shopName;
@@ -166,6 +176,39 @@ public class UserAggregate : IAggregate
     public void ChangeMoonrock(int amount)
     {
         user.moonrock += amount;
+        MarkDirty();
+    }
+
+    public int GetTodayGold()
+    {
+        return user.todayGold;
+    }
+
+    public int GetTodayMoonrock()
+    {
+        return user.todayMoonrock;
+    }
+
+    public void AddTodayGold(int amount)
+    {
+        if (amount < 0) return;
+
+        user.todayGold += amount;
+        MarkDirty();
+    }
+
+    public void AddTodayMoonrock(int amount)
+    {
+        if (amount < 0) return;
+
+        user.todayMoonrock += amount;
+        MarkDirty();
+    }
+
+    public void ResetTodayGoldMoonrock()
+    {
+        user.todayGold = 0;
+        user.todayMoonrock = 0;
         MarkDirty();
     }
 
