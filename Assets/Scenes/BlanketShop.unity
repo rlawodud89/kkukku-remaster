@@ -3745,6 +3745,7 @@ GameObject:
   - component: {fileID: 911408809}
   - component: {fileID: 911408808}
   - component: {fileID: 911408811}
+  - component: {fileID: 911408812}
   m_Layer: 5
   m_Name: Btn_MoveWorkshop
   m_TagString: Untagged
@@ -3878,6 +3879,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62266a81525072241bd0b71d12f34868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &911408812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911408806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 46
 --- !u!1 &925951996
 GameObject:
   m_ObjectHideFlags: 0
@@ -5201,7 +5215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorID: 20
+  anchorID: 45
 --- !u!114 &1216580027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5214,7 +5228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorID: 19
+  anchorID: 44
 --- !u!1 &1233148329
 GameObject:
   m_ObjectHideFlags: 0
@@ -5586,7 +5600,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1277725094}
   m_HandleRect: {fileID: 1701033794}
   m_Direction: 2
   m_Value: 1

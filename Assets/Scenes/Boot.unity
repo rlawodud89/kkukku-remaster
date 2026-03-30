@@ -1354,8 +1354,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   steps:
-  - {fileID: 11400000, guid: fd15039cb29e28e4cb3ac37cab1a3e44, type: 2}
-  - {fileID: 11400000, guid: cb6b7213331690f44b6761e4cddc72c2, type: 2}
+  - {fileID: 11400000, guid: a0472c8b2a6242c4a943414aee9916aa, type: 2}
+  - {fileID: 11400000, guid: 89a139af65302d6489bcb747a25212d0, type: 2}
+  - {fileID: 11400000, guid: defd65fca5f4a9a41882549a9cc0f1a7, type: 2}
+  - {fileID: 11400000, guid: e77f794ce3092b146940959ed6eab9e3, type: 2}
 --- !u!224 &229735800 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9111335615970701896, guid: a5e22245133215b4192541a7d2ddb0c8, type: 3}
@@ -5341,7 +5343,7 @@ MonoBehaviour:
   maskImage: {fileID: 623058837}
   finger: {fileID: 354089944}
   rootCanvas: {fileID: 273828615}
-  highlightPadding: 10
+  highlightPadding: 5
 --- !u!1 &1442157321
 GameObject:
   m_ObjectHideFlags: 0

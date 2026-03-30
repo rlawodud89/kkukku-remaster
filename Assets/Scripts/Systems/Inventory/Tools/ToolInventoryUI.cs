@@ -67,7 +67,7 @@ public class ToolInventoryUI : MonoBehaviour
 
         toolPerformer.ToolUIOn();
 
-        //TutorialEventBus.Raise(TutorialID.ToolButton);
+        TutorialEventBus.Raise(TutorialID.ClickToolUI);
     }
 
     public void OnClickToolBackBtn()
@@ -75,5 +75,7 @@ public class ToolInventoryUI : MonoBehaviour
         toolPanel.SetActive(false);
 
         toolPerformer.ToolUIOff();
+
+        TutorialEventBus.Raise(TutorialID.ExitToolUI);
     }
 }

@@ -18,31 +18,6 @@ public enum TutorialID
     MapVillageButton,
     MapYesButton,
 
-    // BlanketShop
-    ClickTable,
-    ClickBlanketInBox,
-    AddBlanket,
-    ClickBlanketInTable,
-    RemoveBlanket,
-    ExitTable,
-
-    ShopOpen,
-    ShopClose,
-    GotoRoom,
-
-    // WorkingRoom
-    ClickPersonalCraft,
-    ExitPersonalCraft,
-
-    ClickSnackBox,
-    FeedSnak,
-    ExitSnackBox,
-
-    ClickWorker,
-    SelectWorkerRecipe,
-    MakeBlanket,
-    MakeBlanketFinish,
-
     // SleepingGarden
     GatheringSnack,
     ClickToolUI,
@@ -77,4 +52,33 @@ public enum TutorialID
     // CommonUI
     QuestConfirm,
     RecipeConfirm,
+
+    // BlanketShop
+    ClickTable,
+    ClickBlanketInBox,
+    ClickBoxInTable,
+    AddBlanket,
+    ClickBlanketInTable,
+    RemoveBlanket,
+    ExitTable,
+
+    ShopOpen,
+    ShopClose,
+    GotoRoom,
+
+    // WorkingRoom
+    ClickPersonalCraft,
+    ExitPersonalCraft,
+
+    ClickSnackBox,
+    FeedSnak,
+    ExitSnackBox,
+
+    ClickWorker,
+    SelectWorkerRecipe,
+    MakeBlanket,
+    MakeBlanketFinish,   
+
+    // Interior
+
 }
