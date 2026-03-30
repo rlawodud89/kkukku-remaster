@@ -57,6 +57,11 @@ public class RecipeCraftController : MonoBehaviour
         var allBlankets = ServiceLocator.Get<GameData>().BlanketCraft.GetAllRecipes();
 
 
+        foreach (var slot in slots)
+        {
+            slot.iconImage.gameObject.SetActive(false);
+        }
+
         foreach (var blanket in allBlankets)
         {
             if (blanket.recipe == null || blanket.recipe.Count == 0)
@@ -346,7 +351,7 @@ public class RecipeCraftController : MonoBehaviour
         {
             if (!slot.IsEmpty && slot.ItemName == name)
             {
-                // (선택사항) 한 슬롯 최대 개수 제한이 있다면 여기서 체크
+                slot.iconImage.gameObject.SetActive(true);
                 slot.AddItem(inventoryID, name, icon, HaveQty); 
                 return;
             }
@@ -356,6 +361,7 @@ public class RecipeCraftController : MonoBehaviour
         {
             if (slot.IsEmpty)
             {
+                slot.iconImage.gameObject.SetActive(true);
                 slot.AddItem(inventoryID, name, icon, HaveQty);
                 return;
             }

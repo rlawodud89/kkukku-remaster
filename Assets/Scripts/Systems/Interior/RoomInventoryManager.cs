@@ -143,76 +143,23 @@ public class RoomInventoryManager : MonoBehaviour
     // --- 타일 배치 및 DB 저장 (InteriorManager와 동기화) ---
     public void PlaceTileOnMap(string targetName, int category, Vector3 mousePosition)
     {
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
-        worldPoint.z = 0;
-
-        Vector3Int dropFloorPos = floorTilemap.WorldToCell(worldPoint);
-        Vector3Int dropWallPos = wallTilemap.WorldToCell(worldPoint);
-
+        // 아까 고친 RoomInteriorManager의 함수들을 그대로 가져다 씁니다!
         if (category == 1) // 바닥 적용
         {
-            FloorItem itemToPlace = floorList.Find(x => x.itemName == targetName);
-            if (itemToPlace != null && floorTilemap.HasTile(dropFloorPos))
-            {
-                FillTilemap(floorTilemap, itemToPlace.tileBase);
-                currentFloorName = targetName;
-                RefreshUI();
-                ServiceLocator.Get<GameData>().Interior.SetTileInterior(TilePositionType.ROOM_FLOOR, targetName);
-            }
+            RoomInteriorManager.Instance.ChangeRoomFloor(targetName);
+            currentFloorName = targetName; // UI 갱신용 이름 저장
         }
         else if (category == 2) // 벽지 적용
         {
-            WallpaperItem itemToPlace = wallpaperList.Find(x => x.itemName == targetName);
-            if (itemToPlace != null && itemToPlace.wallTiles.Length >= 3 && wallTilemap.HasTile(dropWallPos))
-            {
-                ApplyWallpaper(itemToPlace);
-                currentWallpaperName = targetName;
-                RefreshUI();
-                ServiceLocator.Get<GameData>().Interior.SetTileInterior(TilePositionType.ROOM_WALL, targetName);
-            }
+            RoomInteriorManager.Instance.ChangeRoomWallpaper(targetName);
+            currentWallpaperName = targetName; // UI 갱신용 이름 저장
         }
+        
+        // 장착 중인 아이템(회색 처리) 표시를 갱신합니다.
+        RefreshUI();
     }
 
-    // 타일맵 전체를 특정 타일로 채우는 헬퍼 함수
-    private void FillTilemap(Tilemap map, TileBase tile)
-    {
-        BoundsInt bounds = map.cellBounds;
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
-        {
-            if (map.HasTile(pos)) map.SetTile(pos, tile);
-        }
-    }
-
-    // 벽지 패턴 적용 헬퍼 함수
-    private void ApplyWallpaper(WallpaperItem item)
-    {
-        BoundsInt bounds = wallTilemap.cellBounds;
-        int minY = int.MaxValue;
-        int maxX = int.MinValue;
-        HashSet<int> xCoords = new HashSet<int>();
-
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
-        {
-            if (wallTilemap.HasTile(pos))
-            {
-                xCoords.Add(pos.x);
-                if (pos.x > maxX) maxX = pos.x;
-                if (pos.y < minY) minY = pos.y;
-            }
-        }
-
-        foreach (int x in xCoords)
-        {
-            for (int y = bounds.yMin; y <= bounds.yMax; y++) 
-                wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
-
-            bool isSecondFromRight = (x == maxX - 1);
-            wallTilemap.SetTile(new Vector3Int(x, minY, 0), isSecondFromRight ? null : item.wallTiles[0]);
-            wallTilemap.SetTile(new Vector3Int(x, minY + 1, 0), isSecondFromRight ? item.wallTiles[1] : item.wallTiles[0]);
-            wallTilemap.SetTile(new Vector3Int(x, minY + 2, 0), item.wallTiles[2]);
-        }
-    }
-
+   
 public void OnClickNextPage()
     {
         // 현재 카테고리에 맞춰 최대 페이지 계산

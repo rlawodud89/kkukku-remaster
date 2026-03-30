@@ -128,12 +128,14 @@ public class RoomInteriorManager : MonoBehaviour
 
             Vector3Int basePos = new Vector3Int(x, minY, 0);
             Vector3Int middlePos = basePos + new Vector3Int(0, 1, 0);
-            //Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
+            
+            Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
 
             
            wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
            wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[0]);
-           // wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
+           
+           wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
         }
     }
     
@@ -203,8 +205,8 @@ public class RoomInteriorManager : MonoBehaviour
         //interiorDB.AddRoomInterior(15, "MaterialStorage"); 
         //interiorDB.AddRoomInterior(14, "SnackBox");
         //interiorDB.AddRoomInterior(18, "여우");
-        ServiceLocator.Get<GameData>().Interior.SetTileInterior(
-            TilePositionType.ROOM_WALL, "빈티지꽃타일");
+        
+        interiorDB.AddRoomInterior(0, "BlanketStorage"); 
     }
 
     public void TurnOnEditMode()

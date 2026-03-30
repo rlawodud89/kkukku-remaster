@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4ebd355b8c2ec1346a46f7fa70445747
+guid: ee7b97f7fdb7b6d4dab261b6350e9d28
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -97,85 +97,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_0
+      name: employeePanel_0
       rect:
         serializedVersion: 2
-        x: 95
-        y: 210
-        width: 236
-        height: 292
+        x: 147
+        y: 78
+        width: 397
+        height: 546
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa835470dab54ca4daf7b9719e1263d8
-      internalID: -244730625
+      spriteID: 99fb2488b4fd7b843b95246b3a5bc19f
+      internalID: -263089822
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_1
+      name: employeePanel_1
       rect:
         serializedVersion: 2
-        x: 371
-        y: 207
-        width: 293
-        height: 289
+        x: 726
+        y: 79
+        width: 407
+        height: 556
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba0a8ac90e0190a48b7894514e6783ec
-      internalID: 1772369947
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_2
-      rect:
-        serializedVersion: 2
-        x: 649
-        y: 205
-        width: 270
-        height: 426
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 78c2ae0c4ad15c041bff9809846178c2
-      internalID: -897608046
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_3
-      rect:
-        serializedVersion: 2
-        x: 929
-        y: 217
-        width: 260
-        height: 298
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ffa31579923ae64c8eae1899ff1b41b
-      internalID: -9994820
+      spriteID: 6819f2ebbd7661545952c1f7d02eea62
+      internalID: -1971344839
       vertices: []
       indices: 
       edges: []
@@ -191,10 +149,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_0: -244730625
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_1: 1772369947
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_2: -897608046
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_3: -9994820
+      employeePanel_0: -263089822
+      employeePanel_1: -1971344839
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

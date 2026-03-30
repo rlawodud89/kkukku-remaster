@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class StorageUIController : MonoBehaviour
 {
@@ -13,7 +15,9 @@ public class StorageUIController : MonoBehaviour
     [SerializeField] private GameObject snackPanel;
     [SerializeField] private GameObject craftBoxPanel;
     [SerializeField] private GameObject EmployeePanel;
-
+    
+    [SerializeField] private Button shopButton;
+    
     [Header("---- 슬롯 생성 위치 (Content) ----")]
     [SerializeField] private Transform blanketContent;
     [SerializeField] private Transform materialContent;
@@ -37,7 +41,7 @@ public class StorageUIController : MonoBehaviour
     [SerializeField] private GameObject blockerObj;
 
     [Header("---- 오브젝트 풀링 관리 ----")]
-    private List<GameObject> slotPool = new List<GameObject>();
+    private Dictionary<GameObject, List<GameObject>> slotPools = new Dictionary<GameObject, List<GameObject>>();
     
     public bool IsPopupOpen { get; private set; } = false;
     public enum StorageType { Blanket, Material, Snack, CraftBox, Employee, None }
@@ -61,7 +65,11 @@ public class StorageUIController : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
-
+        
+        shopButton.onClick.AddListener(() => 
+        {
+            SceneManager.LoadScene("BlanketShop");
+        });
 
     }
 
@@ -83,8 +91,6 @@ public class StorageUIController : MonoBehaviour
                 var bList = ServiceLocator.Get<GameData>().Inventory.GetBlanketsInBox(id);
                 if (bList != null)
                     foreach (var item in bList) uiList.Add(new SimpleItemData { name = item.itemName, count = item.count });
-
-
                 RefreshSlots(blanketContent, blanketSlotPrefab, uiList, type, id);
                 break;
 
@@ -114,8 +120,6 @@ public class StorageUIController : MonoBehaviour
                 var cList = ServiceLocator.Get<GameData>().Inventory.GetMaterialItems(id);
                 if (cList != null)
                     foreach (var item in cList) uiList.Add(new SimpleItemData { name = item.itemName, count = item.count });
-
-
                 RefreshSlots(craftingMaterialContent, craftingMaterialSlotPrefab, uiList, StorageType.Material, id);
                 break;
 
@@ -170,7 +174,15 @@ public class StorageUIController : MonoBehaviour
     private void RefreshSlots(Transform content, GameObject prefab, List<SimpleItemData> items, StorageType type, int storageID)
     {
         // 1. 모든 기존 슬롯을 일단 비활성화 (풀로 반납)
-        foreach (var slot in slotPool)
+        if (!slotPools.ContainsKey((prefab)))
+        {
+            slotPools[prefab] = new List<GameObject>();
+        }
+
+        // 현재 사용해야할 전용 풀 가져왹
+        List<GameObject> currentPool = slotPools[prefab];
+        
+        foreach (var slot in currentPool)
         {
             if (slot.activeSelf) slot.SetActive(false);
         }
@@ -183,23 +195,38 @@ public class StorageUIController : MonoBehaviour
             GameObject go;
 
             // 풀에 여유가 있으면 재사용, 없으면 새로 생성
-            if (i < slotPool.Count)
+            if (i < currentPool.Count)
             {
-                go = slotPool[i];
+                go = currentPool[i];
                 go.SetActive(true);
             }
             else
             {
                 go = Instantiate(prefab, content);
-                slotPool.Add(go);
+                currentPool.Add(go);
             }
 
             // 데이터 바인딩 로직 (기존과 동일)
             var item = items[i];
             Sprite icon = GetIconSprite(type, item.name);
-        
-            var slotUI = go.GetComponent<StorageSlotUI>();
-            if (slotUI != null) slotUI.SetData(storageID, item.name, item.count, icon);
+
+            if (type == StorageType.Snack)
+            {
+                var slotUI = go.GetComponent<SnackSlotUI>();
+                if (slotUI != null) 
+                {
+                    var snackSO = ServiceLocator.Get<GameData>().Inventory.GetSnackItemSO(item.name);
+                    
+                    int stamina = snackSO != null ? snackSO.stamina : 0; 
+                    
+                    slotUI.SetSlotData(storageID, item.name, icon, item.count, stamina);
+                }
+            }
+            else
+            {
+                var slotUI = go.GetComponent<StorageSlotUI>();
+                if (slotUI != null) slotUI.SetData(storageID, item.name, item.count, icon);   
+            }
 
             // 부모 설정 (만약 다른 패널로 이동했다면)
             go.transform.SetParent(content);

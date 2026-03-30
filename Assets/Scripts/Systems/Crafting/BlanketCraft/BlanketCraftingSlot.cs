@@ -57,7 +57,7 @@ private void UpdateUI()
     }
     else
     {
-        itemNameText.color = Color.white; 
+        itemNameText.color = Color.black; 
     }
 }
 

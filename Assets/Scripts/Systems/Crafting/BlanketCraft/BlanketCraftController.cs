@@ -27,6 +27,8 @@ public class BlanketCraftController : MonoBehaviour
     {
         // 씬에 다시 들어왔을 때는 무조건 UI 잠금을 풀어줍니다!
         isCrafting = false; 
+        
+        if (blanketImage != null) blanketImage.enabled = false;
     }
     // 레시피 UI 아이템이 클릭되었을 때 호출되는 함수
     public void ApplyRecipeToSlots(BlanketItemSO recipeData)
@@ -36,6 +38,8 @@ public class BlanketCraftController : MonoBehaviour
         blanketNameText.text = recipeData.itemName;
         blanketImage.sprite = recipeData.image;
 
+        if (blanketImage != null) blanketImage.enabled = true;
+        
         RecipeData = recipeData;    
 
         if (recipeData.recipe == null) return;
@@ -61,6 +65,9 @@ public class BlanketCraftController : MonoBehaviour
             {
                 // 아까 만든 SetRecipeItem 함수 사용
                 slot.SetRecipeItem(name, icon, requireCount, haveCount);
+                
+                slot.gameObject.SetActive(true);
+                
                 return; // 하나 넣었으면 종료 (다음 재료는 다음 슬롯에)
             }
         }
@@ -73,7 +80,12 @@ public class BlanketCraftController : MonoBehaviour
         foreach (var slot in slots)
         {
             slot.Clear();
+            
+            slot.gameObject.SetActive(false);
         }
+        
+        if (blanketImage != null) blanketImage.enabled = false;
+        if (blanketNameText != null) blanketNameText.text = "";
     }
 
     public void setCurrentEmployee(EmployeeController emp)
