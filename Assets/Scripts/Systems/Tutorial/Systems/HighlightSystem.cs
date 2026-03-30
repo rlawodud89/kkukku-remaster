@@ -11,7 +11,7 @@ public class HighlightSystem : MonoBehaviour
     [SerializeField] private Canvas rootCanvas;
 
     [Header("Settings")]
-    [SerializeField] private float padding;
+    [SerializeField] private float highlightPadding = 10f;
 
     private Material runtimeMaterial;
     public static Vector2 CurrentHoleCenter;
@@ -47,7 +47,7 @@ public class HighlightSystem : MonoBehaviour
 
         RectTransform canvasRect = rootCanvas.transform as RectTransform;
 
-        
+
         // 1. 타겟의 실제 화면 중심 계산
 
         // RectTransform.position은 pivot 기준이므로
@@ -92,7 +92,7 @@ public class HighlightSystem : MonoBehaviour
 
         // 가로/세로 중 더 큰 값을 기준으로 반지름 계산
         // padding을 더해 여유 공간 확보
-        float radius = Mathf.Max(screenWidth, screenHeight) * 0.5f + padding;
+        float radius = Mathf.Max(screenWidth, screenHeight) * 0.5f + highlightPadding;
 
 
         // 5. 마스크 전체 크기 대비 정규화 반지름 계산
@@ -115,26 +115,12 @@ public class HighlightSystem : MonoBehaviour
         runtimeMaterial.SetVector("_HoleCenter", normalized);
         runtimeMaterial.SetFloat("_HoleSize", normalizedRadius);
 
- 
+
         // 6. 손가락 위치 이동
 
         // 계산된 스크린 좌표를 기준으로
         // 캔버스 로컬 좌표로 변환하여 배치
-        MoveFinger(screenPos);
-    }
-
-    private void MoveFinger(Vector2 screenPos)
-    {
-        RectTransform canvasRect = rootCanvas.transform as RectTransform;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect,
-            screenPos,
-            rootCanvas.worldCamera,
-            out Vector2 localPoint);
-
-        finger.localPosition = localPoint + new Vector2(0, -80f);
-        finger.gameObject.SetActive(true);
+        MoveFinger(screenPos, corners);
     }
 
     public void Clear()
@@ -146,5 +132,96 @@ public class HighlightSystem : MonoBehaviour
     public void HideFinger()
     {
         finger.gameObject.SetActive(false);
+    }
+
+
+    private void MoveFinger(Vector2 screenPos, Vector3[] corners)
+    {
+        RectTransform canvasRect = rootCanvas.transform as RectTransform;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            screenPos,
+            rootCanvas.worldCamera,
+            out Vector2 localPoint);
+
+        float targetWidth = Vector3.Distance(corners[0], corners[3]);
+        float targetHeight = Vector3.Distance(corners[0], corners[1]);
+
+        float targetHalfSize = Mathf.Max(targetWidth, targetHeight) * 0.5f;
+
+        float fingerHalfSize = Mathf.Max(finger.rect.width, finger.rect.height) * 0.5f;
+
+        float margin = 20f;
+
+        float offset = targetHalfSize + fingerHalfSize + margin;
+
+        float diag = offset * 0.70710678f; // offset / sqrt(2)
+
+        Vector2[] candidateOffsets =
+        {
+            new Vector2(0, -offset),    // 아래
+            new Vector2(offset, 0),     // 오른쪽
+            new Vector2(0, offset),     // 위
+            new Vector2(-offset, 0),    // 왼쪽
+            new Vector2(diag,  diag),   // 오른쪽 위
+            new Vector2(diag, -diag),   // 오른쪽 아래
+            new Vector2(-diag, diag),   // 왼쪽 위
+            new Vector2(-diag, -diag)   // 왼쪽 아래
+        };
+
+        // 회전 보정
+        Quaternion[] rotations =
+        {
+            Quaternion.Euler(0, 0, -15),    // 아래
+            Quaternion.Euler(0, 0, 15),     // 오른쪽
+            Quaternion.Euler(180, 0, -80),  // 위 (X flip)
+            Quaternion.Euler(0, 180, 15),   // 왼쪽 (Y flip)
+            Quaternion.Euler(0, 0, 90),     // 오른쪽 위 (↙ 모양)
+            Quaternion.Euler(0, 0, 0),      // 오른쪽 아래 (↖ 모양)
+            Quaternion.Euler(0, 180, 90),   // 왼쪽 위 (↘ 모양)
+            Quaternion.Euler(0, 180, 0),    // 왼쪽 아래 (↗ 모양)
+        };
+
+        for (int i = 0; i < candidateOffsets.Length; i++)
+        {
+            Vector2 candidatePos = localPoint + candidateOffsets[i];
+
+            if (IsFingerFullyInsideCanvas(candidatePos))
+            {
+                Debug.Log("rotation: " + i);
+                finger.localPosition = candidatePos;
+                finger.localRotation = rotations[i];
+                finger.gameObject.SetActive(true);
+                return;
+            }
+        }
+
+        // fallback
+        finger.localPosition = localPoint + candidateOffsets[0];
+        finger.localRotation = rotations[0];
+        finger.gameObject.SetActive(true);
+    }
+
+    private bool IsFingerFullyInsideCanvas(Vector2 localPos, float padding = 20f)
+    {
+        RectTransform canvasRect = rootCanvas.transform as RectTransform;
+        RectTransform fingerRect = finger;
+
+        Rect canvas = canvasRect.rect;
+
+        float halfWidth = fingerRect.rect.width * 0.5f;
+        float halfHeight = fingerRect.rect.height * 0.5f;
+
+        float left = localPos.x - halfWidth;
+        float right = localPos.x + halfWidth;
+        float bottom = localPos.y - halfHeight;
+        float top = localPos.y + halfHeight;
+
+        return
+            left > (canvas.xMin + padding) &&
+            right < (canvas.xMax - padding) &&
+            bottom > (canvas.yMin + padding) &&
+            top < (canvas.yMax - padding);
     }
 }

@@ -17,7 +17,9 @@ MonoBehaviour:
   level: 1
   price: 100
   recipe:
-  - itemName: "\uC19C"
-    count: 1
-  - itemName: "\uCC9C"
+  - itemName: "\uAFC8\uC2E4"
+    count: 2
+  - itemName: "\uC6B4\uBB34\uC19C"
+    count: 2
+  - itemName: "\uB2EC\uC870\uAC01"
     count: 2

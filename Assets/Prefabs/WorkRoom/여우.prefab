@@ -208,10 +208,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75602053113a644baaa1eada006c01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progressBar: {fileID: 2945958840687269100}
-  staminaBar: {fileID: 5134540105016038079}
+  myWorkerID: 1
+  currentState: 0
   currentStamina: 0
+  maxStamina: 100
   staminaCostPerWork: 10
+  workingTime: 10
+  currentWorkingItem: 
+  progressBar: {fileID: 2945958840687269100}
+  staminaBarImage: {fileID: 5134540105016038079}
 --- !u!60 &5190582942824622012
 PolygonCollider2D:
   m_ObjectHideFlags: 0

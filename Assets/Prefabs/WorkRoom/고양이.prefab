@@ -283,10 +283,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75602053113a644baaa1eada006c01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progressBar: {fileID: 3199259288079259128}
-  staminaBar: {fileID: 7781822904466754126}
+  myWorkerID: 1
+  currentState: 0
   currentStamina: 0
+  maxStamina: 100
   staminaCostPerWork: 10
+  workingTime: 10
+  currentWorkingItem: 
+  progressBar: {fileID: 3199259288079259128}
+  staminaBarImage: {fileID: 7781822904466754126}
 --- !u!60 &4446014984109000040
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -323,7 +328,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
-    oldSize: {x: 4.1, y: 4.2}
+    oldSize: {x: 4.1, y: 4.39}
     newSize: {x: 4.1, y: 4.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

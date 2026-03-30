@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class StorageUIController : MonoBehaviour
 {
@@ -12,7 +15,9 @@ public class StorageUIController : MonoBehaviour
     [SerializeField] private GameObject snackPanel;
     [SerializeField] private GameObject craftBoxPanel;
     [SerializeField] private GameObject EmployeePanel;
-
+    
+    [SerializeField] private Button shopButton;
+    
     [Header("---- 슬롯 생성 위치 (Content) ----")]
     [SerializeField] private Transform blanketContent;
     [SerializeField] private Transform materialContent;
@@ -26,9 +31,18 @@ public class StorageUIController : MonoBehaviour
     [SerializeField] private GameObject snackSlotPrefab;
     [SerializeField] private GameObject craftingMaterialSlotPrefab;
     [SerializeField] private GameObject employeeSlotPrefab;
+    
+    [Header("---- 용량 표시 텍스트 ----")]
+    [SerializeField] private TextMeshProUGUI blanketCapacityText;
+    [SerializeField] private TextMeshProUGUI materialCapacityText;
+    [SerializeField] private TextMeshProUGUI snackCapacityText;
+    
     [Header("---- 배경 블로커 ----")]
     [SerializeField] private GameObject blockerObj;
 
+    [Header("---- 오브젝트 풀링 관리 ----")]
+    private Dictionary<GameObject, List<GameObject>> slotPools = new Dictionary<GameObject, List<GameObject>>();
+    
     public bool IsPopupOpen { get; private set; } = false;
     public enum StorageType { Blanket, Material, Snack, CraftBox, Employee, None }
     
@@ -51,7 +65,14 @@ public class StorageUIController : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
+        
+        shopButton.onClick.AddListener(() => 
+        {
+            SceneManager.LoadScene("BlanketShop");
+        });
+
     }
+
     public void OpenPopup(int id, StorageType type)
     {
         currentOpenBoxID = id;
@@ -70,8 +91,6 @@ public class StorageUIController : MonoBehaviour
                 var bList = ServiceLocator.Get<GameData>().Inventory.GetBlanketsInBox(id);
                 if (bList != null)
                     foreach (var item in bList) uiList.Add(new SimpleItemData { name = item.itemName, count = item.count });
-
-
                 RefreshSlots(blanketContent, blanketSlotPrefab, uiList, type, id);
                 break;
 
@@ -80,6 +99,7 @@ public class StorageUIController : MonoBehaviour
                 var mList = ServiceLocator.Get<GameData>().Inventory.GetMaterialItems(id);
                 if (mList != null)
                     foreach (var item in mList) uiList.Add(new SimpleItemData { name = item.itemName, count = item.count });
+
 
 
                 RefreshSlots(materialContent, materialSlotPrefab, uiList, type, id);
@@ -100,8 +120,6 @@ public class StorageUIController : MonoBehaviour
                 var cList = ServiceLocator.Get<GameData>().Inventory.GetMaterialItems(id);
                 if (cList != null)
                     foreach (var item in cList) uiList.Add(new SimpleItemData { name = item.itemName, count = item.count });
-
-
                 RefreshSlots(craftingMaterialContent, craftingMaterialSlotPrefab, uiList, StorageType.Material, id);
                 break;
 
@@ -115,13 +133,15 @@ public class StorageUIController : MonoBehaviour
                 }
 
                 var eList = ServiceLocator.Get<GameData>().BlanketCraft.GetCurrentRecipes();
-                foreach (var item in eList)
-                {
-                    Debug.Log(item.itemName);
-                }
                 RefreshRecipeSlots(employeeContent, employeeSlotPrefab, eList);
                 break;
 
+        }
+        
+        
+        if (type != StorageType.Employee && type !=StorageType.CraftBox) 
+        {
+            UpdateCapacityUI(id, type);
         }
     }
 
@@ -149,46 +169,72 @@ public class StorageUIController : MonoBehaviour
     {
         CloseAllPanels();
     }
+    
 
     private void RefreshSlots(Transform content, GameObject prefab, List<SimpleItemData> items, StorageType type, int storageID)
     {
-        // 1. 기존 슬롯 청소
-        foreach (Transform child in content) Destroy(child.gameObject);
+        // 1. 모든 기존 슬롯을 일단 비활성화 (풀로 반납)
+        if (!slotPools.ContainsKey((prefab)))
+        {
+            slotPools[prefab] = new List<GameObject>();
+        }
+
+        // 현재 사용해야할 전용 풀 가져왹
+        List<GameObject> currentPool = slotPools[prefab];
+        
+        foreach (var slot in currentPool)
+        {
+            if (slot.activeSelf) slot.SetActive(false);
+        }
 
         if (items == null || items.Count == 0) return;
 
-// 2. 루프 돌면서 생성
-        foreach (var item in items)
+        // 2. 데이터 개수만큼 슬롯 활성화 및 세팅
+        for (int i = 0; i < items.Count; i++)
         {
-            string itemName = item.name;
-            int count = item.count;
+            GameObject go;
 
-            Sprite icon = GetIconSprite(type, itemName);
-
-            GameObject go = Instantiate(prefab, content);
-
-            // StorageSlotUI 세팅
-            var slot = go.GetComponent<StorageSlotUI>();
-            if (slot != null)
+            // 풀에 여유가 있으면 재사용, 없으면 새로 생성
+            if (i < currentPool.Count)
             {
-                slot.SetData(storageID, itemName, count, icon);
+                go = currentPool[i];
+                go.SetActive(true);
             }
             else
             {
-                var snackSlot = go.GetComponent<SnackSlotUI>();
-                if (snackSlot != null) 
-                {
-                    snackSlot.SetSlotData(storageID, itemName,icon, count, 10);
-                }
+                go = Instantiate(prefab, content);
+                currentPool.Add(go);
             }
 
+            // 데이터 바인딩 로직 (기존과 동일)
+            var item = items[i];
+            Sprite icon = GetIconSprite(type, item.name);
+
+            if (type == StorageType.Snack)
+            {
+                var slotUI = go.GetComponent<SnackSlotUI>();
+                if (slotUI != null) 
+                {
+                    var snackSO = ServiceLocator.Get<GameData>().Inventory.GetSnackItemSO(item.name);
+                    
+                    int stamina = snackSO != null ? snackSO.stamina : 0; 
+                    
+                    slotUI.SetSlotData(storageID, item.name, icon, item.count, stamina);
+                }
+            }
+            else
+            {
+                var slotUI = go.GetComponent<StorageSlotUI>();
+                if (slotUI != null) slotUI.SetData(storageID, item.name, item.count, icon);   
+            }
+
+            // 부모 설정 (만약 다른 패널로 이동했다면)
+            go.transform.SetParent(content);
             go.transform.localScale = Vector3.one;
-            go.transform.localPosition = Vector3.zero;
         }
 
-        // 레이아웃 갱신
-        if (content.GetComponent<RectTransform>() != null)
-            LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent<RectTransform>());
+        // 3. 레이아웃 갱신 최적화 (한 프레임 뒤에 하거나 필요한 경우만)
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent<RectTransform>());
     }
 
     private void RefreshRecipeSlots(Transform content, GameObject prefab, List<BlanketItemSO> items)
@@ -199,21 +245,18 @@ public class StorageUIController : MonoBehaviour
         if (items == null || items.Count == 0) return;
 
         foreach (var itemSO in items)
-    {
+        {
         // 엉성한 이불 등 제외 로직 (필요시)
         if (itemSO.recipe == null || itemSO.recipe.Count == 0) continue;
 
         GameObject go = Instantiate(prefab, content);
         var slot = go.GetComponent<RecipeUIItem>();
         
-        if (slot != null)
-        {
-            slot.SetData(itemSO);
-        }
+        slot.SetData(itemSO);
 
         go.transform.localScale = Vector3.one;
         go.transform.localPosition = Vector3.zero;
-    }
+        }
 
     // 레이아웃 갱신
     if (content.GetComponent<RectTransform>() != null)
@@ -227,19 +270,62 @@ public class StorageUIController : MonoBehaviour
         if (type == StorageType.Blanket)
         {
             var itemSO = inventory.GetBlanketItemSO(name);
-            return itemSO != null ? itemSO.image : null;
+            return itemSO.image;
         }
         else if (type == StorageType.Material || type == StorageType.CraftBox)
         {
             var itemSO = inventory.GetMaterialItemSO(name);
-            return itemSO != null ? itemSO.image : null;
+            return itemSO.image;
         }
         else if (type == StorageType.Snack)
         {
             var itemSO = inventory.GetSnackItemSO(name);
-            return itemSO != null ? itemSO.image : null;
+            return itemSO.image;
         }
 
         return null;
+    }
+    
+    
+    private void UpdateCapacityUI(int storageID, StorageType type)
+    {
+        // 1. 방에 배치된 해당 상자(가구)를 찾아서 최대 용량(SO)을 가져옵니다.
+        var targetBox = RoomInteriorManager.Instance.GetStorageBoxByID(storageID);
+        if (targetBox == null) return;
+
+        // 원본 이름 (예: "BlanketStorage(Clone)" -> "BlanketStorage")
+        string boxName = targetBox.gameObject.name.Replace("(Clone)", "").Trim();
+        var boxSO = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(boxName);
+        
+        int maxCapacity = boxSO != null ? boxSO.slotCount : 0;
+        int currentCount = 0;
+
+        // 2. 상자 안에 현재 몇 개가 들어있는지 계산합니다.
+        var inventory = ServiceLocator.Get<GameData>().Inventory;
+
+        if (type == StorageType.Blanket)
+        {
+            var items = inventory.GetBlanketsInBox(storageID);
+            if (items != null) foreach (var item in items) currentCount += item.count;
+            
+            if (blanketCapacityText != null) 
+                blanketCapacityText.text = $"{currentCount} / {maxCapacity}";
+        }
+        else if (type == StorageType.Material)
+        {
+            var items = inventory.GetMaterialItems(storageID);
+            if (items != null) foreach (var item in items) currentCount += item.count;
+            
+            if (type == StorageType.Material && materialCapacityText != null) 
+                materialCapacityText.text = $"{currentCount} / {maxCapacity}";
+        }
+        else if (type == StorageType.Snack)
+        {
+            var items = inventory.GetSnackItems(storageID);
+            if (items != null) foreach (var item in items) currentCount += item.count;
+            
+            if (snackCapacityText != null) 
+                snackCapacityText.text = $"{currentCount} / {maxCapacity}";
+        }
     }
 }

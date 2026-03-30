@@ -11,7 +11,10 @@ public class FishingToolStoreProvider : IStoreItemProvider
 
     public FishingToolStoreProvider()
     {
-        tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("기본낚시대"));
+        //tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("초급낚시대"));
+        //tools.Add(ServiceLocator.Get<GameData>().Inventory.GetToolItemSO("중급낚시대"));
+
+        tools = ServiceLocator.Get<GameData>().Store.GetToolStoreItemList(StoreType.FISHING_TOOL);
     }
 
     public List<(string itemName, Sprite itemSprite, int price)> LoadItemData()
@@ -37,7 +40,6 @@ public class FishingToolStoreProvider : IStoreItemProvider
     {
         ToolItemSO item = ServiceLocator.Get<GameData>().Inventory.GetToolItemSO(itemName);
 
-        // TODO: 낚시 도구에 대한 설명 적기
-        return $"테스트";
+        return $"낚시 레벨 보너스: {item.bonusCatchCount}";
     }
 }

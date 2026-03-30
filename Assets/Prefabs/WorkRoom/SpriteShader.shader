@@ -73,27 +73,34 @@ Shader "Custom/SpriteOutline"
             {
                 fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
                 
-                // 아웃라인이 꺼져있으면(_OutlineAlpha가 0이면) 그냥 원래 색 리턴
-                if (_OutlineAlpha == 0) return c;
+                // 아웃라인이 꺼져있을 때
+                if (_OutlineAlpha <= 0) 
+                {
+                    c.rgb *= c.a; // 유니티 스프라이트 기본 투명도 계산
+                    return c;
+                }
 
                 // 텍스처 주변 4방향을 검사 (위, 아래, 왼쪽, 오른쪽)
                 float2 texel = _MainTex_TexelSize.xy * _OutlineSize;
                 
-                fixed4 pixelUp = tex2D(_MainTex, IN.texcoord + fixed2(0, texel.y));
-                fixed4 pixelDown = tex2D(_MainTex, IN.texcoord - fixed2(0, texel.y));
-                fixed4 pixelRight = tex2D(_MainTex, IN.texcoord + fixed2(texel.x, 0));
-                fixed4 pixelLeft = tex2D(_MainTex, IN.texcoord - fixed2(texel.x, 0));
+                float aUp = tex2D(_MainTex, IN.texcoord + fixed2(0, texel.y)).a;
+                float aDown = tex2D(_MainTex, IN.texcoord - fixed2(0, texel.y)).a;
+                float aRight = tex2D(_MainTex, IN.texcoord + fixed2(texel.x, 0)).a;
+                float aLeft = tex2D(_MainTex, IN.texcoord - fixed2(texel.x, 0)).a;
 
-                // 주변에 불투명한 픽셀이 하나라도 있으면 아웃라인 그림
-                float alphaSum = pixelUp.a + pixelDown.a + pixelRight.a + pixelLeft.a;
+                // 주변 픽셀 중 가장 진한 알파(투명도) 값을 가져옴
+                float outlineAlpha = max(max(aUp, aDown), max(aRight, aLeft));
                 
-                // 내 픽셀이 투명하고(0), 주변은 불투명할 때 -> 아웃라인 색상 적용
-                if (c.a == 0 && alphaSum > 0)
-                {
-                    c = _OutlineColor * _OutlineAlpha; // 아웃라인 색상
-                }
+                // 아웃라인 색상 준비
+                fixed4 outline = _OutlineColor;
+                outline.a *= outlineAlpha * _OutlineAlpha;
+                outline.rgb *= outline.a; // Premultiply 방식 적용
+                
+                // ★ 마법의 코드: 원본 이미지 뒤에 아웃라인을 자연스럽게 합성!
+                // 원본이 불투명하면(c.a=1) 아웃라인이 숨겨지고, 투명하면(c.a=0) 아웃라인이 보입니다.
+                c.rgb = c.rgb * c.a + outline.rgb * (1.0 - c.a);
+                c.a = c.a + outline.a * (1.0 - c.a);
 
-                c.rgb *= c.a;
                 return c;
             }
         ENDCG

@@ -9,7 +9,7 @@ public enum DayPhase { Morning, Day, Evening, Night }
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
-    
+
     public static GameManager Instance
     {
         get
@@ -39,10 +39,10 @@ public class GameManager : MonoBehaviour
     }
 
     private int gold;
-    private int moonRock;  
+    private int moonRock;
     private int level;
     private float energy;
-    private int maxEnergy=200;
+    private int maxEnergy = 200;
 
     public TMP_Text goldText;
     public TMP_Text moonRockText;
@@ -84,15 +84,15 @@ public class GameManager : MonoBehaviour
         // 현재 날짜(Day)는 유지하고 시간만 바꾸고 싶다면 날짜 값을 유지하는 로직이 필요할 수 있습니다.
         float dayInSeconds = 86400f;
         float currentDayCount = (int)(gameTime / dayInSeconds);
-        
+
         gameTime = (currentDayCount * dayInSeconds) + (targetHour * 3600) + (targetMinute * 60);
-        
+
         // 즉시 UI와 페이즈 업데이트
         hour = targetHour;
         minute = targetMinute;
         UpdateDayPhase();
         UpdateTimeUI(hour, minute);
-        
+
         Debug.Log($"<color=yellow>[Debug]</color> 시간을 {targetHour:D2}:{targetMinute:D2}로 설정했습니다.");
     }
 
@@ -128,9 +128,11 @@ public class GameManager : MonoBehaviour
         // 초 단위를 시/분으로 변환
         hour = (int)(gameTime / 3600) % 24;
         minute = (int)(gameTime / 60) % 60;
-        
+
         UpdateDayPhase(); // 시간대 체크
         UpdateTimeUI(hour, minute);
+
+        ServiceLocator.Get<GameData>().User.SetPlayTime(gameTime);
     }
 
     void UpdateDayPhase()
@@ -182,7 +184,7 @@ public class GameManager : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
-        
+
         currentCoroutine = StartCoroutine(DisplayRoutine());
     }
 
@@ -223,45 +225,51 @@ public class GameManager : MonoBehaviour
 
     
 
+
     void LoadGameData()
     {
-        gold=ServiceLocator.Get<GameData>().User.GetCurrentGold();
-        moonRock=ServiceLocator.Get<GameData>().User.GetCurrentMoonrock();
+        gold = ServiceLocator.Get<GameData>().User.GetCurrentGold();
+        moonRock = ServiceLocator.Get<GameData>().User.GetCurrentMoonrock();
 
         var userData = ServiceLocator.Get<GameData>().User.GetUserData();
-        level=userData.level;
-        energy=userData.energy;
+        level = userData.level;
+        energy = userData.energy;
+
+        gameTime = ServiceLocator.Get<GameData>().User.GetPlayTime();
+
         UpdateUI();
     }
 
     void UpdateUI()
     {
-        goldText.text=gold.ToString();
-        moonRockText.text=moonRock.ToString();
+        goldText.text = gold.ToString();
+        moonRockText.text = moonRock.ToString();
 
-        levelText.text=$"Lv {level.ToString()}";
+        levelText.text = $"Lv {level.ToString()}";
         energyBar.fillAmount = energy / maxEnergy;
         Debug.Log($"포근에너지: {energy}");
     }
 
     public void ChangeGold(int amount)
     {
-        gold+=amount;
+        gold += amount;
         ServiceLocator.Get<GameData>().User.ChangeGold(amount);
+        if (amount > 0) ServiceLocator.Get<GameData>().User.AddTodayGold(amount);
         UpdateUI();
     }
 
     public void ChangeMoonRock(int amount)
     {
-        moonRock+=amount;
+        moonRock += amount;
         ServiceLocator.Get<GameData>().User.ChangeMoonrock(amount);
+        if (amount > 0) ServiceLocator.Get<GameData>().User.AddTodayMoonrock(amount);
         UpdateUI();
     }
 
     public void ChangeEnergy(int amount)
     {
-        energy+=amount;
-        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        energy += amount;
+        ServiceLocator.Get<GameData>().User.SetLevelEnergy(level, energy);
         UpdateUI();
 
         if (maxEnergy == energy)
@@ -272,8 +280,8 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        level+=1;
-        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        level += 1;
+        ServiceLocator.Get<GameData>().User.SetLevelEnergy(level, energy);
         UpdateUI();
     }
 

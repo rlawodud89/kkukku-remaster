@@ -16,12 +16,18 @@ public class StoreName : MonoBehaviour
         if (!string.IsNullOrEmpty(inputName))
         {
             // PlayerPrefs에 "StoreName"이라는 이름으로 입력값을 저장
-            PlayerPrefs.SetString("StoreName", inputName);
-            PlayerPrefs.Save();
+            //PlayerPrefs.SetString("StoreName", inputName);
+            //PlayerPrefs.Save();
 
-            Debug.Log("저장된 가게 이름: " + PlayerPrefs.GetString("StoreName"));
+            //Debug.Log("저장된 가게 이름: " + PlayerPrefs.GetString("StoreName"));
+
+            ServiceLocator.Get<GameData>().User.SetShopName(inputName);
 
             this.gameObject.SetActive(false);
+
+            if (TutorialLoader.Instance != null) TutorialLoader.Instance.TutorialStart();
+
+            ServiceLocator.Get<SaveService>().SaveNow();
         }
         else
         {

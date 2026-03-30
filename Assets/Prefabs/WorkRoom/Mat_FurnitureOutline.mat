@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 6be5082e7898fd74bb473d322ec060e9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - PIXELSNAP_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -61,7 +62,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - PixelSnap: 0
+    - PixelSnap: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -73,7 +74,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineAlpha: 0
-    - _OutlineSize: 8.19
+    - _OutlineSize: 2.18
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -83,5 +84,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0.17651725, g: 1, b: 0, a: 1}
+    - _OutlineColor: {r: 0.17647076, g: 1, b: 0, a: 1}
   m_BuildTextureStacks: []

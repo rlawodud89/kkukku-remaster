@@ -12,7 +12,7 @@ public class SnackDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     private Canvas parentCanvas;
     private Image myImage;
     private RectTransform myRect;
-
+    public SnackSlotUI mySlotUI;
     private void Awake()
     {
         myImage = GetComponent<Image>();
@@ -64,16 +64,22 @@ public class SnackDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         if (hit.collider != null && hit.collider.CompareTag("Employee"))
         {
-            // 직원 스크립트 찾기
             EmployeeController employee = hit.collider.GetComponent<EmployeeController>();
-            if (employee != null)
-            {             
-                employee.EatSnack(myStorageID, mySnackName, staminaRecoverAmount);
-                Debug.Log($"냠냠! 스태미나 {staminaRecoverAmount} 회복!");
-            }
+                if (employee.currentState == EmployeeState.Idle)
+                {
+                    // 쉬고 있을 때만 간식을 먹고, DB에서 깎고, UI를 줄입니다.
+                    employee.EatSnack(staminaRecoverAmount);
+                    ServiceLocator.Get<GameData>().Inventory.AdjustSnackCount(myStorageID, mySnackName, -1);
+                    mySlotUI.UseItem();
+                }
+                else
+                {
+                    // 일하는 중(Working)이라면 아무것도 안 하고 튕겨냅니다!
+                    Debug.LogWarning("직원이 열심히 일하는 중이라 간식을 먹을 수 없습니다!");
+                    // (선택 사항) 여기에 화면 중앙에 "일하는 중에는 먹일 수 없어요!" 같은 토스트 알림을 띄워주면 유저가 안 헷갈리겠죠?
+                }
         }
 
-        // 2. 임시 아이콘 삭제 및 원상복구
         if (dragGhost != null) Destroy(dragGhost);
         myImage.color = Color.white;
     }

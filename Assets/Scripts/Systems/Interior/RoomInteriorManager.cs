@@ -52,14 +52,35 @@ public class RoomInteriorManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    // 아무도 없으면 -1, 가구가 있으면 그 가구의 ID를 저장할 배열
+    public int[] gridOccupancyMap;
 
     private void Start()
     {
+        gridOccupancyMap = new int[gridWidth * gridHeight];
+        for(int i = 0; i < gridOccupancyMap.Length; i++) gridOccupancyMap[i] = -1;
+
         SpawnFurniture(); 
-        InitializeRoomTiles(); // ✨ 씬 시작 시 바닥/벽지 로드
-        
+        //InjectTestData(); // ★ 테스트용 데이터 주입 함수 (필요할 때만 켜세요!)
+        InitializeRoomTiles(); 
         uiManager = FindObjectOfType<RoomInventoryManager>();
     }
+
+    public void MarkGridOccupancy(int startIndex, int width, int height, int furnitureID)
+    {
+        int startX = startIndex % gridWidth;
+        int startY = startIndex / gridWidth;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int index = (startY + y) * gridWidth + (startX + x);
+                gridOccupancyMap[index] = furnitureID; 
+            }
+        }
+    }
+
 
     public void InitializeRoomTiles()
     {
@@ -106,13 +127,15 @@ public class RoomInteriorManager : MonoBehaviour
             for (int y = bounds.yMin; y <= bounds.yMax; y++) wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
 
             Vector3Int basePos = new Vector3Int(x, minY, 0);
-            bool isSecondFromRight = (x == maxX - 1);
-
-            if (!isSecondFromRight) wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
             Vector3Int middlePos = basePos + new Vector3Int(0, 1, 0);
-            wallTilemap.SetTile(middlePos, isSecondFromRight ? wallpaperItem.wallTiles[1] : wallpaperItem.wallTiles[0]);
+            
             Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
-            wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
+
+            
+           wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
+           wallTilemap.SetTile(middlePos, wallpaperItem.wallTiles[0]);
+           
+           wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
         }
     }
     
@@ -181,7 +204,9 @@ public class RoomInteriorManager : MonoBehaviour
         //interiorDB.AddRoomInterior(8, "PersonalCraftBox"); 
         //interiorDB.AddRoomInterior(15, "MaterialStorage"); 
         //interiorDB.AddRoomInterior(14, "SnackBox");
-        //interiorDB.AddRoomInterior(18, "고양이");
+        //interiorDB.AddRoomInterior(18, "여우");
+        
+        interiorDB.AddRoomInterior(0, "BlanketStorage"); 
     }
 
     public void TurnOnEditMode()
@@ -209,8 +234,6 @@ public void SpawnFurniture()
 
     var interiorList = gameData.Interior.GetCurrentRoomInterior();
     
-    // ★ 1. 매니저의 리스트를 DB 데이터와 동기화 (이게 핵심!)
-    // 리스트를 새로 만들어서 DB 내용을 그대로 복사해 넣습니다.
     currentPlacedList = new List<RoomInteriorPlaced>(interiorList);
 
     // 2. 화면 초기화 (기존 가구 삭제)
@@ -234,7 +257,19 @@ public void SpawnFurniture()
         {
             script.myStorageID = interior.ID; 
         }
+
+        if (obj.TryGetComponent<EmployeeController>(out var empScript))
+        {
+            empScript.myWorkerID = interior.ID; 
+        }
+
+        var so = gameData.Inventory.GetRoomInteriorItemSO(interior.itemName);
+        int itemWidth = so != null ? so.itemWidth : 1; 
+        int itemHeight = so != null ? so.itemHeight : 1;
+
+        MarkGridOccupancy(interior.gridNumber, itemWidth, itemHeight, interior.ID);
     }
+    
     
     Debug.Log($"[Load] 가구 {currentPlacedList.Count}개 로드 및 리스트 등록 완료!");
 }
@@ -593,36 +628,14 @@ public void SpawnFurniture()
         return false; // 완벽하게 깔끔한 자리!
     }
 
-    // =================================================================
-    // ★ 헬퍼 2: (완전 교체) 특정 칸(targetIndex)에 다른 가구가 밟고 서 있는지 검사
-    // =================================================================
     private bool IsGridOccupied(int targetGridIndex, int excludeID = -1)
     {
-        int targetX = targetGridIndex % gridWidth;
-        int targetY = targetGridIndex / gridWidth;
+        if(targetGridIndex < 0 || targetGridIndex >= gridOccupancyMap.Length) return true;
 
-        foreach (var placed in currentPlacedList)
-        {
-            if (placed.ID == excludeID) continue; // 나 자신은 무시
+        // 해당 칸의 값 확인
+        int occupyingID = gridOccupancyMap[targetGridIndex];
 
-            // 이미 배치된 다른 가구의 크기도 알아와야 "걔가 밟고 있는 영역"을 알 수 있음!
-            var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(placed.itemName);
-            int pWidth = so != null ? so.itemWidth : 1;
-            int pHeight = so != null ? so.itemHeight : 1;
-
-            int pStartX = placed.gridNumber % gridWidth;
-            int pStartY = placed.gridNumber / gridWidth;
-
-            // 내가 검사하려는 (targetX, targetY)가 배치된 가구의 (폭 x 높이) 영역 안에 포함되는가?
-            bool overlapX = targetX >= pStartX && targetX < (pStartX + pWidth);
-            bool overlapY = targetY >= pStartY && targetY < (pStartY + pHeight);
-
-            if (overlapX && overlapY) 
-            {
-                return true; // 밟고 있음! (겹침)
-            }
-        }
-        return false;
+        return occupyingID != -1 && occupyingID != excludeID;
     }
 
     
@@ -722,8 +735,7 @@ public void SpawnFurniture()
                         // 5. 빈자리가 있다면 DB에 직접 꽂아넣기!
                         if (currentCount < maxCapacity)
                         {
-                            // DB 수량 증가 함수 (기존에 소모할 때 쓰시던 AdjustMaterialCount의 양수 버전)
-                            // ※ 주의: 유저님의 GameData 스크립트에 있는 실제 함수 이름에 맞게 수정해주세요!
+
                             gameData.Inventory.AdjustMaterialCount(interior.ID, itemName, amountToAdd);
                             
                             Debug.Log($"[CrossScene] 낚시 성공! 보이지 않는 씬이지만 DB의 {interior.ID}번 {targetType}에 '{itemName}' 저장 완료!");
@@ -775,9 +787,9 @@ public void SpawnFurniture()
                         }
                     }
                 }
+                
             }
         }
-
         // 제작 전에 검사하므로 여기까지 올 일은 없겠지만, 혹시 모를 예외 처리
         Debug.LogWarning($"[InteriorManager] {itemName} 재료가 {remaining}개 부족하여 다 소모하지 못했습니다!");
         return false;

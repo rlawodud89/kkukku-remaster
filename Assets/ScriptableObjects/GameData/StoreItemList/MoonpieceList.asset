@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ba3d54ed9d21347bcfea325812ab12, type: 3}
+  m_Name: MoonpieceList
+  m_EditorClassIdentifier: 
+  storeType: 2
+  materialItems:
+  - {fileID: 11400000, guid: 574acdd782f222746851b5f690f6d978, type: 2}
+  - {fileID: 11400000, guid: 699e4c073a344964e8735e17dcb6f5ae, type: 2}
+  - {fileID: 11400000, guid: 3bab3c60eb0f1f4469ebbe0d40e03961, type: 2}
+  workerItems: []
+  toolItmes: []

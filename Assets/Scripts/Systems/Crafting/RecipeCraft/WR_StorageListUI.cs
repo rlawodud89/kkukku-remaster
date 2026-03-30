@@ -11,7 +11,10 @@ public class WR_StorageListUI : MonoBehaviour
 
     [Header("설정")]
     public RoomInteriorType targetType; 
-
+    
+    [Header("버튼 이미지 설정")]
+    [SerializeField] private Sprite specificBoxSprite;
+    
     private void OnEnable()
     {
         // 타이밍 이슈 방지를 위해 코루틴 사용
@@ -88,7 +91,10 @@ public class WR_StorageListUI : MonoBehaviour
         // UI 스케일/위치 초기화
         btn.transform.localScale = Vector3.one;
         btn.transform.localPosition = Vector3.zero;
-
+        
+        Image btnImage = btn.GetComponentInChildren<Image>();
+        btnImage.sprite = specificBoxSprite;
+        
         var script = btn.GetComponent<WR_StorageSelectButton>();
         if (script != null)
         {

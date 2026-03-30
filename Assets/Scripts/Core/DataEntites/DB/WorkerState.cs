@@ -7,4 +7,5 @@ public class WorkerState
     public string workingItem { get; set; } = null;
     public float progress { get; set; } = 0;
     public float skill { get; set; } = 0;
+    public string lastSceneTime { get; set; } = null;
 }

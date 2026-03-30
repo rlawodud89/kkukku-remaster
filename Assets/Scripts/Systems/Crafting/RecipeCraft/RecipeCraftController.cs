@@ -8,6 +8,7 @@ using System.Collections;
 using Unity.VisualScripting.FullSerializer;
 using System.Diagnostics.Contracts;
 using System.Data.Common;
+using Unity.VisualScripting;
 
 public class RecipeCraftController : MonoBehaviour
 {
@@ -27,6 +28,12 @@ public class RecipeCraftController : MonoBehaviour
     public GameObject CraftingAnimation_Panel;
     public float craftingTime = 2.0f;
 
+    [Header("기록 이력 UI")]
+    public GameObject historyPrefab; 
+    public Transform historyContentParent;
+
+    private Sprite[] historySprites;
+    private int[] historyNums;
 
     private Sprite failureSprite;
     private string failureMessage = "레시피 제작에 실패했습니다... 엉성한 이불을 획득하였습니다.";
@@ -47,9 +54,13 @@ public class RecipeCraftController : MonoBehaviour
     private void InitializeRecipeTable()
     {
 
-        //failureSprite = ServiceLocator.Get<GameData>().Inventory.GetBlanketItemSO("엉성한 이불").image;
         var allBlankets = ServiceLocator.Get<GameData>().BlanketCraft.GetAllRecipes();
 
+
+        foreach (var slot in slots)
+        {
+            slot.iconImage.gameObject.SetActive(false);
+        }
 
         foreach (var blanket in allBlankets)
         {
@@ -106,10 +117,21 @@ public class RecipeCraftController : MonoBehaviour
         Dictionary<string, int> currentInput = new Dictionary<string, int>();
         bool isAnySlotFilled = false;
 
+        int index = 0;
+
+
+        historySprites = new Sprite[slots.Length];
+        historyNums = new int[slots.Length];
         foreach (var slot in slots)
         {
             if (slot.IsEmpty) continue;
+            
             isAnySlotFilled = true;
+
+            historySprites[index] = slot.iconImage.sprite; // 기록 이력용 이미지 저장
+            historyNums[index] = slot.CurrentSlotQty;
+            index++;
+
             if (currentInput.ContainsKey(slot.ItemName))
                 currentInput[slot.ItemName] += slot.CurrentSlotQty;
             else
@@ -129,15 +151,29 @@ public class RecipeCraftController : MonoBehaviour
         // 유효한 레시피인지
         bool isValidRecipe = recipeDict.TryGetValue(inputKey, out foundRecipe);
 
+        if (isValidRecipe && OwnrecipeDict.ContainsKey(inputKey))
+        {
+            ShowNotice($"이미 보유한 레시피입니다 : {foundRecipe.itemName}");
+            return;
+        }
+
+        string resultName = isValidRecipe ? foundRecipe.itemName : "엉성한 이불";
+
+        if (historyPrefab != null && historyContentParent != null)
+        {
+            GameObject historyObj = Instantiate(historyPrefab, historyContentParent);
+            RecipeHistorySlotUI historyUI = historyObj.GetComponent<RecipeHistorySlotUI>();
+            
+            if (historyUI != null)
+            {
+                // 결정된 resultName을 넘겨줍니다.
+                historyUI.SetHistoryData(historySprites, historyNums, resultName); 
+            }
+        }
+
+        // 💡 4. [제작 시작] 
         if (isValidRecipe)
         {
-            // 내가 가지고 있는 레시피인지,
-            if (OwnrecipeDict.ContainsKey(inputKey))
-            {
-                ShowNotice($"이미 보유한 레시피입니다 : {foundRecipe.itemName}");
-                return;
-            }
-            
             StartCoroutine(CraftingSequence(foundRecipe, inputKey));
         }
         else
@@ -315,7 +351,7 @@ public class RecipeCraftController : MonoBehaviour
         {
             if (!slot.IsEmpty && slot.ItemName == name)
             {
-                // (선택사항) 한 슬롯 최대 개수 제한이 있다면 여기서 체크
+                slot.iconImage.gameObject.SetActive(true);
                 slot.AddItem(inventoryID, name, icon, HaveQty); 
                 return;
             }
@@ -325,6 +361,7 @@ public class RecipeCraftController : MonoBehaviour
         {
             if (slot.IsEmpty)
             {
+                slot.iconImage.gameObject.SetActive(true);
                 slot.AddItem(inventoryID, name, icon, HaveQty);
                 return;
             }

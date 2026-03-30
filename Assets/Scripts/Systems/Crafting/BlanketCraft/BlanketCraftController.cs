@@ -15,7 +15,6 @@ public class BlanketCraftController : MonoBehaviour
     public TextMeshProUGUI blanketNameText; // 이불 이름 텍스트 (있으면 연결)
     public GameObject EmployeePanel;
     public bool isCrafting = false;
-    public static event Action OnEmployeeWorkStarted;
     private EmployeeController currentEmployee; // 현재 작업 중인 직원 참조
     private BlanketItemSO RecipeData;
 
@@ -24,6 +23,13 @@ public class BlanketCraftController : MonoBehaviour
         if (Instance == null) Instance = this;
     }
 
+    private void Start()
+    {
+        // 씬에 다시 들어왔을 때는 무조건 UI 잠금을 풀어줍니다!
+        isCrafting = false; 
+        
+        if (blanketImage != null) blanketImage.enabled = false;
+    }
     // 레시피 UI 아이템이 클릭되었을 때 호출되는 함수
     public void ApplyRecipeToSlots(BlanketItemSO recipeData)
     {
@@ -32,6 +38,8 @@ public class BlanketCraftController : MonoBehaviour
         blanketNameText.text = recipeData.itemName;
         blanketImage.sprite = recipeData.image;
 
+        if (blanketImage != null) blanketImage.enabled = true;
+        
         RecipeData = recipeData;    
 
         if (recipeData.recipe == null) return;
@@ -57,6 +65,9 @@ public class BlanketCraftController : MonoBehaviour
             {
                 // 아까 만든 SetRecipeItem 함수 사용
                 slot.SetRecipeItem(name, icon, requireCount, haveCount);
+                
+                slot.gameObject.SetActive(true);
+                
                 return; // 하나 넣었으면 종료 (다음 재료는 다음 슬롯에)
             }
         }
@@ -69,7 +80,12 @@ public class BlanketCraftController : MonoBehaviour
         foreach (var slot in slots)
         {
             slot.Clear();
+            
+            slot.gameObject.SetActive(false);
         }
+        
+        if (blanketImage != null) blanketImage.enabled = false;
+        if (blanketNameText != null) blanketNameText.text = "";
     }
 
     public void setCurrentEmployee(EmployeeController emp)
@@ -78,66 +94,58 @@ public class BlanketCraftController : MonoBehaviour
     }
 
     public void OnClickCraftButton()
+{
+    if (isCrafting) return;
+
+    // 1. 재료 검사 (외부 환경)
+    foreach (var slot in slots)
     {
-        bool isCraftingPossible = true;
-
-        if (isCrafting) return;
-
-        // 1. 검사 단계: 재료가 충분한지 확인
-        foreach (var slot in slots)
+        if (!slot.IsSufficient) 
         {
-            if (!slot.IsSufficient) 
-            {
-                Debug.Log($"재료 부족: {slot.ItemName}");
-                isCraftingPossible = false;
-                return; 
-            }
-        }
-
-        // 2. 검사 단계: 직원이 선택되었는지 확인
-        if (currentEmployee == null)
-        {
-            Debug.LogError("선택된 직원이 없습니다!");
-            return;
-        }
-
-        // 3. 검사 단계: 직원이 체력이 있는지 확인 (EmployeeController의 IsWorking 검사 등)
-        if (currentEmployee.currentStamina < currentEmployee.staminaCostPerWork)
-        {
-            Debug.LogWarning("직원의 체력이 부족합니다!");
-            return;
-        }
-
-        // ★ 4. 안전장치: 이불장에 넣을 빈자리가 최소 1개라도 있는지 미리 확인!
-        bool hasEmptySpace = RoomInteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
-        if (!hasEmptySpace)
-        {
-            Debug.LogWarning("이불장에 빈자리가 없습니다! 이불을 먼저 팔아주세요.");
-            // TODO: 유저에게 토스트 메시지 띄우기
-            return;
-        }
-
-        // 모든 조건이 완벽하게 충족되었다면!
-        if (isCraftingPossible)
-        {
-            isCrafting = true; 
-            
-            // =========================================================
-            // ★ 핵심 변경점: 작업 시작과 동시에 인벤토리(가구)에서 재료 즉시 소모!
-            // =========================================================
-            foreach (var slot in slots)
-            {
-                if (slot.IsEmpty) continue;
-                RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty); 
-            }
-            Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
-
-            // 직원에게 일을 시키면서 "끝나면 FinishCrafting 함수를 실행해줘!" 라고 넘깁니다.
-            currentEmployee.AssignWork(() => FinishCrafting(RecipeData));
-            
-            StorageUIController.Instance.CloseAllPanels(); // 작업 시작하자마자 UI 닫기
+            Debug.Log($"재료 부족: {slot.ItemName}");
+            return; 
         }
     }
+
+    // 2. 이불장 빈자리 검사 (외부 환경)
+    bool hasEmptySpace = RoomInteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
+    if (!hasEmptySpace)
+    {
+        Debug.LogWarning("이불장에 빈자리가 없습니다! 이불을 먼저 팔아주세요.");
+        // TODO: NoticeText 등 토스트 메시지 띄우기
+        return;
+    }
+
+    // 3. 직원 할당 여부 확인
+    if (currentEmployee == null)
+    {
+        Debug.LogError("선택된 직원이 없습니다!");
+        return;
+    }
+
+    bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, currentEmployee.staminaCostPerWork, () => FinishCrafting(RecipeData));
+
+    // 5. 직원이 일을 시작하겠다고 수락했다면?
+    if (isAccepted)
+    {
+        isCrafting = true; 
+        
+        // 그때 재료를 확실하게 소모합니다.
+        foreach (var slot in slots)
+        {
+            if (slot.IsEmpty) continue;
+            RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty); 
+        }
+        
+        Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
+        StorageUIController.Instance.CloseAllPanels(); // UI 닫기
+    }
+    else
+    {
+        // 체력이 없거나 다른 일 중이라서 직원이 거절함
+        Debug.LogWarning("직원이 체력이 부족하거나 이미 일하는 중입니다!");
+    }
+}
 
     public void FinishCrafting(BlanketItemSO resultItem)
     {
@@ -153,10 +161,6 @@ public class BlanketCraftController : MonoBehaviour
         if (isAdded)
         {
             Debug.Log($"수납 완료! 획득한 이불: {finalItemName}");
-
-            // ★ 재료 소모 로직은 OnClickCraftButton으로 이동했으므로 여기서는 깔끔하게 삭제!
-            
-            // (UI가 이미 닫혔으므로 ApplyRecipeToSlots는 굳이 안 불러도 됩니다)
         }
         else
         {

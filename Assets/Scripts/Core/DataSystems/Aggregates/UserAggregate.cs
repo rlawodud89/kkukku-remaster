@@ -13,15 +13,12 @@ public class UserAggregate : IAggregate
     // === SO 데이터 ===
 
     private Dictionary<string, ToolItemSO> toolSOs;
+    private Dictionary<int, ShopLevelSO> shopLevelSOs;
+    private Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs;
 
     // === 변경 사항 저장소 ===
 
     private HashSet<ToolType> updatedToolUsed = new();
-
-    // === 기타 데이터 ===
-
-    private Dictionary<int, int> interiorLevelInventoryCount = new Dictionary<int, int>();
-    private Dictionary<int, (int x, int y)> shopLevelSize = new Dictionary<int, (int x, int y)>();
 
 
     // === 저장 시스템 사용 메서드 ===
@@ -60,6 +57,8 @@ public class UserAggregate : IAggregate
                 { "energy", user.energy },
                 { "gold", user.gold },
                 { "moonrock", user.moonrock },
+                { "todayGold", user.todayGold },
+                { "todayMoonrock", user.todayMoonrock },
                 { "playTime", user.playTime },
                 { "endScene", user.endScene },
                 { "isOpen", user.isOpen },
@@ -68,6 +67,8 @@ public class UserAggregate : IAggregate
                 { "shopLevel", user.shopLevel },
                 { "bgmVol", user.bgmVol },
                 { "sfxVol", user.sfxVol },
+                { "startState", user.startState },
+                { "isWatchEnding", user.isWatchEnding },
             },
             Conditions = new Dictionary<string, object>
             {
@@ -95,20 +96,16 @@ public class UserAggregate : IAggregate
 
     }
 
-    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed, Dictionary<string, ToolItemSO> toolSOs)
+    public void LoadUserAggregate(User user, IEnumerable<ToolUsed> toolUsed,
+        Dictionary<string, ToolItemSO> toolSOs, Dictionary<int, ShopLevelSO> shopLevelSOs,
+        Dictionary<int, InteriorInventoryLevelSO> interiorInvenLevelSOs)
     {
         this.user = user;
         this.toolUsed = toolUsed.ToDictionary(tu => tu.toolType);
 
         this.toolSOs = toolSOs;
-
-        interiorLevelInventoryCount.Add(1, 20);
-        interiorLevelInventoryCount.Add(2, 30);
-        interiorLevelInventoryCount.Add(3, 40);
-
-        shopLevelSize.Add(1, (10, 6));
-        shopLevelSize.Add(2, (30, 30));
-        shopLevelSize.Add(3, (40, 40));
+        this.shopLevelSOs = shopLevelSOs;
+        this.interiorInvenLevelSOs = interiorInvenLevelSOs;
     }
 
 
@@ -126,6 +123,20 @@ public class UserAggregate : IAggregate
         user.level = level;
         user.energy = energy;
 
+        MarkDirty();
+    }
+
+    public void SetLevelEnergy(int level, float energy)
+    {
+        user.level = level;
+        user.energy = energy;
+
+        MarkDirty();
+    }
+
+    public void SetShopName(string shopName)
+    {
+        user.shopName = shopName;
         MarkDirty();
     }
 
@@ -168,6 +179,39 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
+    public int GetTodayGold()
+    {
+        return user.todayGold;
+    }
+
+    public int GetTodayMoonrock()
+    {
+        return user.todayMoonrock;
+    }
+
+    public void AddTodayGold(int amount)
+    {
+        if (amount < 0) return;
+
+        user.todayGold += amount;
+        MarkDirty();
+    }
+
+    public void AddTodayMoonrock(int amount)
+    {
+        if (amount < 0) return;
+
+        user.todayMoonrock += amount;
+        MarkDirty();
+    }
+
+    public void ResetTodayGoldMoonrock()
+    {
+        user.todayGold = 0;
+        user.todayMoonrock = 0;
+        MarkDirty();
+    }
+
     public int GetItemShopLevel()
     {
         return user.itemShopLevel;
@@ -175,13 +219,17 @@ public class UserAggregate : IAggregate
 
     public (int level, int invenCount) GetInteriorInventoryLevel()
     {
-        return (user.interiorInventoryLevel, interiorLevelInventoryCount[user.interiorInventoryLevel]);
+        return (user.interiorInventoryLevel, interiorInvenLevelSOs[user.interiorInventoryLevel].inventoryCount);
     }
 
-    public (int level, (int x, int y) size) GetShopLevel()
+    public (int level, int width, int height) GetShopLevel()
     {
-        return (user.shopLevel, shopLevelSize[user.shopLevel]);
+        return (user.shopLevel,
+            shopLevelSOs[user.shopLevel].width,
+            shopLevelSOs[user.shopLevel].height
+            );
     }
+
 
     public void ChangeItemShopLevel(int amount)
     {
@@ -253,9 +301,38 @@ public class UserAggregate : IAggregate
         MarkDirty();
     }
 
-    public void GetCurrentShopGridSize(out int x, out int y)
+    public void GetCurrentShopGridSize(out int width, out int height)
     {
-        x = shopLevelSize[user.shopLevel].x;
-        y = shopLevelSize[user.shopLevel].y;
+        width = shopLevelSOs[user.shopLevel].width;
+        height = shopLevelSOs[user.shopLevel].height;
+    }
+
+    public void GetCurrentShopGridSize(out int width, out int height, out Vector3 startPos)
+    {
+        width = shopLevelSOs[user.shopLevel].width;
+        height = shopLevelSOs[user.shopLevel].height;
+        startPos = shopLevelSOs[user.shopLevel].startPos;
+    }
+
+    public StartStateType GetStartState()
+    {
+        return user.startState;
+    }
+
+    public void SetStartState(StartStateType startState)
+    {
+        user.startState = startState;
+        MarkDirty();
+    }
+
+    public bool GetIsWatchEnding()
+    {
+        return user.isWatchEnding;
+    }
+
+    public void SetIsWatchEnding(bool isWatchEnding)
+    {
+        user.isWatchEnding = isWatchEnding;
+        MarkDirty();
     }
 }

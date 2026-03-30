@@ -216,7 +216,7 @@ public class ShopStoragePanel : MonoBehaviour
 
         // 데이터 매니저 데이터 업데이트
         ShopStorageDataManager.Instance.UpdateTableData(selectedLeft.parentID, selectedLeft.dataIndex, -currentTransferCount);
-        ShopStorageDataManager.Instance.UpdateStorageData(selectedRight.parentID, currentTransferCount);
+        ShopStorageDataManager.Instance.UpdateStorageData(selectedRight.parentID, selectedLeft.parentID, selectedLeft.dataIndex, currentTransferCount);
 
         // 2. UI 갱신 (아이템 프리팹 내부의 텍스트를 새로고침하는 함수가 아이템 스크립트에 있어야 함)
         selectedLeft.RefreshUI(true);

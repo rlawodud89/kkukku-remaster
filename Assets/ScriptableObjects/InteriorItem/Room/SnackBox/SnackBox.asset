@@ -19,6 +19,6 @@ MonoBehaviour:
   price: 0
   itemWidth: 1
   itemHeight: 1
-  slotCount: 30
+  slotCount: 100
   maxStamina: 0
   workingTime: 0

@@ -10,17 +10,20 @@ public class LoadSceneOnEndingSignal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void LoadNextScene()
     {
+        ServiceLocator.Get<GameData>().User.SetIsWatchEnding(true);
+        ServiceLocator.Get<SaveService>().SaveNow();
+        UIEventManager.ShowMainUI();
         SceneManager.LoadScene(nextSceneName);
     }
 }
