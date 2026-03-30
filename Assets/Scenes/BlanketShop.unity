@@ -5185,6 +5185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8ad79b6884a1d148a7ed1046f3a541c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  signButton: {fileID: 1216580021}
+  signFlipper: {fileID: 1216580024}
 --- !u!1 &1233148329
 GameObject:
   m_ObjectHideFlags: 0
