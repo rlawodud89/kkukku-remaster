@@ -1018,6 +1018,7 @@ GameObject:
   - component: {fileID: 5963641352870147638}
   - component: {fileID: 4377740870226938398}
   - component: {fileID: 487674432498090293}
+  - component: {fileID: 2711507510392779053}
   m_Layer: 5
   m_Name: MoonlightHillButton
   m_TagString: Untagged
@@ -1153,6 +1154,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: MoonlightHill
   locationName: "\uB2EC\uBE5B\uC5B8\uB355"
+--- !u!114 &2711507510392779053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200138795556532539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 11
 --- !u!1 &4201123338697482242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1332,7 @@ GameObject:
   - component: {fileID: 2785211810018144172}
   - component: {fileID: 5654642804036771187}
   - component: {fileID: 3861350012750022570}
+  - component: {fileID: 3486218245227642178}
   m_Layer: 5
   m_Name: CloundPondButton
   m_TagString: Untagged
@@ -1453,6 +1468,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: CloudPond
   locationName: "\uAD6C\uB984\uC815\uC6D0"
+--- !u!114 &3486218245227642178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5810428839939904228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 10
 --- !u!1 &6043264480906768677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,6 +1494,7 @@ GameObject:
   - component: {fileID: 8440871458603539104}
   - component: {fileID: 490754209547014238}
   - component: {fileID: 2696944744850485674}
+  - component: {fileID: 1929570369685880549}
   m_Layer: 5
   m_Name: VillageButton
   m_TagString: Untagged
@@ -1601,6 +1630,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: Village
   locationName: "\uB9C8\uC744"
+--- !u!114 &1929570369685880549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043264480906768677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 12
 --- !u!1 &6082947902037058672
 GameObject:
   m_ObjectHideFlags: 0
@@ -1729,6 +1771,7 @@ GameObject:
   - component: {fileID: 6241808907933189040}
   - component: {fileID: 3181159118466578146}
   - component: {fileID: 8951850696269789530}
+  - component: {fileID: 7062293872901406244}
   m_Layer: 5
   m_Name: SleepGardenButton
   m_TagString: Untagged
@@ -1864,6 +1907,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: SleepingGarden
   locationName: "\uC218\uBA74\uC815\uC6D0"
+--- !u!114 &7062293872901406244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6503655706351550120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 9
 --- !u!1 &6556843679869345273
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,6 +2277,7 @@ GameObject:
   - component: {fileID: 1204248748017085728}
   - component: {fileID: 9219134071827707180}
   - component: {fileID: 8450780532474465514}
+  - component: {fileID: 729146710821020134}
   m_Layer: 5
   m_Name: BlanketShopButton
   m_TagString: Untagged
@@ -2356,6 +2413,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: BlanketShop
   locationName: "\uC774\uBD88\uAC00\uAC8C"
+--- !u!114 &729146710821020134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8178214275632279879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 8
 --- !u!1 &8720915134885661397
 GameObject:
   m_ObjectHideFlags: 0

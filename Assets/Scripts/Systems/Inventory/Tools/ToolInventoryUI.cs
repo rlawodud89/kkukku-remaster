@@ -67,7 +67,7 @@ public class ToolInventoryUI : MonoBehaviour
 
         toolPerformer.ToolUIOn();
 
-        TutorialEventBus.Raise(TutorialID.ToolButton);
+        //TutorialEventBus.Raise(TutorialID.ToolButton);
     }
 
     public void OnClickToolBackBtn()

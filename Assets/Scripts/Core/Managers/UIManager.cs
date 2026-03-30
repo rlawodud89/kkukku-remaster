@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
-    
+
     public static UIManager Instance
     {
         get
@@ -41,6 +41,12 @@ public class UIManager : MonoBehaviour
     {
         if (popupPrefab == null) return;
         popupPrefab.SetActive(true);
+
+        TutorialEventBus.Raise(TutorialID.MapButton);
+        TutorialEventBus.Raise(TutorialID.QuestButton);
+        TutorialEventBus.Raise(TutorialID.RecipeButton);
+        TutorialEventBus.Raise(TutorialID.LetterButton);
+        TutorialEventBus.Raise(TutorialID.SettingButton);
     }
 
     private void OnEnable()
@@ -63,7 +69,7 @@ public class UIManager : MonoBehaviour
         else _canvasComponent.enabled = true;*/
 
         // 씬 이동할 때 열려있는 팝업 다 닫기
-        CloseAllPopups(); 
+        CloseAllPopups();
     }
 
     public Transform popupGroup;
@@ -72,7 +78,7 @@ public class UIManager : MonoBehaviour
     {
         if (popupGroup == null) return;
 
-        foreach(Transform child in popupGroup)
+        foreach (Transform child in popupGroup)
         {
             child.gameObject.SetActive(false);
         }
@@ -86,7 +92,7 @@ public class UIManager : MonoBehaviour
     {
         // 팝업 생성
         GameObject go = Instantiate(confirmPopupPrefab, transform);
-        
+
         // 팝업 세팅 (글자랑 할 일 넘겨주기)
         ConfirmPopup popup = go.GetComponent<ConfirmPopup>();
         popup.Setup(msg, onYes);

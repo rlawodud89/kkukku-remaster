@@ -5038,6 +5038,8 @@ GameObject:
   - component: {fileID: 1216580021}
   - component: {fileID: 1216580024}
   - component: {fileID: 1216580025}
+  - component: {fileID: 1216580027}
+  - component: {fileID: 1216580026}
   m_Layer: 5
   m_Name: Btn_ShopOpen
   m_TagString: Untagged
@@ -5187,6 +5189,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signButton: {fileID: 1216580021}
   signFlipper: {fileID: 1216580024}
+--- !u!114 &1216580026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216580019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 20
+--- !u!114 &1216580027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216580019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 19
 --- !u!1 &1233148329
 GameObject:
   m_ObjectHideFlags: 0

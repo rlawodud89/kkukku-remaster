@@ -3,22 +3,78 @@ public enum TutorialID
     None = 0,
     DialogueNext,
 
-    // Core UI
-    ShopButton,
-    UpgradeButton,
-    BuildButton,
-
     // Top UI
-    GoldIcon,
-    SettingsButton,
+    MenuButton,
+    MapButton,
+    QuestButton,
+    RecipeButton,
+    LetterButton,
+    SettingButton,
 
-    // Scene Specific
-    FactorySlot,
-    EmployeeButton,
+    MapShopButton,
+    MapSleepingGardenButton,
+    MapCloudPondButton,
+    MapMoonlightHillButton,
+    MapVillageButton,
+    MapYesButton,
 
-    ToolButton,
-    GatheringItem,
+    // BlanketShop
+    ClickTable,
+    ClickBlanketInBox,
+    AddBlanket,
+    ClickBlanketInTable,
+    RemoveBlanket,
+    ExitTable,
 
-    StoreDescription,
-    StoreItemBuy,
+    ShopOpen,
+    ShopClose,
+    GotoRoom,
+
+    // WorkingRoom
+    ClickPersonalCraft,
+    ExitPersonalCraft,
+
+    ClickSnackBox,
+    FeedSnak,
+    ExitSnackBox,
+
+    ClickWorker,
+    SelectWorkerRecipe,
+    MakeBlanket,
+    MakeBlanketFinish,
+
+    // SleepingGarden
+    GatheringSnack,
+    ClickToolUI,
+    ExitToolUI,
+
+    // CloudPond
+    ClickFishingStart,
+    FishingMaterial,
+    ExitFishing,
+
+    // MoonlightHill
+    ClickMaterialMenu,
+    MaterialDescription,
+    ClickBuyMaterialButton,
+    ButMaterial,
+    ExitMaterialMenu,
+
+    MaterialLevelUpgradeDescription,
+    ClickUpgradeMaterialLevelButton,
+    ExitUpgradeMaterialLevelPanel,
+
+    // Village
+    ClickInteriorStore,
+    InteriorDescription,
+    ExitInteriorStore,
+
+    ClickCraftStore,
+    ClickToolStoreMenu,
+    ExitToolStoreMenu,
+    ClickUpgradeStoreMenu,
+
+    // CommonUI
+    QuestConfirm,
+    RecipeConfirm,
 }

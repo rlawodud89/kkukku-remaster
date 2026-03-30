@@ -149,7 +149,7 @@ public class GatheringManager : MonoBehaviour
             return;
         }
 
-        TutorialEventBus.Raise(TutorialID.GatheringItem);
+        //TutorialEventBus.Raise(TutorialID.GatheringItem);
 
         snackBoxData[currentSnackBoxIndex].count++;
 

@@ -17,6 +17,12 @@ public class MapSpotButton : MonoBehaviour
             $"{locationName}으로 이동하시겠습니까?", // 메시지
             () => { GoToScene(); }                // '네' 누르면 할 일
         );
+
+        TutorialEventBus.Raise(TutorialID.MapShopButton);
+        TutorialEventBus.Raise(TutorialID.MapSleepingGardenButton);
+        TutorialEventBus.Raise(TutorialID.MapCloudPondButton);
+        TutorialEventBus.Raise(TutorialID.MapMoonlightHillButton);
+        TutorialEventBus.Raise(TutorialID.MapVillageButton);
     }
 
     // 씬으로 이동하는 함수 
@@ -24,5 +30,6 @@ public class MapSpotButton : MonoBehaviour
     {
         // 씬 이동
         LoadingSceneManager.LoadScene(sceneName);
+        TutorialEventBus.Raise(TutorialID.MapYesButton);
     }
 }
