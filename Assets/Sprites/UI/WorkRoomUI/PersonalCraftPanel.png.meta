@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4ebd355b8c2ec1346a46f7fa70445747
+guid: e1d4acd7ec522af47bf00dd4d55203b5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -44,7 +44,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -97,85 +97,64 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_0
+      name: Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_0
       rect:
         serializedVersion: 2
-        x: 95
-        y: 210
-        width: 236
-        height: 292
+        x: 0
+        y: 0
+        width: 545
+        height: 625
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa835470dab54ca4daf7b9719e1263d8
-      internalID: -244730625
+      spriteID: a4b40caad5a1e6a449824a9b3b60e541
+      internalID: 2048992616
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_1
+      name: Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_1
       rect:
         serializedVersion: 2
-        x: 371
-        y: 207
-        width: 293
-        height: 289
+        x: 724
+        y: 366
+        width: 409
+        height: 270
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba0a8ac90e0190a48b7894514e6783ec
-      internalID: 1772369947
+      spriteID: c39f718ea413dc840a71271196e3c1a8
+      internalID: -934316737
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_2
+      name: Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_2
       rect:
         serializedVersion: 2
-        x: 649
-        y: 205
-        width: 270
-        height: 426
+        x: 735
+        y: 41
+        width: 397
+        height: 296
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78c2ae0c4ad15c041bff9809846178c2
-      internalID: -897608046
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_3
-      rect:
-        serializedVersion: 2
-        x: 929
-        y: 217
-        width: 260
-        height: 298
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ffa31579923ae64c8eae1899ff1b41b
-      internalID: -9994820
+      spriteID: 2bd8bee3dd7cd19429ee559bc2c9912b
+      internalID: -1783119095
       vertices: []
       indices: 
       edges: []
@@ -191,10 +170,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_0: -244730625
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_1: 1772369947
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_2: -897608046
-      Gemini_Generated_Image_3fl7om3fl7om3fl7-Photoroom_3: -9994820
+      Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_0: 2048992616
+      Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_1: -934316737
+      Gemini_Generated_Image_pdq4xcpdq4xcpdq4-Photoroom_2: -1783119095
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

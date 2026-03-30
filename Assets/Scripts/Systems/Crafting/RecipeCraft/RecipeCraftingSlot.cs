@@ -42,6 +42,9 @@ public class RecipeCraftingSlot : MonoBehaviour // 이제 MonoBehaviour를 상�
             ItemName = name;
             CurrentSlotQty = 0;
             iconImage.sprite = icon;
+            
+            if (iconImage != null) iconImage.enabled = true;
+            
             IsEmpty = false;
         }
         else if (ItemName != name)
@@ -85,6 +88,12 @@ public class RecipeCraftingSlot : MonoBehaviour // 이제 MonoBehaviour를 상�
         lastBoxHaveQty = 0;
         
         qtyText.text = "0";
+        
+        if (iconImage != null) 
+        {
+            iconImage.enabled = false;
+            iconImage.sprite = null; // (선택 사항) 남아있는 기존 이미지 데이터를 확실히 비워줌
+        }
     }
 
     private void UpdateUI()

@@ -5,7 +5,7 @@ public class WR_StorageSelectButton : MonoBehaviour
 {
     private int myBoxID;           // 보관함의 고유 ID (예: 105)
     private RoomInteriorType myType; // 이불함인지 재료함인지 구분
-
+    
     public TextMeshProUGUI titleText; // "1번 보관함" 텍스트
 
     // 초기화 함수
