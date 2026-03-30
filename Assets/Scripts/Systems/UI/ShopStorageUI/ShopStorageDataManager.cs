@@ -185,12 +185,13 @@ public class ShopStorageDataManager : MonoBehaviour
         }
     }
 
-    public void UpdateStorageData(int storageID, int changeAmount)
+    public void UpdateStorageData(int storageID, int tableID, int itemIndex, int changeAmount)
     {
         var storage = storageClasses.Find(s => s.storageID == storageID);
-        if (storage != null)
+        if (storage != null && GetTableClass(tableID, out var table))
         {
             storage.count += changeAmount;
+            ServiceLocator.Get<GameData>().Inventory.AdjustBlanketCount(storageID, table.itemName[itemIndex], changeAmount);
         }
     }
 
