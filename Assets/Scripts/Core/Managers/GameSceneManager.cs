@@ -89,6 +89,9 @@ public class GameSceneManager : MonoBehaviour
 
             storeNamePanel.SetActive(true);
             SceneManager.LoadScene("BlanketShop");
+
+            // 시간을 아침으로 설정
+            GameManager.Instance.SetGameTime(6,0);
         }
     }
 }

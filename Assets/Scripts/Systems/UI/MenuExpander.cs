@@ -1,15 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuExpander : MonoBehaviour
 {
     [Header("버튼들 (순서대로)")]
     public GameObject[] subButtons;
     // 버튼이 나오는 간격
-    public float delayTime = 0.05f;
+    public float delayTime = 0.01f;
     // 현재 열려있는지 닫혀있는지 체크
     private bool _isOpen = false; 
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬이 로드되었을 때 메뉴가 열려있다면 즉시 닫습니다.
+        if (_isOpen)
+        {
+            StartCoroutine(CloseSequence());
+        }
+    }
 
     public void ToggleMenu()
     {
