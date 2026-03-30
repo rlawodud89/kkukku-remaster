@@ -3,7 +3,6 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Collections.Generic; // List 사용을 위해 추가
 using TMPro;
-using UnityEditor.VersionControl;
 
 public class NPCAI : MonoBehaviour
 {
