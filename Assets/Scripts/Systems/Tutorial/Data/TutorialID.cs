@@ -42,7 +42,6 @@ public enum TutorialID
 
     // Village
     ClickInteriorStore,
-    InteriorDescription,
     ExitInteriorStore,
 
     ClickCraftStore,

@@ -1354,9 +1354,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   steps:
-  - {fileID: 11400000, guid: de66917bc4851bc41b3a96ea3106feb0, type: 2}
-  - {fileID: 11400000, guid: c15aa9fac13094548b696ee7dd72fd6f, type: 2}
-  - {fileID: 11400000, guid: f186cb5b6ed5e1546a15e283880ddc39, type: 2}
+  - {fileID: 11400000, guid: 1d25764f19fa05540a819e7f67e973dc, type: 2}
+  - {fileID: 11400000, guid: af699500130106e498ac79bbe29afbee, type: 2}
+  - {fileID: 11400000, guid: d4cac68f265bf5143af38ec388d9fc70, type: 2}
+  - {fileID: 11400000, guid: f3465a020bb37df4e9dc77956637b05d, type: 2}
+  - {fileID: 11400000, guid: e6f4ac8e14764b742a48b6d3a88ce34b, type: 2}
+  - {fileID: 11400000, guid: 48f6b7ae8c30d554caa88e363210bde5, type: 2}
 --- !u!224 &229735800 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9111335615970701896, guid: a5e22245133215b4192541a7d2ddb0c8, type: 3}
