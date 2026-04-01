@@ -105,6 +105,7 @@ public class RoomStoragePanel : MonoBehaviour
         selectedLeft = item;
         selectedLeft.SetHighlight(true);
         RefreshButtonState();
+        ValidateTransferCount();
     }
 
     // 오른쪽 판매대 선택
@@ -114,10 +115,45 @@ public class RoomStoragePanel : MonoBehaviour
         selectedRight = item;
         selectedRight.SetHighlight(true);
         RefreshButtonState();
+        ValidateTransferCount();
     }
+    private void ValidateTransferCount()
+    {
+        if (selectedLeft == null) return;
 
+        int maxAllowed = selectedLeft.currentAmount; // 기본적으로 내가 가진 개수까지만
+
+        // 오른쪽 테이블이 선택되었다면, '빈 공간'도 고려해서 둘 중 작은 값으로 제한
+        if (selectedRight != null)
+        {
+            int availableSpace = selectedRight.max - selectedRight.currentAmount;
+            if (availableSpace < maxAllowed)
+            {
+                maxAllowed = availableSpace; // 빈 공간이 내가 가진 것보다 적으면, 빈 공간만큼만!
+            }
+        }
+
+        // 제한된 값 안에서 현재 전송 수량 고정
+        if (maxAllowed <= 0)
+        {
+            currentTransferCount = 0; // 꽉 찼으면 0
+        }
+        else
+        {
+            currentTransferCount = Mathf.Clamp(currentTransferCount, 1, maxAllowed);
+        }
+
+        quantityText.text = currentTransferCount.ToString();
+        RefreshButtonState();
+    }
     void RefreshButtonState()
     {
+        if (selectedLeft == null || selectedRight == null)
+        {
+            if (sendButton != null) sendButton.interactable = false;
+            return;
+        }
+        bool hasEnoughSpace = (selectedRight.currentAmount + currentTransferCount) <= selectedRight.max;
         // 양쪽 모두 선택되어야 보내기 버튼 활성화
         // (만약 테이블 쪽에 '최대 보관 가능 개수' 제한 로직이 있다면 여기서 CheckIfSpaceAvailable 활용)
         sendButton.interactable = (selectedLeft != null && selectedRight != null);
@@ -126,14 +162,20 @@ public class RoomStoragePanel : MonoBehaviour
     public void ChangeQuantity(int amount)
     {
         if (selectedLeft == null) return;
-        currentTransferCount = Mathf.Clamp(currentTransferCount + amount, 1, selectedLeft.currentAmount);
-        quantityText.text = currentTransferCount.ToString();
+        currentTransferCount += amount;
+        ValidateTransferCount();
     }
 
     // 💡 2. 가장 중요한 데이터 이동 전송 로직
     public void ExecuteTransfer()
     {
-        if (selectedLeft == null || selectedRight == null) return;
+        if (quantityText != null && int.TryParse(quantityText.text, out int manualResult))
+        {
+            currentTransferCount = manualResult;
+            ValidateTransferCount(); // 수량 제한(Max 등) 로직을 한 번 더 타서 안전하게 고정
+        }
+
+        if (selectedLeft == null || selectedRight == null || currentTransferCount <= 0) return;
 
         // [DB 업데이트] 문서에 적힌 API 호출
         // 1. 재고함에서 빼기 (-)
@@ -161,6 +203,7 @@ public class RoomStoragePanel : MonoBehaviour
         // 상태 초기화
         currentTransferCount = 1;
         quantityText.text = "1";
+        ValidateTransferCount();
         RefreshButtonState();
     }
 
@@ -205,7 +248,6 @@ public class RoomStoragePanel : MonoBehaviour
         {
             currentTransferCount = 1;
         }
-
-        quantityText.text = currentTransferCount.ToString();
+        ValidateTransferCount();
     }
 }

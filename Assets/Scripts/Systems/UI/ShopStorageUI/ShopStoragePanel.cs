@@ -206,38 +206,58 @@ public class ShopStoragePanel : MonoBehaviour
     }
 
     // 보내기 버튼 클릭 시
+    // 💡 2. 가장 중요한 데이터 이동 전송 로직
+    // 💡 2. 가장 중요한 데이터 이동 전송 로직
     public void ExecuteTransfer()
     {
-        if (selectedLeft == null || selectedRight == null) return;
+        if (quantityText != null && int.TryParse(quantityText.text, out int manualResult))
+        {
+            currentTransferCount = manualResult;
+        }
+
+        if (selectedLeft == null || selectedRight == null || currentTransferCount <= 0) return;
+
+        // 💡 [핵심 해결법] 이벤트 발동 중 currentTransferCount 값이 1로 맘대로 초기화되는 것을 막기 위해,
+        // 이번에 '진짜 보낼 개수'를 안전한 지역 변수에 고정(백업)해 둡니다.
+        int amountToTransfer = currentTransferCount;
+
+        int backupParentID = selectedLeft.parentID;
+        int backupDataIndex = selectedLeft.dataIndex;
 
         // 1. 데이터 업데이트
-        selectedLeft.currentAmount -= currentTransferCount;
-        selectedRight.currentAmount += currentTransferCount;
+        selectedLeft.currentAmount -= amountToTransfer;
+        selectedRight.currentAmount += amountToTransfer;
 
-        // 데이터 매니저 데이터 업데이트
-        ShopStorageDataManager.Instance.UpdateTableData(selectedLeft.parentID, selectedLeft.dataIndex, -currentTransferCount);
-        ShopStorageDataManager.Instance.UpdateStorageData(selectedRight.parentID, selectedLeft.parentID, selectedLeft.dataIndex, currentTransferCount);
+        // 데이터 매니저 데이터 업데이트 (이 순간 수량이 0이면 이벤트가 발생해서 currentTransferCount를 1로 바꿈!)
+        ShopStorageDataManager.Instance.UpdateTableData(backupParentID, backupDataIndex, -amountToTransfer);
 
-        // 2. UI 갱신 (아이템 프리팹 내부의 텍스트를 새로고침하는 함수가 아이템 스크립트에 있어야 함)
-        selectedLeft.RefreshUI(true);
+        // 하지만 우리는 백업해둔 amountToTransfer를 쓰기 때문에 안전하게 원래 개수(예: 5개) 그대로 전송 완료!
+        ShopStorageDataManager.Instance.UpdateStorageData(selectedRight.parentID, backupParentID, backupDataIndex, amountToTransfer);
+
+        // 2. UI 갱신
+        if (selectedLeft != null)
+        {
+            selectedLeft.RefreshUI(true);
+        }
         selectedRight.RefreshUI(false);
 
         // 3. 만약 수량이 0이 되면 아이템 파괴
-        if (selectedLeft.currentAmount <= 0)
+        if (selectedLeft != null && selectedLeft.currentAmount <= 0)
         {
             leftSpawnedItems.Remove(selectedLeft.gameObject);
             Destroy(selectedLeft.gameObject);
             selectedLeft = null;
         }
 
-        Debug.Log($"{currentTransferCount}개의 이불을 전송했습니다.");
+        Debug.Log($"[{selectedRight.itemName}]로 이불 {amountToTransfer}개 전송 완료!");
 
         // 4. 전송 후 수량 초기화 및 버튼 상태 업데이트
         currentTransferCount = 1;
-        quantityText.text = "1";
+        if (quantityText != null) quantityText.text = "1";
 
         RefreshButtonState();
     }
+
 
     //X버튼 연결
     public void ClosePanel()
