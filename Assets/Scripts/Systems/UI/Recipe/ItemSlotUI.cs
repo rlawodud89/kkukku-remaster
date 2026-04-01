@@ -26,5 +26,6 @@ public class ItemSlotUI : MonoBehaviour
     {
         itemName.text=recipe.itemName;
         itemCount.text="X"+recipe.count.ToString();
+        
     }
 }
