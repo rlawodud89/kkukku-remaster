@@ -60,6 +60,7 @@ public class GatheringManager : MonoBehaviour
         }
 
 
+        trees = new List<ItemTree>(FindObjectsOfType<ItemTree>());
         ResetAllButtons();
         StartTimer();
     }

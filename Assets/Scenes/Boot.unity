@@ -2206,7 +2206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2547698965017762129, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
       propertyPath: m_text
-      value: "\uAC8C\uC784 \uC800\uC7A5\uD558\uAE30"
+      value: "\uC885\uB8CC\uD558\uAE30"
       objectReference: {fileID: 0}
     - target: {fileID: 4326629660807188567, guid: a56ec55b7a37f2d428d3763eaee7e6e0, type: 3}
       propertyPath: audioMixer
@@ -2733,6 +2733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameInputField: {fileID: 116631581}
+  profileManager: {fileID: 922332630}
 --- !u!1 &430760439
 GameObject:
   m_ObjectHideFlags: 0
