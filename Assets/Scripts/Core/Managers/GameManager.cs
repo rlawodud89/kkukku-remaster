@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
 
     public DayPhase currentPhase;
     public static event Action<DayPhase> OnPhaseChangedEvent;
+    public static event Action OnDayEndEvent;
 
     [Header("디버그 도구")]
     [Range(0, 23)] public int debugHour; // 인스펙터 슬라이더로 조절
@@ -149,6 +150,8 @@ public class GameManager : MonoBehaviour
         {
             OnPhaseChanged();
         }
+
+        if (hour == 0) OnDayEndEvent?.Invoke();
     }
 
     void OnPhaseChanged()

@@ -6,6 +6,8 @@ public class DayEndManager : MonoBehaviour
 {
     private static DayEndManager Instance;
 
+    public UpdateDayEndUI dayEndUI;
+
     private void Awake()
     {
         // 이미 존재하면 중복 제거
@@ -23,22 +25,23 @@ public class DayEndManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnPhaseChangedEvent += HandlePhaseChanged;
+        GameManager.OnDayEndEvent += HandleDayEnd;
     }
 
     private void OnDisable()
     {
-        GameManager.OnPhaseChangedEvent -= HandlePhaseChanged;
+        GameManager.OnDayEndEvent -= HandleDayEnd;
     }
 
-    private void HandlePhaseChanged(DayPhase phase)
+    private void HandleDayEnd()
     {
-        if (phase == DayPhase.Morning)
-        {
-            // TODO: 하루 마무리 패널 띄우기
+        dayEndUI.Setup(
+            ServiceLocator.Get<GameData>().User.GetTodayGold(),
+            ServiceLocator.Get<GameData>().User.GetTodayMoonrock()
+            );
+        dayEndUI.gameObject.SetActive(true);
 
-            ServiceLocator.Get<GameData>().User.ResetTodayGoldMoonrock();
-            ServiceLocator.Get<GameData>().Store.ResetAllStoreItemList();
-        }
+        ServiceLocator.Get<GameData>().User.ResetTodayGoldMoonrock();
+        ServiceLocator.Get<GameData>().Store.ResetAllStoreItemList();
     }
 }

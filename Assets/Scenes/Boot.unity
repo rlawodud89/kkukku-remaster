@@ -2971,6 +2971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15d6535f68fe7e64d8332eb21b2ba5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dayEndUI: {fileID: 362919153}
 --- !u!4 &582359003
 Transform:
   m_ObjectHideFlags: 0
@@ -3798,14 +3799,6 @@ PrefabInstance:
     - target: {fileID: 8855529928303853904, guid: 43013cca12f9a7843984450d0ace1b51, type: 3}
       propertyPath: m_Name
       value: mapPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 8855529928303853904, guid: 43013cca12f9a7843984450d0ace1b51, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8951850696269789530, guid: 43013cca12f9a7843984450d0ace1b51, type: 3}
-      propertyPath: sceneName
-      value: SleepingGarden
       objectReference: {fileID: 0}
     - target: {fileID: 9111335615970701896, guid: 43013cca12f9a7843984450d0ace1b51, type: 3}
       propertyPath: m_Pivot.x
@@ -7598,15 +7591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f16d02cdc4bdf4cadb8a9478362c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps:
-  - {fileID: 11400000, guid: fd15039cb29e28e4cb3ac37cab1a3e44, type: 2}
-  - {fileID: 11400000, guid: cb6b7213331690f44b6761e4cddc72c2, type: 2}
-  - {fileID: 11400000, guid: fd15039cb29e28e4cb3ac37cab1a3e44, type: 2}
-  - {fileID: 11400000, guid: dcb5b5240bfe91448ac0d69fe513027a, type: 2}
-  - {fileID: 11400000, guid: fd15039cb29e28e4cb3ac37cab1a3e44, type: 2}
-  - {fileID: 11400000, guid: 4db9cf4ce0293724bb65f0b11af66e1c, type: 2}
-  - {fileID: 11400000, guid: fd15039cb29e28e4cb3ac37cab1a3e44, type: 2}
-  - {fileID: 11400000, guid: f2cafb4b228b8d14bbd9acd47c140b10, type: 2}
+  steps: []
 --- !u!1001 &1796497797
 PrefabInstance:
   m_ObjectHideFlags: 0
