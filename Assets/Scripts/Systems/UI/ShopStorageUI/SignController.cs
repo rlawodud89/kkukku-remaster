@@ -22,19 +22,20 @@ public class SignController : MonoBehaviour
         switch (phase)
         {
             case DayPhase.Night:
-                // 1. 밤에는 간판 버튼 비활성화 (시각적 비활성화용)
-                if (signButton != null) signButton.interactable = false;
+                // 1. 밤에는 클릭(터치) 방지를 위해 버튼 비활성화
+                this.gameObject.GetComponent<Button>().interactable = false;
 
-                // 2. 가게가 열려있다면 강제로 닫기
-                if (ShopManager.Instance.isStoreOpen && signFlipper != null)
+                // 2. 밤이 되었을 때 자동으로 간판을 돌려서 닫는 연출 실행
+                SignFlipper flipper = this.gameObject.GetComponent<SignFlipper>();
+                if (flipper != null)
                 {
-                    signFlipper.ForceClose();
+                    flipper.AutoClose();
                 }
                 break;
 
             default: // Morning, Day, Evening (아침, 낮, 저녁)
-                // 3. 아침이 되면 다시 간판 버튼 활성화
-                if (signButton != null) signButton.interactable = true;
+                // 3. 밤이 아니면 다시 간판 버튼 활성화
+                this.gameObject.GetComponent<Button>().interactable = true;
                 break;
         }
     }

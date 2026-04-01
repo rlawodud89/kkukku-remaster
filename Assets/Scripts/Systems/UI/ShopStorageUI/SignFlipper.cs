@@ -45,23 +45,15 @@ public class SignFlipper : MonoBehaviour, IPointerClickHandler
             StartCoroutine(FlipAnimation());
         }
     }
-    public void ForceClose()
+    // 💡 밤이 되었을 때 SignController에서 자동으로 호출하는 함수
+    public void AutoClose()
     {
-        // 혹시 애니메이션 중 밤이 되었다면 코루틴 즉시 정지
-        StopAllCoroutines();
-        isAnimating = false;
-
-        // 가게 상태를 강제로 '닫힘'으로 변경
-        if (ShopManager.Instance.isStoreOpen)
+        // 가게가 '열려있는 상태'이고, 현재 애니메이션 중이 아닐 때만 실행
+        if (ShopManager.Instance.isStoreOpen && !isAnimating)
         {
-            ShopManager.Instance.ToggleStoreOpen();
+            Debug.Log("밤이 되어 자동으로 마감합니다.");
+            StartCoroutine(FlipAnimation());
         }
-
-        // 시각적 상태 초기화
-        signImage.sprite = closedSprite;
-        transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-
-        Debug.Log("밤이 되어 가게 문이 자동으로 닫혔습니다.");
     }
     IEnumerator FlipAnimation()
     {
