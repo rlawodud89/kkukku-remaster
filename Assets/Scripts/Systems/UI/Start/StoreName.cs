@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class StoreName : MonoBehaviour
 {
     public TMP_InputField nameInputField;
+    public ProfileManager profileManager;
 
     public void SaveAndStart()
     {
@@ -28,6 +29,8 @@ public class StoreName : MonoBehaviour
             if (TutorialLoader.Instance != null) TutorialLoader.Instance.TutorialStart();
 
             ServiceLocator.Get<SaveService>().SaveNow();
+
+            profileManager.SetName();
         }
         else
         {
