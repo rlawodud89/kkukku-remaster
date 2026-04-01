@@ -6,11 +6,11 @@ public class TutorialSystemRoot : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log($"[TutorialSystemRoot] Awake in {gameObject.scene.name}");
+        Debug.Log($"[TutorialSystemRoot] Awake: {gameObject.GetInstanceID()} in {gameObject.scene.name}");
 
         if (Instance != null && Instance != this)
         {
-            Debug.Log("[TutorialSystemRoot] Duplicate → Destroy");
+            Debug.Log($"[TutorialSystemRoot] Duplicate Destroy: {gameObject.GetInstanceID()}");
             Destroy(gameObject);
             return;
         }
@@ -21,9 +21,9 @@ public class TutorialSystemRoot : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log($"[TutorialSystemRoot] Destroyed: {gameObject.GetInstanceID()}");
+
         if (Instance == this)
-        {
             Instance = null;
-        }
     }
 }
