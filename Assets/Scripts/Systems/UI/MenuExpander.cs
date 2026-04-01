@@ -10,7 +10,7 @@ public class MenuExpander : MonoBehaviour
     // 버튼이 나오는 간격
     public float delayTime = 0.01f;
     // 현재 열려있는지 닫혀있는지 체크
-    private bool _isOpen = false; 
+    private bool _isOpen = false;
 
     private void OnEnable()
     {
@@ -45,6 +45,7 @@ public class MenuExpander : MonoBehaviour
         else
         {
             StartCoroutine(OpenSequence());
+            TutorialEventBus.Raise(TutorialID.MenuButton);
         }
     }
 
@@ -52,7 +53,7 @@ public class MenuExpander : MonoBehaviour
     {
         _isOpen = true;
 
-        for(int i = 0; i < subButtons.Length; i++)
+        for (int i = 0; i < subButtons.Length; i++)
         {
             subButtons[i].SetActive(true);
             yield return new WaitForSeconds(delayTime);  // 잠깐 대기
@@ -63,11 +64,11 @@ public class MenuExpander : MonoBehaviour
     {
         _isOpen = false;
 
-        for(int i = subButtons.Length-1;i>=0; i--)
+        for (int i = subButtons.Length - 1; i >= 0; i--)
         {
             subButtons[i].SetActive(false);
             yield return new WaitForSeconds(delayTime);  // 잠깐 대기
         }
     }
-    
+
 }

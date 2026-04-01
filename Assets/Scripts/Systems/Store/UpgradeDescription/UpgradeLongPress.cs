@@ -82,6 +82,7 @@ public class UpgradeLongPress : MonoBehaviour,
 
         longPressTriggered = true;
         descriptionPanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.MaterialLevelUpgradeDescription);
     }
 
     private void CancelPress()

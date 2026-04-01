@@ -40,6 +40,7 @@ public class UpgradeLoader : MonoBehaviour
 
         popup.SetUpgrade(upgradeProvider);
         popup.gameObject.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ClickUpgradeMaterialLevelButton);
     }
 
     private void LevelTextUpdate()
