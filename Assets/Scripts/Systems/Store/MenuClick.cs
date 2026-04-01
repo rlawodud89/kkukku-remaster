@@ -22,6 +22,7 @@ public class MenuClick : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         materialPurchasePanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ClickMaterialMenu);
     }
 
     public void OnClickWorkerBtn()
@@ -34,6 +35,7 @@ public class MenuClick : MonoBehaviour
     {
         materialPurchasePanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ExitMaterialMenu);
     }
 
     public void OnClickWorkerBackBtn()

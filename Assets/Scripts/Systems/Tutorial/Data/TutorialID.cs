@@ -32,7 +32,8 @@ public enum TutorialID
     ClickMaterialMenu,
     MaterialDescription,
     ClickBuyMaterialButton,
-    ButMaterial,
+    BuyMaterial,
+    AnotherMaterialMenu,
     ExitMaterialMenu,
 
     MaterialLevelUpgradeDescription,

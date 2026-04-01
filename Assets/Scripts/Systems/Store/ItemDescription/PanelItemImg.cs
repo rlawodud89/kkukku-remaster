@@ -76,7 +76,7 @@ public class PanelItemImg : MonoBehaviour,
             yield break;
 
         descriptionPanel.Show(description, transform as RectTransform);
-        //TutorialEventBus.Raise(TutorialID.StoreDescription);
+        TutorialEventBus.Raise(TutorialID.MaterialDescription);
     }
 
 
