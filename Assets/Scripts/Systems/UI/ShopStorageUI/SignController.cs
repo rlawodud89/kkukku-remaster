@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class SignController : MonoBehaviour
 {
-
+    public Button signButton;
+    public SignFlipper signFlipper;
     private void OnEnable() {
         // GameManager의 이벤트에 내 함수를 등록
         GameManager.OnPhaseChangedEvent += SignControll;
@@ -20,16 +21,23 @@ public class SignController : MonoBehaviour
     {
         switch (phase)
         {
-            case DayPhase.Morning:
-                this.gameObject.GetComponent<Button>().interactable=true;
-                break;
             case DayPhase.Night:
-                this.gameObject.GetComponent<Button>().interactable=true;
+                // 1. 밤에는 클릭(터치) 방지를 위해 버튼 비활성화
+                this.gameObject.GetComponent<Button>().interactable = false;
+
+                // 2. 밤이 되었을 때 자동으로 간판을 돌려서 닫는 연출 실행
+                SignFlipper flipper = this.gameObject.GetComponent<SignFlipper>();
+                if (flipper != null)
+                {
+                    flipper.AutoClose();
+                }
                 break;
-            default:
-                this.gameObject.GetComponent<Button>().interactable=false;
+
+            default: // Morning, Day, Evening (아침, 낮, 저녁)
+                // 3. 밤이 아니면 다시 간판 버튼 활성화
+                this.gameObject.GetComponent<Button>().interactable = true;
                 break;
         }
     }
-    
+
 }

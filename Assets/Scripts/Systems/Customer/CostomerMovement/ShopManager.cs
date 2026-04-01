@@ -26,6 +26,8 @@ public class ShopManager : MonoBehaviour
     [Header("Scene Settings")]
     public string shopSceneName;
 
+    private float exitGameTime;
+
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
@@ -49,10 +51,19 @@ public class ShopManager : MonoBehaviour
         if (scene.name == shopSceneName)
         {
             isStoreOpen = ServiceLocator.Get<GameData>().User.GetIsOpen();
-            Debug.Log($"[ShopManager] 가게 복귀. 상태: {(isStoreOpen ? "영업중" : "준비중")}");
-
+         
             // 1. 오프라인 시간 동안의 판매 시뮬레이션 돌리기
             SimulateOfflineProgress();
+
+            // 정산 직후, 현재 게임 시간이 밤(Night)이라면 가게를 강제로 닫음 처리
+            if (isStoreOpen && GameManager.Instance != null && GameManager.Instance.currentPhase == DayPhase.Night)
+            {
+                isStoreOpen = false;
+                ServiceLocator.Get<GameData>().User.SetIsOpen(false);
+                Debug.Log("[ShopManager] 밤이 되어 자동으로 가게 문이 닫혔습니다.");
+            }
+
+            Debug.Log($"[ShopManager] 가게 복귀. 상태: {(isStoreOpen ? "영업중" : "준비중")}");
 
             // 2. 시뮬레이션 끝난 후 시각적 갱신 (가구 비우기 등)
             RefreshAllFurnitureVisuals();
@@ -135,6 +146,10 @@ public class ShopManager : MonoBehaviour
     public void SaveExitTime()
     {
         lastExitTime = DateTime.UtcNow;
+        if (GameManager.Instance != null)
+        {
+            exitGameTime = GameManager.Instance.gameTime;
+        }
     }
 
     // =========================================================
@@ -142,21 +157,55 @@ public class ShopManager : MonoBehaviour
     // =========================================================
     public void SimulateOfflineProgress()
     {
+        if(!isStoreOpen)
+        {
+            Debug.Log("가게 문을 닫아놓고 나가서 수익이 없습니다.");
+            return;
+        }
+
+        if (lastExitTime == default(DateTime)) return;
+
         TimeSpan span = DateTime.UtcNow - lastExitTime;
         float offlineSeconds = (float)span.TotalSeconds;
 
         // 너무 짧은 시간(예: 5초 미만)은 무시
         if (offlineSeconds < 5f) return;
+
+        if (GameManager.Instance != null)
+        {
+            // 하루는 86400초, 밤 9시(21:00)는 21 * 3600 = 75600초
+            float daySecondsAtExit = exitGameTime % 86400f;
+            float nightStartSeconds = 21f * 3600f; // 밤이 시작되는 시점
+
+            // 씬을 나간 시점이 밤 9시 이전이었다면
+            if (daySecondsAtExit < nightStartSeconds)
+            {
+                // 밤이 되기까지 남은 '게임 내 시간(초)'
+                float inGameSecondsUntilNight = nightStartSeconds - daySecondsAtExit;
+
+                // 이를 '현실 시간(초)'으로 환산 (timeScale 적용)
+                float realSecondsUntilNight = inGameSecondsUntilNight / GameManager.Instance.timeScale;
+
+                // 실제 부재 시간이 밤까지 남은 시간보다 길다면, 밤 전까지만 계산하도록 잘라냄
+                if (offlineSeconds > realSecondsUntilNight)
+                {
+                    Debug.Log($"[정산 제한] 부재 중 밤이 되었습니다. 닫기 전까지의 시간({realSecondsUntilNight:F0}초)만 계산합니다.");
+                    offlineSeconds = realSecondsUntilNight;
+                }
+            }
+            else
+            {
+                // 나갈 때 이미 밤이었다면 장사를 할 수 없으므로 수익 없음
+                Debug.Log("[정산 제한] 나갈 때 이미 밤이었으므로 판매 수익이 없습니다.");
+                return;
+            }
+        }
+
         if (offlineSeconds > 86400f * 3) offlineSeconds = 86400f * 3; // 최대 3일치만 계산 (오버플로우 방지)
 
         Debug.Log($"============== [오프라인 정산 시작] ==============");
         Debug.Log($"부재 시간: {offlineSeconds:F0}초");
 
-        if (!isStoreOpen)
-        {
-            Debug.Log("가게 문을 닫아놓고 나가서 수익이 없습니다.");
-            return;
-        }
 
         // 1. 이 시간 동안 다녀갔을 '가상의 손님 수' 계산
         // (부재 시간 / 한 명당 소요 시간) * (동시 입장 가능 비율 보정 1.5배 등)

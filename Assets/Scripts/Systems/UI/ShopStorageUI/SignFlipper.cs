@@ -34,13 +34,27 @@ public class SignFlipper : MonoBehaviour, IPointerClickHandler
     // 오브젝트를 클릭했을 때 호출되는 함수 (EventTrigger 필요 없음)
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (GameManager.Instance.currentPhase == DayPhase.Night)
+        {
+            Debug.Log("밤에는 가게를 열 수 없습니다.");
+            return;
+        }
         // 애니메이션 중이 아닐 때만 실행
         if (!isAnimating)
         {
             StartCoroutine(FlipAnimation());
         }
     }
-
+    // 💡 밤이 되었을 때 SignController에서 자동으로 호출하는 함수
+    public void AutoClose()
+    {
+        // 가게가 '열려있는 상태'이고, 현재 애니메이션 중이 아닐 때만 실행
+        if (ShopManager.Instance.isStoreOpen && !isAnimating)
+        {
+            Debug.Log("밤이 되어 자동으로 마감합니다.");
+            StartCoroutine(FlipAnimation());
+        }
+    }
     IEnumerator FlipAnimation()
     {
         isAnimating = true;
