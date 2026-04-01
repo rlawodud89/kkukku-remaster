@@ -42,15 +42,17 @@ public class RoomBlanketItem : MonoBehaviour, IPointerClickHandler
     }
 
     // (추가) 오른쪽 패널에 '판매대'를 표시하기 위한 전용 함수
-    public void SetupTableItem(int tableID, int index, int currentTableAmount)
+    public void SetupTableItem(int tableID, int index, int currentTableAmount, int max)
     {
         this.parentID = tableID;
         this.dataIndex = index;
         this.itemName = $"판매대 {tableID}";
+        this.max = max;
+        this.currentAmount = currentTableAmount;
 
         if (nameText != null) nameText.text = this.itemName;
 
-        if (amountText != null) amountText.text = $"수량: {currentTableAmount}";
+        if (amountText != null) amountText.text = $"{currentAmount} / {max}";
     }
 
     public void RefreshUI(bool isBlanket)

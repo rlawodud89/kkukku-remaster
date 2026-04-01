@@ -8783,8 +8783,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ShopStoragePanel, Assembly-CSharp
+      - m_Target: {fileID: 1995993236}
+        m_TargetAssemblyTypeName: RoomStoragePanel, Assembly-CSharp
         m_MethodName: OnInputQuantityChanged
         m_Mode: 0
         m_Arguments:

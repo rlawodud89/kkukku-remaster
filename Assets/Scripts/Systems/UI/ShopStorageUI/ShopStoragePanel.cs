@@ -230,11 +230,12 @@ public class ShopStoragePanel : MonoBehaviour
             selectedLeft = null;
         }
 
+        Debug.Log($"{currentTransferCount}개의 이불을 전송했습니다.");
+
         // 4. 전송 후 수량 초기화 및 버튼 상태 업데이트
         currentTransferCount = 1;
         quantityText.text = "1";
 
-        Debug.Log($"{currentTransferCount}개의 이불을 전송했습니다.");
         RefreshButtonState();
     }
 

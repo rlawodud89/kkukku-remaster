@@ -490,4 +490,22 @@ public class InteriorAggregate : IAggregate
 
         MarkDirty();
     }
+
+    public List<(int tableID, int maxCount)> GetCurrentTableMaxCountList()
+    {
+        var list = new List<(int tableID, int maxCount)>();
+
+        foreach (var (ID, interior) in shopPlaced)
+        {
+            if(interior.interiorType == ShopInteriorType.TABLE)
+            {
+                list.Add((
+                    ID,
+                    shopInteriorSOs[interior.itemName].slotCount
+                    ));
+            }
+        }
+
+        return list;
+    }
 }

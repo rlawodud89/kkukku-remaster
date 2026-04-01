@@ -57,6 +57,18 @@ public class RoomStoragePanel : MonoBehaviour
         }
 
         // [오른쪽 세팅] 문서 API: GetCurrentShopTables 사용
+
+        var maxCountData = ServiceLocator.Get<GameData>().Interior.GetCurrentTableMaxCountList();
+        Dictionary<int, int> tableMaxCapacity = new Dictionary<int, int>();
+        if (maxCountData != null)
+        {
+            foreach (var data in maxCountData)
+            {
+                tableMaxCapacity[data.tableID] = data.maxCount;
+            }
+        }
+
+        // [오른쪽 세팅]
         var tableList = ServiceLocator.Get<GameData>().ShopState.GetCurrentShopTables();
         if (tableList != null)
         {
@@ -72,12 +84,15 @@ public class RoomStoragePanel : MonoBehaviour
                 {
                     foreach (int amount in tableList[i].count)
                     {
-                        totalAmountOnTable += amount; // 테이블에 있는 이불 개수를 전부 더함
+                        totalAmountOnTable += amount;
                     }
                 }
 
-                // 앞서 BlanketItem에 추가한 테이블 전용 세팅 함수 사용
-                item.SetupTableItem(tableList[i].tableID, i, totalAmountOnTable);
+                // 💡 해당 테이블의 ID를 키로 써서 Max 값을 가져옵니다. (없으면 0)
+                int maxCount = tableMaxCapacity.ContainsKey(tableList[i].tableID) ? tableMaxCapacity[tableList[i].tableID] : 0;
+
+                // Max값 넘겨주기
+                item.SetupTableItem(tableList[i].tableID, i, totalAmountOnTable, maxCount);
                 item.OnItemSelected = OnRightItemSelected;
             }
         }
@@ -129,7 +144,9 @@ public class RoomStoragePanel : MonoBehaviour
 
         // [UI 갱신]
         selectedLeft.currentAmount -= currentTransferCount;
-        selectedLeft.RefreshUI(true); // 왼쪽 텍스트 갱신
+        selectedLeft.RefreshUI(true);
+        selectedRight.currentAmount += currentTransferCount;
+        selectedRight.RefreshUI(false);
 
         // 왼쪽 수량이 0이 되면 항목 삭제
         if (selectedLeft.currentAmount <= 0)
@@ -139,12 +156,12 @@ public class RoomStoragePanel : MonoBehaviour
             selectedLeft = null;
         }
 
+        Debug.Log($"[{selectedRight.itemName}]로 {selectedLeft?.itemName} {currentTransferCount}개 전송 완료");
+
         // 상태 초기화
         currentTransferCount = 1;
         quantityText.text = "1";
         RefreshButtonState();
-
-        Debug.Log($"[{selectedRight.itemName}]로 {selectedLeft?.itemName} {currentTransferCount}개 전송 완료");
     }
 
     // 패널 닫기 및 초기화
