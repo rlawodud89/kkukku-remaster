@@ -13,9 +13,8 @@ public class SaveSystem : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        dbPath = Path.Combine(Application.persistentDataPath, "kkukkuDB.db");
-
-        // TODO: 모바일 환경에 맞춘 dbPath로 변경 필요
+        dbPath = Path.Combine(Application.streamingAssetsPath, "kkukkuDB.db");
+        
         bool isNewUser = !File.Exists(dbPath);
 
         var connection = new SQLiteConnection(dbPath);
