@@ -49,7 +49,6 @@ public class FishingManagerUI : MonoBehaviour
         if (Instance == null) Instance = this;
         FishingButton.image.sprite = ServiceLocator.Get<GameData>().User.GetCurrentUsedTool(ToolType.FISHING)?.image;
     }
-
     void Update()
     {
         timer += Time.deltaTime;
@@ -97,10 +96,40 @@ public class FishingManagerUI : MonoBehaviour
 
     MaterialItemSO GetItemByLevel()
     {
-        var candidates = allItems.Where(item => item.level <= currentFishingLevel).ToList();
-        if (candidates.Count == 0) return null;
-        int randomIndex = Random.Range(0, candidates.Count);
-        return candidates[randomIndex];
+        if (allItems.Count == 0) return null;
+
+        float weightPenalty = 3.0f;
+        
+        // 1. 모든 아이템의 가중치 총합 구하기
+        float totalWeight = 0f;
+        foreach (var item in allItems)
+        {
+            float safeLevel = Mathf.Max(1f, item.level); 
+            totalWeight += 1f / Mathf.Pow(weightPenalty, safeLevel - 1);
+        }
+
+        // 2. 0부터 총 가중치 사이의 랜덤 값 뽑기
+        float randomValue = Random.Range(0f, totalWeight);
+        float currentWeight = 0f;
+
+        foreach (var item in allItems)
+        {
+            float safeLevel = Mathf.Max(1f, item.level);
+            float weight = 1f / Mathf.Pow(weightPenalty, safeLevel - 1);
+            currentWeight += weight;
+
+            if (randomValue <= currentWeight)
+            {
+                // 🎉 가중치 수치까지 포함해서 디버그 출력
+                Debug.Log($"<color=green>[Fishing Spawn]</color> 당첨: <b>{item.itemName}</b> (Level: {item.level} / 적용 가중치: {weight:F3})");
+                return item;
+            }
+        }
+    
+        MaterialItemSO fallbackItem = allItems.Last();
+        Debug.LogWarning($"<color=orange>[Fishing Spawn - Fallback]</color> 당첨: <b>{fallbackItem.itemName}</b> (Level: {fallbackItem.level})");
+    
+        return fallbackItem;
     }
 
     void CheckTiming()

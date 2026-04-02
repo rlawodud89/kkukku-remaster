@@ -78,6 +78,8 @@ public class StorageUIController : MonoBehaviour
         currentOpenBoxID = id;
         currentStorageType = type;
 
+        UIEventManager.HideMainUI();
+        
         CloseAllPanels();
         if (blockerObj && type != StorageType.Snack) blockerObj.SetActive(true);
         IsPopupOpen = true;
@@ -167,7 +169,9 @@ public class StorageUIController : MonoBehaviour
 
     public void OnclickExitBtn()
     {
+        UIEventManager.ShowMainUI();
         CloseAllPanels();
+        
     }
     
 
