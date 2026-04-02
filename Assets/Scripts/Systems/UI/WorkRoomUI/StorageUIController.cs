@@ -306,7 +306,7 @@ public class StorageUIController : MonoBehaviour
     }
     
     
-    private void UpdateCapacityUI(int storageID, StorageType type)
+    public void UpdateCapacityUI(int storageID, StorageType type)
     {
         // 1. 방에 배치된 해당 상자(가구)를 찾아서 최대 용량(SO)을 가져옵니다.
         var targetBox = RoomInteriorManager.Instance.GetStorageBoxByID(storageID);

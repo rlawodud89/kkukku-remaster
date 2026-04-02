@@ -473,7 +473,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 95104341}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.64658034
+  m_Size: 0.6465803
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1796,7 +1796,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2141882041}
   m_HandleRect: {fileID: 2141882040}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 1
   m_Size: 0.59256667
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6765,7 +6765,6 @@ MonoBehaviour:
   highlightSprite: {fileID: 623707518}
   colorValid: {r: 0, g: 1, b: 0, a: 0.5}
   colorInvalid: {r: 1, g: 0, b: 0, a: 0.5}
-  yVisualOffset: 0.35
   currentSelectedFurniture: {fileID: 0}
   gridOccupancyMap: 
 --- !u!4 &603266784
@@ -20316,7 +20315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2047291527
 RectTransform:
   m_ObjectHideFlags: 0

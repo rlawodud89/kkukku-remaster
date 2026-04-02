@@ -71,6 +71,8 @@ public class SnackDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
                     employee.EatSnack(staminaRecoverAmount);
                     ServiceLocator.Get<GameData>().Inventory.AdjustSnackCount(myStorageID, mySnackName, -1);
                     mySlotUI.UseItem();
+                    
+                    StorageUIController.Instance.UpdateCapacityUI(myStorageID, StorageUIController.StorageType.Snack);
                 }
                 else
                 {
