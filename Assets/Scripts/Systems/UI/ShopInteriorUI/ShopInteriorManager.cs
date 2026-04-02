@@ -316,7 +316,17 @@ public class ShopInteriorManager : MonoBehaviour
             var placedTable = data.Table.Find(x => x.ID == targetID);
             if (placedTable != null) placedTable.placement = newGridIndex;
 
-            if (data.Casher != null && data.Casher.ID == targetID) data.Casher.placement = newGridIndex;
+            if (data.Casher != null && data.Casher.ID == targetID)
+            {
+                data.Casher.placement = newGridIndex; // 위치 갱신
+
+                // 맵에 존재하는 모든 NPC에게 계산대 위치가 변경되었음을 알림
+                NPCAI[] allNPCs = FindObjectsOfType<NPCAI>();
+                foreach (NPCAI npc in allNPCs)
+                {
+                    npc.RedirectToNewCashier();
+                }
+            }
 
             // DB 업데이트
             ServiceLocator.Get<GameData>().Interior.TransferShopInterior(targetID, newGridIndex);

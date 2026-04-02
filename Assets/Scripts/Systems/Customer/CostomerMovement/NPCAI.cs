@@ -817,4 +817,22 @@ public class NPCAI : MonoBehaviour
             animator.SetFloat("Speed", 0f); // 제자리걸음 방지 (멈춤)
         }
     }
+
+    public void RedirectToNewCashier()
+    {
+        // 현재 계산대로 걷고 있거나, 줄 서 있거나, 결제 중인 손님만 해당
+        if (myData.currentState == CustomerData.State.MovingToCashier ||
+            myData.currentState == CustomerData.State.Paying)
+        {
+            // 1. 하던 코루틴(옛날 위치로 가는 길찾기 등) 전부 정지!
+            StopAllCoroutines();
+
+            // 2. 상태를 다시 이동 중으로 돌려놓기
+            myData.currentState = CustomerData.State.MovingToCashier;
+            animator.SetFloat("Speed", 1f);
+
+            // 3. 바뀐 최신 위치를 향해 계산 프로세스를 다시 시작!
+            StartCoroutine(GoToCashierAndPay());
+        }
+    }
 }

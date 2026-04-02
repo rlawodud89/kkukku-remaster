@@ -19,6 +19,13 @@ public class CashierManager : MonoBehaviour
 
     public Vector3 GetCashierPosition()
     {
+        var casherData = ShopStorageDataManager.Instance.interiorData.Casher;
+        if (casherData != null)
+        {
+            cashierPosIndex = casherData.placement; // 최신 위치 인덱스 갱신
+            cashierWidth = casherData.Width;        // 최신 너비 갱신
+        }
+
         // 1. 계산대 타일과 너비 계산 (기존 동일)
         Vector3Int leftTilePos = pathfinding.IndexToPos(cashierPosIndex);
         Vector3Int rightTilePos = leftTilePos;
