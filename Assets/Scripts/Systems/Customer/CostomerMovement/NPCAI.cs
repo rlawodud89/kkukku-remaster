@@ -357,6 +357,58 @@ public class NPCAI : MonoBehaviour
 
         if (path != null && path.Count > 0)
         {
+            int currentWaypointIndex = 0;
+
+            // foreach 대신 while을 써서 목표점(waypoint)들을 순회합니다.
+            while (currentWaypointIndex < path.Count)
+            {
+                Vector3 worldPos = walkTilemap.GetCellCenterWorld(path[currentWaypointIndex]);
+
+                // 💡 핵심 1: '도착 판정 거리'를 유동적으로 설정합니다.
+                // 마지막 목적지면 0.05f(정밀 주차), 지나가는 길목이면 0.2f(미리 다음 타일로 목표 변경)
+                // 이 값을 0.2f ~ 0.3f로 조절하시면 코너를 돌 때 둥글고 부드럽게 꺾여서 갑니다!
+                float distanceThreshold = (currentWaypointIndex == path.Count - 1) ? 0.05f : 0.2f;
+
+                // 💡 핵심 2: 타일 중앙에 완벽히 닿기 '직전'까지만 이동합니다.
+                while (Vector3.Distance(transform.position, worldPos) > distanceThreshold)
+                {
+                    // 방향을 루프 안에서 계속 갱신해주어 코너를 돌 때 애니메이션이 자연스럽게 넘어갑니다.
+                    Vector3 direction = (worldPos - transform.position).normalized;
+                    SetDirection(direction);
+
+                    transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
+                    yield return null;
+                }
+
+                // 💡 핵심 3: 중간 길목에서 위치를 강제로 스냅(Snap)시키는 코드를 삭제하여 덜컹거림 방지
+                currentWaypointIndex++;
+            }
+
+            // 마지막 목적지에서는 정확하게 위치를 맞춰줍니다.
+            transform.position = walkTilemap.GetCellCenterWorld(path[path.Count - 1]);
+        }
+        else
+        {
+            Debug.LogWarning($"[{name}] 길을 찾을 수 없습니다! 목표: {targetTile}");
+        }
+
+        // 도착 후 멈춤 처리
+        animator.SetFloat("Speed", 0f);
+        animator.SetFloat("MoveX", lastMoveDir.x);
+        animator.SetFloat("MoveY", lastMoveDir.y);
+    }
+    /*
+    IEnumerator MoveWithAStar(Vector3 targetWorldPos)
+    {
+        Vector3Int startTile = walkTilemap.WorldToCell(transform.position);
+        Vector3Int targetTile = walkTilemap.WorldToCell(targetWorldPos);
+
+        if (startTile == targetTile) yield break;
+
+        List<Vector3Int> path = pathfinding.FindPath(startTile, targetTile);
+
+        if (path != null && path.Count > 0)
+        {
             foreach (Vector3Int nextTile in path)
             {
                 Vector3 worldPos = walkTilemap.GetCellCenterWorld(nextTile);
@@ -387,8 +439,7 @@ public class NPCAI : MonoBehaviour
         animator.SetFloat("Speed", 0f);
         animator.SetFloat("MoveX", lastMoveDir.x);
         animator.SetFloat("MoveY", lastMoveDir.y);
-    }
-    // [NPCAI.cs 수정]
+    }*/
 
     IEnumerator NormalShopRoutine()
     {
