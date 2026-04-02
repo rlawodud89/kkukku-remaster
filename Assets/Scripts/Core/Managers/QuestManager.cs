@@ -82,6 +82,8 @@ public class QuestManager : MonoBehaviour
         // 어제 퀘스트 초기화
         myActiveQuests.Clear();
 
+        ServiceLocator.Get<GameData>().Quest.ClearQuest();
+
         // 레벨 필터링 (내 레벨 ~ 내 레벨 -2)
         var candidates = allQuestDatas
             .Where(x => x.requiredLevel <= playerLevel && x.requiredLevel >= playerLevel - 2)

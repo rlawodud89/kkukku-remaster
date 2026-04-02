@@ -9,7 +9,7 @@ public enum DayPhase { Morning, Day, Evening, Night }
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
-    
+
     public static GameManager Instance
     {
         get
@@ -39,10 +39,10 @@ public class GameManager : MonoBehaviour
     }
 
     private int gold;
-    private int moonRock;  
+    private int moonRock;
     private int level;
     private float energy;
-    private int maxEnergy=200;
+    private int maxEnergy = 200;
 
     public TMP_Text goldText;
     public TMP_Text moonRockText;
@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
 
     public DayPhase currentPhase;
     public static event Action<DayPhase> OnPhaseChangedEvent;
+    public static event Action OnDayEndEvent;
 
     [Header("디버그 도구")]
     [Range(0, 23)] public int debugHour; // 인스펙터 슬라이더로 조절
@@ -84,16 +85,33 @@ public class GameManager : MonoBehaviour
         // 현재 날짜(Day)는 유지하고 시간만 바꾸고 싶다면 날짜 값을 유지하는 로직이 필요할 수 있습니다.
         float dayInSeconds = 86400f;
         float currentDayCount = (int)(gameTime / dayInSeconds);
-        
+
         gameTime = (currentDayCount * dayInSeconds) + (targetHour * 3600) + (targetMinute * 60);
-        
+
         // 즉시 UI와 페이즈 업데이트
         hour = targetHour;
         minute = targetMinute;
         UpdateDayPhase();
         UpdateTimeUI(hour, minute);
-        
+
         Debug.Log($"<color=yellow>[Debug]</color> 시간을 {targetHour:D2}:{targetMinute:D2}로 설정했습니다.");
+    }
+
+    // gameTime(초 단위)을 직접 받아서 시간을 설정하는 오버로딩 함수
+    public void SetGameTime(float targetGameTime)
+    {
+        // 1. 전달받은 초 단위 시간을 그대로 적용
+        gameTime = targetGameTime;
+
+        // 2. 적용된 초 단위 시간을 바탕으로 시/분 역산
+        hour = (int)(gameTime / 3600) % 24;
+        minute = (int)(gameTime / 60) % 60;
+
+        // 3. 즉시 UI와 페이즈 업데이트
+        UpdateDayPhase();
+        UpdateTimeUI(hour, minute);
+
+        Debug.Log($"<color=yellow>[Debug]</color> 시간을 {hour:D2}:{minute:D2} (총 {gameTime}초)로 설정했습니다.");
     }
 
 
@@ -101,6 +119,7 @@ public class GameManager : MonoBehaviour
     {
         LoadGameData();
     }
+
 
     void Update()
     {
@@ -110,9 +129,11 @@ public class GameManager : MonoBehaviour
         // 초 단위를 시/분으로 변환
         hour = (int)(gameTime / 3600) % 24;
         minute = (int)(gameTime / 60) % 60;
-        
+
         UpdateDayPhase(); // 시간대 체크
         UpdateTimeUI(hour, minute);
+
+        ServiceLocator.Get<GameData>().User.SetPlayTime(gameTime);
     }
 
     void UpdateDayPhase()
@@ -129,6 +150,8 @@ public class GameManager : MonoBehaviour
         {
             OnPhaseChanged();
         }
+
+        if (hour == 0) OnDayEndEvent?.Invoke();
     }
 
     void OnPhaseChanged()
@@ -164,7 +187,7 @@ public class GameManager : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
-        
+
         currentCoroutine = StartCoroutine(DisplayRoutine());
     }
 
@@ -178,47 +201,81 @@ public class GameManager : MonoBehaviour
         currentCoroutine = null;
     }
 
-    
+    // 현재 시간 저장
+    // 게임 종료, 씬 이동, 또는 일시정지 될 때 호출해주면 됩니다.
+    public void SaveCurrentTime()
+    {
+        //PlayerPrefs.SetFloat("SavedGameTime", gameTime);
+        //PlayerPrefs.Save(); // 즉시 디바이스에 물리적 저장
+
+        ServiceLocator.Get<GameData>().User.SetPlayTime(gameTime);
+        ServiceLocator.Get<SaveService>().SaveNow();
+
+        Debug.Log($"<color=green>게임 시간 저장 완료: {hour:D2}:{minute:D2}</color>");
+    }
+
+    // PC/에디터에서 게임을 끌 때 자동 저장
+    private void OnApplicationQuit()
+    {
+        SaveCurrentTime();
+    }
+
+    // 모바일에서 홈 버튼을 눌러 백그라운드로 나갈 때 자동 저장
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            SaveCurrentTime();
+        }
+    }
+
+
+
 
     void LoadGameData()
     {
-        gold=ServiceLocator.Get<GameData>().User.GetCurrentGold();
-        moonRock=ServiceLocator.Get<GameData>().User.GetCurrentMoonrock();
+        gold = ServiceLocator.Get<GameData>().User.GetCurrentGold();
+        moonRock = ServiceLocator.Get<GameData>().User.GetCurrentMoonrock();
 
         var userData = ServiceLocator.Get<GameData>().User.GetUserData();
-        level=userData.level;
-        energy=userData.energy;
+        level = userData.level;
+        energy = userData.energy;
+
+        gameTime = ServiceLocator.Get<GameData>().User.GetPlayTime();
+
         UpdateUI();
     }
 
     void UpdateUI()
     {
-        goldText.text=gold.ToString();
-        moonRockText.text=moonRock.ToString();
+        goldText.text = gold.ToString();
+        moonRockText.text = moonRock.ToString();
 
-        levelText.text=$"Lv {level.ToString()}";
+        levelText.text = $"Lv {level.ToString()}";
         energyBar.fillAmount = energy / maxEnergy;
         Debug.Log($"포근에너지: {energy}");
     }
 
     public void ChangeGold(int amount)
     {
-        gold+=amount;
+        gold += amount;
         ServiceLocator.Get<GameData>().User.ChangeGold(amount);
+        if (amount > 0) ServiceLocator.Get<GameData>().User.AddTodayGold(amount);
         UpdateUI();
     }
 
     public void ChangeMoonRock(int amount)
     {
-        moonRock+=amount;
+        moonRock += amount;
         ServiceLocator.Get<GameData>().User.ChangeMoonrock(amount);
+        if (amount > 0) ServiceLocator.Get<GameData>().User.AddTodayMoonrock(amount);
         UpdateUI();
     }
 
     public void ChangeEnergy(int amount)
     {
-        energy+=amount;
-        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        energy += amount;
+        ServiceLocator.Get<GameData>().User.SetLevelEnergy(level, energy);
         UpdateUI();
 
         if (maxEnergy == energy)
@@ -229,8 +286,8 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        level+=1;
-        ServiceLocator.Get<GameData>().User.SetUserData("", level, energy);
+        level += 1;
+        ServiceLocator.Get<GameData>().User.SetLevelEnergy(level, energy);
         UpdateUI();
     }
 

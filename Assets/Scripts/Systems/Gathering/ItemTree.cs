@@ -9,8 +9,8 @@ public class ItemTree : MonoBehaviour
 
     void Start()
     {
-        GatheringManager manager = GatheringManager.Instance;
-        manager.RegisterItemTree(this);
+        //GatheringManager manager = GatheringManager.Instance;
+        //manager.RegisterItemTree(this);
     }
 
     public void ResetItemTree()

@@ -21,7 +21,16 @@ public class ShopInteriorManager : MonoBehaviour
     public Transform gridHighlightObj;      
     public SpriteRenderer highlightSprite;  
     public Color colorValid = new Color(0, 1, 0, 0.5f);   
-    public Color colorInvalid = new Color(1, 0, 0, 0.5f); 
+    public Color colorInvalid = new Color(1, 0, 0, 0.5f);
+
+    [Header("가게 그리드 설정 (Top-Left 기준)")]
+    public Vector3Int gridStartPos; // 왼쪽 위 시작 좌표
+    public int gridWidth;
+    public int gridHeight;
+
+    [Header("문(Door) 설정")]
+    public Transform doorObject;        // 인스펙터에서 문 오브젝트 연결!
+    public float doorOffsetY = 0.5f;    // "조금 위"를 조절할 수 있는 수치 (인스펙터에서 조절 가능)
 
     private int myID = -1;
 
@@ -44,6 +53,7 @@ public class ShopInteriorManager : MonoBehaviour
     // ==========================================
     public void InitializeShopInterior()
     {
+
         PlaceAllFurnitures();
 
         FloorItem currentFloor = ServiceLocator.Get<GameData>().Interior.GetCurrentFloorTile(TilePositionType.SHOP_FLOOR);
@@ -89,47 +99,71 @@ public class ShopInteriorManager : MonoBehaviour
     public void PlaceFloorEntirely(FloorItem floorItem)
     {
         if (floorItem == null || floorItem.tileBase == null) return;
-        BoundsInt bounds = floorTilemap.cellBounds;
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
+
+        // 크기가 달라질 수 있으므로, 기존에 깔린 바닥을 깨끗하게 지웁니다.
+        floorTilemap.ClearAllTiles();
+
+        // Top-Left 기준이므로 x는 오른쪽(+), y는 아래(-) 방향으로 그림
+        for (int x = 0; x < gridWidth; x++)
         {
-            if (floorTilemap.HasTile(pos)) floorTilemap.SetTile(pos, floorItem.tileBase);
+            for (int y = 0; y < gridHeight; y++)
+            {
+                Vector3Int pos = new Vector3Int(gridStartPos.x + x, gridStartPos.y - y, 0);
+                floorTilemap.SetTile(pos, floorItem.tileBase);
+            }
         }
     }
 
     public void PlaceWallpaperEntirely(WallpaperItem wallpaperItem)
     {
         if (wallpaperItem == null || wallpaperItem.wallTiles.Length < 3) return;
-        BoundsInt bounds = wallTilemap.cellBounds;
-        int minY = int.MaxValue;
-        int maxX = int.MinValue;
-        HashSet<int> wallXCoords = new HashSet<int>();
 
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        // 기존 벽지 싹 지우기
+        wallTilemap.ClearAllTiles();
+
+        int startX = gridStartPos.x;
+        int maxX = startX + gridWidth - 1;
+
+        // 바닥의 시작점(Top-Left) 바로 윗칸부터 벽이 세워진다고 가정 (y + 1)
+        int wallBaseY = gridStartPos.y + 1;
+
+        for (int x = startX; x <= maxX; x++)
         {
-            if (wallTilemap.HasTile(pos))
-            {
-                wallXCoords.Add(pos.x);
-                if (pos.x > maxX) maxX = pos.x;
-                if (pos.y < minY) minY = pos.y;
-            }
-        }
+            Vector3Int basePos = new Vector3Int(x, wallBaseY, 0);
 
-        if (wallXCoords.Count == 0) return;
-
-        foreach (int x in wallXCoords)
-        {
-            for (int y = bounds.yMin; y <= bounds.yMax; y++) wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
-
-            Vector3Int basePos = new Vector3Int(x, minY, 0);
+            // 기존 코드에 있던 '오른쪽에서 두 번째 칸' 특수 처리 로직 유지
             bool isSecondFromRight = (x == maxX - 1);
 
+            // 맨 아래칸 벽지
             if (!isSecondFromRight) wallTilemap.SetTile(basePos, wallpaperItem.wallTiles[0]);
+
+            // 중간칸 벽지
             Vector3Int middlePos = basePos + new Vector3Int(0, 1, 0);
             wallTilemap.SetTile(middlePos, isSecondFromRight ? wallpaperItem.wallTiles[1] : wallpaperItem.wallTiles[0]);
+
+            // 맨 위칸 벽지
             Vector3Int topPos = basePos + new Vector3Int(0, 2, 0);
             wallTilemap.SetTile(topPos, wallpaperItem.wallTiles[2]);
         }
+
+        // ==========================================
+        // ★ 문(Door) 오브젝트 자동 배치 로직
+        // ==========================================
+        if (doorObject != null)
+        {
+            // 1. 문의 그리드(Cell) 좌표 구하기 
+            // X: 오른쪽에서 두번째 (maxX - 1)
+            // Y: 바닥의 맨 윗줄 (gridStartPos.y)
+            Vector3Int doorCellPos = new Vector3Int(maxX - 1, gridStartPos.y, 0);
+
+            // 2. 해당 타일 칸의 '월드 좌표 정중앙' 위치 가져오기
+            Vector3 cellCenterPos = floorTilemap.GetCellCenterWorld(doorCellPos);
+
+            // 3. 정중앙에서 Y축으로 '조금 위(doorOffsetY)'만큼 올려서 문의 실제 위치 지정
+            doorObject.position = cellCenterPos + new Vector3(0, doorOffsetY, 0);
+        }
     }
+
 
     // ==========================================
     // ★ 에디트 모드 및 인벤토리 설치 로직 (가게 전용 개조)
@@ -282,7 +316,17 @@ public class ShopInteriorManager : MonoBehaviour
             var placedTable = data.Table.Find(x => x.ID == targetID);
             if (placedTable != null) placedTable.placement = newGridIndex;
 
-            if (data.Casher != null && data.Casher.ID == targetID) data.Casher.placement = newGridIndex;
+            if (data.Casher != null && data.Casher.ID == targetID)
+            {
+                data.Casher.placement = newGridIndex; // 위치 갱신
+
+                // 맵에 존재하는 모든 NPC에게 계산대 위치가 변경되었음을 알림
+                NPCAI[] allNPCs = FindObjectsOfType<NPCAI>();
+                foreach (NPCAI npc in allNPCs)
+                {
+                    npc.RedirectToNewCashier();
+                }
+            }
 
             // DB 업데이트
             ServiceLocator.Get<GameData>().Interior.TransferShopInterior(targetID, newGridIndex);

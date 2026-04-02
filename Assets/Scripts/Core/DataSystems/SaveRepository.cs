@@ -335,11 +335,13 @@ public class SaveRepository
             // ==== User 초기값 ====
             var user = new User
             {
-                shopName = "",
+                shopName = "꾸꾸",
                 level = 1,
                 energy = 0,
-                gold = 100,
-                moonrock = 100,
+                gold = 1000,
+                moonrock = 1000,
+                todayGold = 0,
+                todayMoonrock = 0,
                 playTime = 0,
                 endScene = "BlanketShop",
                 isOpen = false,
@@ -356,26 +358,40 @@ public class SaveRepository
 
             // ==== 기본 인벤토리 ====
 
-            // ShopInteriorInventory
-
-            // RoomInteriorInventory
-
             // TileInteriorInventory
             connection.Insert(new TileInteriorInventory
             {
-                itemName = "기본바닥타일",
+                itemName = "가게기본바닥타일",
                 tileType = TileInteriorType.FLOOR
             });
 
             connection.Insert(new TileInteriorInventory
             {
-                itemName = "기본벽타일",
+                itemName = "가게기본벽타일",
                 tileType = TileInteriorType.WALL
             });
 
             // MaterialInventory
+            connection.Insert(new MaterialInventory
+            {
+                inventoryID = 3,
+                itemName = "꿈실",
+                count = 2
+            });
 
-            // SnackInventory
+            connection.Insert(new MaterialInventory
+            {
+                inventoryID = 3,
+                itemName = "운무솜",
+                count = 3
+            });
+
+            connection.Insert(new MaterialInventory
+            {
+                inventoryID = 3,
+                itemName = "달조각",
+                count = 3
+            });
 
             // BlanketInventory
 
@@ -396,37 +412,125 @@ public class SaveRepository
             // ==== 기본 인테리어 배치 ====
 
             // ShopInteriorPlaced
+            connection.Insert(new ShopInteriorPlaced
+            {
+                ID = 1,
+                gridNumber = 0,
+                itemName = "기본 벽장",
+                interiorType = ShopInteriorType.TABLE
+            });
+
+            connection.Insert(new ShopInteriorPlaced
+            {
+                ID = 2,
+                gridNumber = 3,
+                itemName = "기본 벽장",
+                interiorType = ShopInteriorType.TABLE
+            });
+
+            connection.Insert(new ShopInteriorPlaced
+            {
+                ID = 3,
+                gridNumber = 31,
+                itemName = "기본 진열장",
+                interiorType = ShopInteriorType.TABLE
+            });
+
+            connection.Insert(new ShopInteriorPlaced
+            {
+                ID = 4,
+                gridNumber = 34,
+                itemName = "기본 진열장",
+                interiorType = ShopInteriorType.TABLE
+            });
+
+            connection.Insert(new ShopInteriorPlaced
+            {
+                ID = 5,
+                gridNumber = 6,
+                itemName = "다람쥐 캐셔",
+                interiorType = ShopInteriorType.CASHER
+            });
+
 
             // RoomInteriorPlaced
+            connection.Insert(new RoomInteriorPlaced
+            {
+                ID = 1,
+                gridNumber = 40,
+                itemName = "BlanketStorage",
+                interiorType = RoomInteriorType.BLANKET_BOX
+            });
+
+            connection.Insert(new RoomInteriorPlaced
+            {
+                ID = 2,
+                gridNumber = 16,
+                itemName = "PersonalCraftBox",
+                interiorType = RoomInteriorType.CRAFTING_TABLE
+            });
+
+            connection.Insert(new RoomInteriorPlaced
+            {
+                ID = 3,
+                gridNumber = 42,
+                itemName = "MaterialStorage",
+                interiorType = RoomInteriorType.MATERIAL_BOX
+            });
+
+            connection.Insert(new RoomInteriorPlaced
+            {
+                ID = 4,
+                gridNumber = 43,
+                itemName = "SnackBox",
+                interiorType = RoomInteriorType.SNACK_BOX
+            });
+
+            connection.Insert(new RoomInteriorPlaced
+            {
+                ID = 5,
+                gridNumber = 18,
+                itemName = "고양이",
+                interiorType = RoomInteriorType.WORKER
+            });
 
             // TileInteriorPlaced
             connection.Insert(new TileInteriorPlaced
             {
                 tilePosition = TilePositionType.SHOP_FLOOR,
-                itemName = "기본바닥타일"
+                itemName = "가게기본바닥타일"
             });
 
             connection.Insert(new TileInteriorPlaced
             {
                 tilePosition = TilePositionType.SHOP_WALL,
-                itemName = "기본벽타일"
+                itemName = "가게기본벽타일"
             });
 
             connection.Insert(new TileInteriorPlaced
             {
                 tilePosition = TilePositionType.ROOM_FLOOR,
-                itemName = "기본바닥타일"
+                itemName = "가게기본바닥타일"
             });
 
             connection.Insert(new TileInteriorPlaced
             {
                 tilePosition = TilePositionType.ROOM_WALL,
-                itemName = "기본벽타일"
+                itemName = "가게기본벽타일"
             });
 
-            
+
             // ==== 기본 직원 ====
-            
+
+            connection.Insert(new WorkerState
+            {
+                workerID = 5,
+                stamina = 10,
+                workingItem = null,
+                progress = 0,
+                skill = 0,
+                lastSceneTime = null
+            });
 
 
             // ==== 기본 레시피 ====

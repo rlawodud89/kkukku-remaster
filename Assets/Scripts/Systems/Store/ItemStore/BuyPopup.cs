@@ -81,6 +81,8 @@ public class BuyPopup : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+
+        TutorialEventBus.Raise(TutorialID.BuyMaterial);
     }
 
     public void OnClickNoBtn()

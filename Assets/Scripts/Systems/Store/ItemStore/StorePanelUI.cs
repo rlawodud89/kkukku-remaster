@@ -44,6 +44,8 @@ public class StorePanelUI : MonoBehaviour
         yarnContent.gameObject.SetActive(false);
         cottonContent.gameObject.SetActive(true);
         moonpieceContent.gameObject.SetActive(false);
+
+        TutorialEventBus.Raise(TutorialID.AnotherMaterialMenu);
     }
 
     public void OnClickMoonBtn()

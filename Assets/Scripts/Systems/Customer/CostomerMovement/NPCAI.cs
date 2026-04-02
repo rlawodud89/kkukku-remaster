@@ -3,7 +3,6 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Collections.Generic; // List 사용을 위해 추가
 using TMPro;
-using UnityEditor.VersionControl;
 
 public class NPCAI : MonoBehaviour
 {
@@ -138,6 +137,8 @@ public class NPCAI : MonoBehaviour
         {
             ShowSpeechBubble(talk);
         }
+
+        QuestManager.Instance.UpdateQuestProgressByID(4);
     }
 
     public void ShowSpeechBubble(string message)
@@ -211,7 +212,7 @@ public class NPCAI : MonoBehaviour
                     case CustomerData.State.Paying:
                     case CustomerData.State.MovingToCashier: // 이미 계산대에 있음
                         yield return new WaitForSeconds(1.5f);
-                        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay > 0 ? priceToPay : 100); // 가격 정보 없으면 기본값
+                        GameManager.Instance.ChangeGold(priceToPay > 0 ? priceToPay : 100); // 가격 정보 없으면 기본값
                         yield return StartCoroutine(LeaveShop());
                         break;
                 }
@@ -273,7 +274,7 @@ public class NPCAI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // 4. 돈 처리
-        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay); // (priceToPay는 데이터에서 복구하거나 랜덤값)
+        GameManager.Instance.ChangeGold(priceToPay); // (priceToPay는 데이터에서 복구하거나 랜덤값)
 
         // 5. 퇴장
         yield return StartCoroutine(LeaveShop());
@@ -513,7 +514,7 @@ public class NPCAI : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        ServiceLocator.Get<GameData>().User.ChangeGold(priceToPay);
+        GameManager.Instance.ChangeGold(priceToPay);
         Debug.Log($"[판매] {priceToPay}G 획득!");
 
         yield return StartCoroutine(LeaveShop());
@@ -814,6 +815,24 @@ public class NPCAI : MonoBehaviour
         {
             SetDirection(lookDir);       // 방향 돌리고
             animator.SetFloat("Speed", 0f); // 제자리걸음 방지 (멈춤)
+        }
+    }
+
+    public void RedirectToNewCashier()
+    {
+        // 현재 계산대로 걷고 있거나, 줄 서 있거나, 결제 중인 손님만 해당
+        if (myData.currentState == CustomerData.State.MovingToCashier ||
+            myData.currentState == CustomerData.State.Paying)
+        {
+            // 1. 하던 코루틴(옛날 위치로 가는 길찾기 등) 전부 정지!
+            StopAllCoroutines();
+
+            // 2. 상태를 다시 이동 중으로 돌려놓기
+            myData.currentState = CustomerData.State.MovingToCashier;
+            animator.SetFloat("Speed", 1f);
+
+            // 3. 바뀐 최신 위치를 향해 계산 프로세스를 다시 시작!
+            StartCoroutine(GoToCashierAndPay());
         }
     }
 }

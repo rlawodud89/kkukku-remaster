@@ -25,6 +25,7 @@ public class ShopExpansionProvider : IUpgradeProvider
         return -1;
     }
 
+
     public void LevelUpgrade()
     {
 
@@ -38,6 +39,16 @@ public class ShopExpansionProvider : IUpgradeProvider
 
         ServiceLocator.Get<GameData>().User.ChangeShopLevel(1);
         currentLevel++;
+
+        int newwidth, newheight;
+        Vector3 newstartPos = new();
+        ServiceLocator.Get<GameData>().User.GetCurrentShopGridSize(out newwidth, out newheight, out newstartPos);
+
+        // 🔎 2번 로그: 업그레이드 후 크기 확인 (여기서 크기가 안 늘어났으면 DB 함수가 범인!)
+        Debug.Log($"<color=green>[확장 후]</color> 레벨: {currentLevel}, 크기: {newwidth}x{newheight}");
+
+        // 🔎 3번 로그: 재계산 함수로 넘어가는지 확인
+        UpdateFurnitureGridInDB(Vector3Int.RoundToInt(oldstartPos), oldwidth, Vector3Int.RoundToInt(newstartPos), newwidth);
 
         UpgradeEvents.OnUpgradeLevelChanged?.Invoke(this);
     }
@@ -98,3 +109,4 @@ public class ShopExpansionProvider : IUpgradeProvider
         return (newOffsetY * newWidth) + newOffsetX;
     }
 }
+

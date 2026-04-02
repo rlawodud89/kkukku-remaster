@@ -474,6 +474,19 @@ MonoBehaviour:
   itemName: {fileID: 8673526625833112741}
   itemImage: {fileID: 6948033613302139944}
   itemCount: {fileID: 4510479232034682974}
+  cotton0: {fileID: -1075516444, guid: 9d3a526f0082e214ba1172473953b18d, type: 3}
+  cotton1: {fileID: -535850410, guid: 9d3a526f0082e214ba1172473953b18d, type: 3}
+  cotton2: {fileID: -1576201941, guid: 9d3a526f0082e214ba1172473953b18d, type: 3}
+  yarn0: {fileID: -1826490011, guid: a1e25f4d9fa453a47a9b2235e7c4fe0a, type: 3}
+  yarn1: {fileID: -883683508, guid: a1e25f4d9fa453a47a9b2235e7c4fe0a, type: 3}
+  yarn2: {fileID: -949140438, guid: a1e25f4d9fa453a47a9b2235e7c4fe0a, type: 3}
+  moonpiece0: {fileID: 473874541, guid: 8a7d64f749080644cab803c014f24260, type: 3}
+  moonpiece1: {fileID: 632698858, guid: 8a7d64f749080644cab803c014f24260, type: 3}
+  moonpiece2: {fileID: -652484530, guid: 8a7d64f749080644cab803c014f24260, type: 3}
+  deco0: {fileID: -1196290304, guid: 726a23508dfaa5d4fb99004c54523600, type: 3}
+  deco1: {fileID: 1308785036, guid: f898de6d035b59a44979028637d0ee44, type: 3}
+  deco2: {fileID: -804788803, guid: f898de6d035b59a44979028637d0ee44, type: 3}
+  deco3: {fileID: -446524951, guid: f898de6d035b59a44979028637d0ee44, type: 3}
 --- !u!114 &1889183542693415120
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -790,7 +790,7 @@ MonoBehaviour:
   - dayPhase: 2
     color: {r: 0.8666667, g: 0.57254905, b: 0.57254905, a: 1}
   - dayPhase: 3
-    color: {r: 0.15686275, g: 0.2509804, b: 0.3529412, a: 1}
+    color: {r: 0.5765, g: 0.64365757, b: 0.64779866, a: 1}
 --- !u!4 &897584502
 Transform:
   m_ObjectHideFlags: 0
@@ -1102,7 +1102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorID: 10
+  anchorID: 14
 --- !u!1 &1250291705 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 432577949907719021, guid: 443f5914eb894054da97541a3416dcdc, type: 3}
@@ -1830,6 +1830,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5086990687161654394, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4161686362481173977}
+    - targetCorrespondingSourceObject: {fileID: 1097390249957535937, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4161686362481173979}
   m_SourcePrefab: {fileID: 100100000, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
 --- !u!1 &4161686362481173976 stripped
 GameObject:
@@ -1848,7 +1851,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorID: 9
+  anchorID: 15
+--- !u!1 &4161686362481173978 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1097390249957535937, guid: 3760b64f610bf374898f39a6507cd676, type: 3}
+  m_PrefabInstance: {fileID: 4161686362481173975}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4161686362481173979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4161686362481173978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 16
 --- !u!1001 &8623843694021163082
 PrefabInstance:
   m_ObjectHideFlags: 0

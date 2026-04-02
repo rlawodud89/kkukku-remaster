@@ -6,16 +6,24 @@ public class TutorialSystemRoot : MonoBehaviour
 
     private void Awake()
     {
-        // 이미 존재하면 중복 제거
+        Debug.Log($"[TutorialSystemRoot] Awake: {gameObject.GetInstanceID()} in {gameObject.scene.name}");
+
         if (Instance != null && Instance != this)
         {
+            Debug.Log($"[TutorialSystemRoot] Duplicate Destroy: {gameObject.GetInstanceID()}");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
-
-        // 루트 전체를 유지
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log($"[TutorialSystemRoot] Destroyed: {gameObject.GetInstanceID()}");
+
+        if (Instance == this)
+            Instance = null;
     }
 }

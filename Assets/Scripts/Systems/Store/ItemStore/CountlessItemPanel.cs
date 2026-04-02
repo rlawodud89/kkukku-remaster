@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CountlessItemPanel : MonoBehaviour
 {
@@ -52,7 +51,7 @@ public class CountlessItemPanel : MonoBehaviour
         buyPopup.SetItem(storeItemProvider, itemName, price, count);
         buyPopup.gameObject.SetActive(true);
 
-        TutorialEventBus.Raise(TutorialID.StoreItemBuy);
+        TutorialEventBus.Raise(TutorialID.ClickBuyMaterialButton);
     }
 
     public void EnableTutorialAnchors(bool enable)

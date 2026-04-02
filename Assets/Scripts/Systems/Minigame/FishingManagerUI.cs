@@ -5,7 +5,7 @@ using System.Linq;
 using TMPro;
 
 public class FishingManagerUI : MonoBehaviour
-{   
+{
     public static FishingManagerUI Instance;
 
     private RoomInteriorManager interiorManager; // 수납장에 아이템 넣으려고 매니저 참조해둠
@@ -14,8 +14,8 @@ public class FishingManagerUI : MonoBehaviour
     public List<MaterialItemSO> allItems = new List<MaterialItemSO>();
 
     [Header("Game Status")]
-    public int currentFishingLevel = 1; 
-    public int bonusCatchCount = 0; 
+    public int currentFishingLevel = 1;
+    public int bonusCatchCount = 0;
 
     [Header("UI Objects")]
     [SerializeField] private GameObject fishPrefab;
@@ -39,10 +39,10 @@ public class FishingManagerUI : MonoBehaviour
     // =========================================================
 
     [Header("Balance")]
-    [SerializeField] private float spawnInterval = 1.0f; 
-    [SerializeField] private float fallSpeed = 500f;     
+    [SerializeField] private float spawnInterval = 1.0f;
+    [SerializeField] private float fallSpeed = 500f;
     [SerializeField] private float perfectDistance = 50f;
-    [SerializeField] private float spawnRangeX = 300f;   
+    [SerializeField] private float spawnRangeX = 300f;
 
     private float timer = 0;
     private List<FallingFishUI> activeFishes = new List<FallingFishUI>();
@@ -87,13 +87,13 @@ public class FishingManagerUI : MonoBehaviour
 
         GameObject obj = Instantiate(fishPrefab, fishParent);
         RectTransform fishRect = obj.GetComponent<RectTransform>();
-        
+
         float randomX = Random.Range(-spawnRangeX / 2f, spawnRangeX / 2f);
         fishRect.anchoredPosition = new Vector2(spawnPoint.anchoredPosition.x + randomX, spawnPoint.anchoredPosition.y);
 
         FallingFishUI fishScript = obj.GetComponent<FallingFishUI>();
         fishScript.Setup(fallSpeed, this, targetBar.anchoredPosition.y, selectedItem.image, selectedItem.itemName);
-        
+
         activeFishes.Add(fishScript);
     }
 
@@ -140,7 +140,7 @@ public class FishingManagerUI : MonoBehaviour
         if (activeFishes.Count == 0) return;
 
         FallingFishUI targetFish = activeFishes[0];
-        if (targetFish == null) 
+        if (targetFish == null)
         {
             activeFishes.RemoveAt(0);
             return;
@@ -178,7 +178,7 @@ public class FishingManagerUI : MonoBehaviour
     // =========================================================
     [Header("Storage Box Prefabs (For DB Check)")]
     // 낚시 씬에서 상자 타입을 판별하기 위해, '수납장' 프리팹들만 여기에 끌어다 놔주세요.
-    public List<GameObject> storagePrefabs = new List<GameObject>(); 
+    public List<GameObject> storagePrefabs = new List<GameObject>();
 
 
     // =========================================================
@@ -186,15 +186,15 @@ public class FishingManagerUI : MonoBehaviour
     // =========================================================
     void CatchFish(FallingFishUI fish)
     {
-        if (fish == null) return; 
+        if (fish == null) return;
 
         if (activeFishes.Contains(fish))
         {
             int randomNum = Random.Range(1, bonusCatchCount + 1);
-            
+
             // 1. InteriorManager 대신 내가 직접 DB에 꽂아넣기 시도!
             bool isSaved = TryAddFishToStorageDB(fish.itemName, randomNum);
-            
+
             if (!isSaved)
             {
                 Debug.LogWarning("🚨 방에 배치된 재료함이 없거나 꽉 찼습니다! (물고기 증발)");
@@ -214,11 +214,13 @@ public class FishingManagerUI : MonoBehaviour
                 GameObject slotObj = Instantiate(caughtItemSlotPrefab, caughtItemsContent);
                 CaughtFishSlotUI slotUI = slotObj.GetComponent<CaughtFishSlotUI>();
                 slotUI.Setup(fish.myImage.sprite, caughtFishCounts[fName]);
-                caughtFishUIs[fName] = slotUI; 
+                caughtFishUIs[fName] = slotUI;
             }
 
             activeFishes.Remove(fish);
             Destroy(fish.gameObject);
+
+            TutorialEventBus.Raise(TutorialID.FishingMaterial);
         }
     }
 
@@ -226,7 +228,7 @@ public class FishingManagerUI : MonoBehaviour
     private bool TryAddFishToStorageDB(string fishName, int amount)
     {
         var gameData = ServiceLocator.Get<GameData>();
-        var roomInteriors = gameData.Interior.GetCurrentRoomInterior(); 
+        var roomInteriors = gameData.Interior.GetCurrentRoomInterior();
         if (roomInteriors == null || roomInteriors.Count == 0) return false;
 
         foreach (var interior in roomInteriors)
@@ -234,7 +236,7 @@ public class FishingManagerUI : MonoBehaviour
             if (interior.ID != -1) // 상자(가구)라면
             {
                 GameObject prefab = storagePrefabs.Find(x => x.name == interior.itemName);
-            
+
 
                 if (prefab.TryGetComponent<WR_StorageController>(out var controllerPrefab))
                 {
@@ -246,7 +248,7 @@ public class FishingManagerUI : MonoBehaviour
                         int maxCapacity = boxSO.slotCount;
                         int currentCount = 0;
                         var items = gameData.Inventory.GetMaterialItems(interior.ID);
-                        if (items != null) 
+                        if (items != null)
                         {
                             foreach (var item in items) currentCount += item.count;
                         }
@@ -279,10 +281,20 @@ public class FishingManagerUI : MonoBehaviour
     {
         caughtFishCounts.Clear();
         caughtFishUIs.Clear();
-        
+
         foreach (Transform child in caughtItemsContent)
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void OnClickStartFishing()
+    {
+        TutorialEventBus.Raise(TutorialID.ClickFishingStart);
+    }
+
+    public void OnClickExitFishing()
+    {
+        TutorialEventBus.Raise(TutorialID.ExitFishing);
     }
 }

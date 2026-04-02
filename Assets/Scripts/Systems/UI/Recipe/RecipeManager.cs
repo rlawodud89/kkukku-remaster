@@ -43,6 +43,7 @@ public class RecipeManager : MonoBehaviour
     {
         // 테스트
         //UnlockRecipe("빨간 체크 리본 이불");
+        //UnlockRecipe("살구빛 이불");
         LoadRecipesFromDB();
     }
 
@@ -64,6 +65,7 @@ public class RecipeManager : MonoBehaviour
         ServiceLocator.Get<GameData>().BlanketCraft.AddBlanketRecipes(listToSave);
         
         // 필요하다면 UI 갱신 호출 (예: RecipeUI.Instance.UpdateUI())
+        UpdateUI();
     }
 
     public void LoadRecipesFromDB()
@@ -75,6 +77,11 @@ public class RecipeManager : MonoBehaviour
         {
             myRecipeIDs = savedIDs.Select(item => item.itemName).ToList();
             Debug.Log($"DB에서 {myRecipeIDs.Count}개의 레시피를 불러왔습니다.");
+
+            foreach (string name in myRecipeIDs)
+            {
+                Debug.Log($"DB에서 불러온 레시피 이름: [{name}]");
+            }
         }
 
         UpdateUI();
@@ -82,7 +89,7 @@ public class RecipeManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        BlanketButtonUI[] blanketButtonUIScripts= contentPanel.GetComponentsInChildren<BlanketButtonUI>();
+        BlanketButtonUI[] blanketButtonUIScripts= contentPanel.GetComponentsInChildren<BlanketButtonUI>(true);
 
         foreach(var button in blanketButtonUIScripts)
         {
