@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
+using TMPro;
 
 public class FishingManagerUI : MonoBehaviour
 {   
@@ -17,10 +18,12 @@ public class FishingManagerUI : MonoBehaviour
     public int bonusCatchCount = 0; 
 
     [Header("UI Objects")]
-    [SerializeField] private GameObject fishPrefab;     
-    [SerializeField] private RectTransform spawnPoint;  
-    [SerializeField] private RectTransform targetBar;   
-    [SerializeField] private Transform fishParent;      
+    [SerializeField] private GameObject fishPrefab;
+    [SerializeField] private RectTransform spawnPoint;
+    [SerializeField] private RectTransform targetBar;
+    [SerializeField] private Transform fishParent;
+    [SerializeField] private TextMeshProUGUI CatchText;
+
     public Button FishingButton;
 
     // =========================================================
@@ -149,12 +152,24 @@ public class FishingManagerUI : MonoBehaviour
         if (distance <= perfectDistance)
         {
             Debug.Log($"<color=cyan>Perfect!</color> ({targetFish.name})");
+            CatchText.SetText("<color=cyan>Perfect!</color>");
             CatchFish(targetFish);
         }
         else if (distance <= perfectDistance * 2.5f)
         {
-            Debug.Log($"Good ({targetFish.name})");
+            Debug.Log($"<color=green>Good</color> ({targetFish.name})");
+            CatchText.SetText("<color=green>Good</color>");
             CatchFish(targetFish);
+        }
+        else 
+        {
+            // 범위를 벗어났을 때 (Miss)
+            Debug.Log($"<color=red>Miss</color> ({targetFish.name})");
+            CatchText.SetText("<color=red>Miss</color>");
+            
+            // 획득 실패 처리: 물고기를 잡지 않고 파괴합니다.
+            activeFishes.Remove(targetFish);
+            Destroy(targetFish.gameObject);
         }
     }
 

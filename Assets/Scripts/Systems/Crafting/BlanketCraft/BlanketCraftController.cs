@@ -94,8 +94,8 @@ public class BlanketCraftController : MonoBehaviour
     }
 
     public void OnClickCraftButton()
-{
-    if (isCrafting) return;
+    {
+        if (isCrafting) return;
 
     // 1. 재료 검사 (외부 환경)
     foreach (var slot in slots)
@@ -123,7 +123,7 @@ public class BlanketCraftController : MonoBehaviour
         return;
     }
 
-    bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, currentEmployee.staminaCostPerWork, () => FinishCrafting(RecipeData));
+    bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, () => FinishCrafting(RecipeData));
 
     // 5. 직원이 일을 시작하겠다고 수락했다면?
     if (isAccepted)
@@ -139,6 +139,7 @@ public class BlanketCraftController : MonoBehaviour
         
         Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
         StorageUIController.Instance.CloseAllPanels(); // UI 닫기
+        UIEventManager.ShowMainUI();
     }
     else
     {
