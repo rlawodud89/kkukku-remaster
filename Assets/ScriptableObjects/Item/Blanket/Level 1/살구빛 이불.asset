@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: "\uC0B4\uAD6C\uBE5B \uC774\uBD88"
   image: {fileID: -1162716406, guid: a7a79245fbdc360408b147c86d28de57, type: 3}
   level: 1
-  price: 120
+  price: 180
   recipe:
   - itemName: "\uAFC8\uC2E4"
     count: 3

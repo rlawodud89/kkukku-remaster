@@ -15,6 +15,6 @@ MonoBehaviour:
   itemName: "\uC911\uAE09\uB09A\uC2DC\uB300"
   toolType: 1
   image: {fileID: 1715042703, guid: 9c6a8ecda61f96e45b47da3d6a4f284f, type: 3}
-  price: 0
+  price: 5000
   needClickCount: 0
   bonusCatchCount: 4

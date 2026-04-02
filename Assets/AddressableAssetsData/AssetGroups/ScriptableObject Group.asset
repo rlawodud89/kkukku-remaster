@@ -169,12 +169,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - customer
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4449e02aa9b4b794ba415acbfe198497
-    m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uC6E8\uC778\uC2A4\uCF54\uD305\uD0C0\uC77C.asset"
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - tileInterior
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 468e61287b8ebc44781bd22f2b79479a
     m_Address: "Assets/ScriptableObjects/Item/Tool/Fishing/\uC911\uAE09\uB09A\uC2DC\uB300.asset"
     m_ReadOnly: 0

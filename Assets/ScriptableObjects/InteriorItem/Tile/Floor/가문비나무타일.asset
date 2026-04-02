@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: "\uAC00\uBB38\uBE44\uB098\uBB34\uD0C0\uC77C"
   tileType: 1
   image: {fileID: 21300000, guid: d6fed10330535fe45a7e39d89444827c, type: 3}
-  price: 0
+  price: 30000
   tileBase: {fileID: 11400000, guid: e268a556aa1acd44ba0dd4f9e5967c3a, type: 2}
   topTileBase: {fileID: 0}
   bottomTileBase: {fileID: 0}
