@@ -178,17 +178,25 @@ public class StorageUIController : MonoBehaviour
     private void RefreshSlots(Transform content, GameObject prefab, List<SimpleItemData> items, StorageType type, int storageID)
     {
         // 1. 모든 기존 슬롯을 일단 비활성화 (풀로 반납)
-        if (!slotPools.ContainsKey((prefab)))
+        if (!slotPools.ContainsKey(prefab))
         {
             slotPools[prefab] = new List<GameObject>();
         }
 
-        // 현재 사용해야할 전용 풀 가져왹
+        // 현재 사용해야할 전용 풀 가져오기
         List<GameObject> currentPool = slotPools[prefab];
         
-        foreach (var slot in currentPool)
+        // [수정된 부분] foreach 대신 역순 for문 사용 및 null 체크
+        if (currentPool != null)
         {
-            if (slot.activeSelf) slot.SetActive(false);
+            for (int i = currentPool.Count - 1; i >= 0; i--)
+            {
+                var slot = currentPool[i];
+                if (slot != null && slot.activeSelf)
+                {
+                    slot.SetActive(false);
+                }
+            }
         }
 
         if (items == null || items.Count == 0) return;
@@ -198,19 +206,26 @@ public class StorageUIController : MonoBehaviour
         {
             GameObject go;
 
-            // 풀에 여유가 있으면 재사용, 없으면 새로 생성
             if (i < currentPool.Count)
             {
                 go = currentPool[i];
+                
+                if (go == null) 
+                {
+                    go = Instantiate(prefab, content);
+                    currentPool[i] = go; // 새 오브젝트로 교체
+                }
+        
                 go.SetActive(true);
             }
             else
             {
+                // 풀에 등록된 슬롯 갯수보다 아이템이 더 많을 경우 새로 생성하여 풀에 추가
                 go = Instantiate(prefab, content);
                 currentPool.Add(go);
             }
 
-            // 데이터 바인딩 로직 (기존과 동일)
+            // 데이터 바인딩 로직
             var item = items[i];
             Sprite icon = GetIconSprite(type, item.name);
 
@@ -220,9 +235,7 @@ public class StorageUIController : MonoBehaviour
                 if (slotUI != null) 
                 {
                     var snackSO = ServiceLocator.Get<GameData>().Inventory.GetSnackItemSO(item.name);
-                    
                     int stamina = snackSO != null ? snackSO.stamina : 0; 
-                    
                     slotUI.SetSlotData(storageID, item.name, icon, item.count, stamina);
                 }
             }
@@ -237,7 +250,7 @@ public class StorageUIController : MonoBehaviour
             go.transform.localScale = Vector3.one;
         }
 
-        // 3. 레이아웃 갱신 최적화 (한 프레임 뒤에 하거나 필요한 경우만)
+        // 3. 레이아웃 갱신 최적화
         LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent<RectTransform>());
     }
 

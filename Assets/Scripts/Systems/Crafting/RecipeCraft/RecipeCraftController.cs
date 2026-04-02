@@ -243,7 +243,8 @@ public class RecipeCraftController : MonoBehaviour
             if (resultItem != null) 
             {
                 List<string> unlockList = new List<string>() { finalItemName };
-                ServiceLocator.Get<GameData>().BlanketCraft.AddBlanketRecipes(unlockList);
+                
+                RecipeManager.Instance.UnlockRecipe(finalItemName);
 
                 // 내 사전(OwnrecipeDict)에 추가
                 if (!string.IsNullOrEmpty(recipeKey) && !OwnrecipeDict.ContainsKey(recipeKey))

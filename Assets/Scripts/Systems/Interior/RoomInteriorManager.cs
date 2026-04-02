@@ -35,9 +35,7 @@ public class RoomInteriorManager : MonoBehaviour
     public SpriteRenderer highlightSprite;  // 색상을 바꾸기 위해 연결
     public Color colorValid = new Color(0, 1, 0, 0.5f);   // 놓을 수 있음 (반투명 초록)
     public Color colorInvalid = new Color(1, 0, 0, 0.5f); // 겹침/불가 (반투명 빨강)
-
-    [Header("Visual Adjustment")]
-    [SerializeField] private float yVisualOffset = 0.35f; // ★ 이 값을 조절해서 위치를 땡기세요!
+    
 
 
     [Header("선택된 가구 관리")]
