@@ -12,6 +12,7 @@ public class SettingPanel : MonoBehaviour
     public void OnClickSaveButton()
     {
         ServiceLocator.Get<SaveService>().SaveNow();
+        TutorialEventBus.Raise(TutorialID.ClickSaveNow);
     }
 
     public void OnExitButton()

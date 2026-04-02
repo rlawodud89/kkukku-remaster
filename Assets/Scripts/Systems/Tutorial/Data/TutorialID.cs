@@ -60,6 +60,13 @@ public enum TutorialID
     ClickPassInTable,
     ExitTable,
 
+    // CommonUI
+    ExitQuest,
+    RecipeConfirm,
+    ExitRecipe,
+    ClickSaveNow,
+    ExitSetting,
+
     // WorkingRoom
     ClickPersonalCraft,
     ExitPersonalCraft,
@@ -72,10 +79,6 @@ public enum TutorialID
     SelectWorkerRecipe,
     MakeBlanket,
     MakeBlanketFinish,
-
-    // CommonUI
-    QuestConfirm,
-    RecipeConfirm,
 
     // Interior
 
