@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 092c2b9dbfcfbd344a0be5b17ee606a5, type: 3}
-  m_Name: SnackBox
+  m_Name: "\uC7AC\uB8CC\uC7AC\uACE0\uD568"
   m_EditorClassIdentifier: 
-  itemName: SnackBox
-  roomInteriorType: 2
-  image: {fileID: -1912704371, guid: 4ed528b528a916146ab0dfd433560ebc, type: 3}
-  prefab: {fileID: 2196293096841948034, guid: 20d876c48b62d804d9737708e08e82f9, type: 3}
+  itemName: "\uC7AC\uB8CC\uC7AC\uACE0\uD568"
+  roomInteriorType: 1
+  image: {fileID: -2077623967, guid: 1ba599a4f1c22bd419d32fa17aad91dc, type: 3}
+  prefab: {fileID: 5788206324561782486, guid: 03fd73e1ff5aea147908a56298665c0c, type: 3}
   price: 15000
   itemWidth: 1
   itemHeight: 1
-  slotCount: 100
+  slotCount: 500
   maxStamina: 0
   workingTime: 0

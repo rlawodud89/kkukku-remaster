@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 750978747086725048}
   - component: {fileID: 2432623800040088727}
   m_Layer: 0
-  m_Name: BlanketStorage
+  m_Name: "\uC774\uBD88\uC7AC\uACE0\uD568"
   m_TagString: BlanketStorage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

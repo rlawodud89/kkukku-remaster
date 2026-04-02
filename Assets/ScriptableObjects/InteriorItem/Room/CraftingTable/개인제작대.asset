@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 092c2b9dbfcfbd344a0be5b17ee606a5, type: 3}
-  m_Name: PersonalCraftBox
+  m_Name: "\uAC1C\uC778\uC81C\uC791\uB300"
   m_EditorClassIdentifier: 
-  itemName: PersonalCraftBox
+  itemName: "\uAC1C\uC778\uC81C\uC791\uB300"
   roomInteriorType: 4
   image: {fileID: -1746070222, guid: dedadcc12e5305b46ad1830bb356c0a2, type: 3}
   prefab: {fileID: 4696338278954778362, guid: c3a2b90112eb2f74a970f039edb83e85, type: 3}

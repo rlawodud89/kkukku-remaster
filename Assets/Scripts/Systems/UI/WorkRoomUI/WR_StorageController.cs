@@ -42,16 +42,16 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         switch (myStorageType)
         {
             case StorageUIController.StorageType.Blanket:
-                interiorData = inventory.GetRoomInteriorItemSO("BlanketStorage");
+                interiorData = inventory.GetRoomInteriorItemSO("이불재고함");
                 break;
 
             case StorageUIController.StorageType.Material:
             case StorageUIController.StorageType.CraftBox:
-                interiorData = inventory.GetRoomInteriorItemSO("PersonalCraftBox");
+                interiorData = inventory.GetRoomInteriorItemSO("개인제작대");
                 break;
 
             case StorageUIController.StorageType.Snack:
-                interiorData = inventory.GetRoomInteriorItemSO("SnackBox");
+                interiorData = inventory.GetRoomInteriorItemSO("간식박스");
                 break;
 
             case StorageUIController.StorageType.Employee:

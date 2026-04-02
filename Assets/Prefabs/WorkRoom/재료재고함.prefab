@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -8438732450985770341}
   - component: {fileID: 8105987124951785006}
   m_Layer: 0
-  m_Name: MaterialStorage
+  m_Name: "\uC7AC\uB8CC\uC7AC\uACE0\uD568"
   m_TagString: MaterialStorage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
