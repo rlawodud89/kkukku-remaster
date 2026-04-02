@@ -160,7 +160,8 @@ public class StoreAggregate : IAggregate
         {
             int randomIdx = UnityEngine.Random.Range(0, roomInteriorSOs.Count);
             item = roomInteriorSOs.ElementAt(randomIdx).Value;
-        } while (item.roomInteriorType == RoomInteriorType.WORKER);
+        } while (item.roomInteriorType == RoomInteriorType.WORKER
+                  || item.roomInteriorType == RoomInteriorType.CRAFTING_TABLE);
 
 
         return item;

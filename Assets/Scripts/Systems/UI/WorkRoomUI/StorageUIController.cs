@@ -171,7 +171,9 @@ public class StorageUIController : MonoBehaviour
     {
         UIEventManager.ShowMainUI();
         CloseAllPanels();
-        
+
+        TutorialEventBus.Raise(TutorialID.ExitSnackBox);
+        TutorialEventBus.Raise(TutorialID.ExitPersonalCraft);
     }
     
 

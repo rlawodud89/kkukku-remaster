@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: GatheringSnack
   m_EditorClassIdentifier: 
   highlightTarget: 14
-  dialogue: "\uAC04\uC2DD\uC744 \uB2E4\uC12F\uBC88 \uD074\uB9AD\uD574\uC11C \uCC44\uC9D1\uD574\uBCF4\uC790."
+  dialogue: "\uAC04\uC2DD\uC744 \uC815\uD574\uC9C4 \uC218\uB9CC\uD07C \uD074\uB9AD\uD574\uC11C
+    \uCC44\uC9D1\uD574\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 14
   autoProceed: 0

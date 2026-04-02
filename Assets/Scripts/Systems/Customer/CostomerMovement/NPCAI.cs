@@ -309,17 +309,16 @@ public class NPCAI : MonoBehaviour
 
     IEnumerator MoveToQueueRoutine(Vector3 targetPos)
     {
-        // 1. 멀면 A* (장애물 회피)
-        float dist = Vector3.Distance(transform.position, targetPos);
-        if (dist > 1.5f)
-        {
-            // 목표지점 자체가 장애물일 수 있으므로 살짝 앞에서 A* 종료
-            Vector3 safeSpot = targetPos + Vector3.down * 0.5f;
-            yield return StartCoroutine(MoveWithAStar(safeSpot));
-        }
+        // 1. 계산대 목표 위치가 속한 타일의 '정중앙' 좌표를 먼저 구합니다.
+        Vector3Int targetTile = walkTilemap.WorldToCell(targetPos);
+        Vector3 tileCenterPos = walkTilemap.GetCellCenterWorld(targetTile);
 
-        // 2. 가까우면 직선 이동 (정밀 주차)
-        float timeOut = 3.0f;
+        // 2. 무조건 타일 중앙까지는 A* 길찾기로 90도씩 꺾어서 정상적으로 이동합니다.
+        yield return StartCoroutine(MoveWithAStar(tileCenterPos));
+
+        // 3. 도착한 타일 중앙에서 계산대 전용 미세 좌표(targetPos)로 살짝만 이동 (정밀 주차)
+        // 거리가 매우 짧으므로 미끄러지는 느낌 없이 자연스럽게 자리를 잡습니다.
+        float timeOut = 1.0f; // 타임아웃도 짧게 줄임
 
         while (Vector3.Distance(transform.position, targetPos) > 0.05f && timeOut > 0)
         {
@@ -327,8 +326,6 @@ public class NPCAI : MonoBehaviour
 
             float currentDist = Vector3.Distance(transform.position, targetPos);
 
-            // 🚨 핵심 수정: 거리가 너무 가까우면(0.1f 미만) 방향을 바꾸지 않음!
-            // (도착 직전에 벡터가 뒤집히는 것을 방지)
             if (currentDist > 0.1f)
             {
                 Vector3 direction = (targetPos - transform.position).normalized;
@@ -339,17 +336,68 @@ public class NPCAI : MonoBehaviour
             yield return null;
         }
 
-        // 3. 도착 확정
+        // 4. 도착 확정 및 뒷모습(계산대 방향) 고정
         transform.position = targetPos;
         animator.SetFloat("Speed", 0f);
         SetDirection(Vector3.up);
 
-        // (혹시 애니메이션이 튀는 걸 방지하기 위해 한 프레임 대기 후 한번 더 고정)
         yield return null;
         animator.SetFloat("MoveX", 0);
-        animator.SetFloat("MoveY", 1); // 1 = 위쪽(뒷모습)
+        animator.SetFloat("MoveY", 1); // 뒷모습
     }
 
+    IEnumerator MoveWithAStar(Vector3 targetWorldPos)
+    {
+        Vector3Int startTile = walkTilemap.WorldToCell(transform.position);
+        Vector3Int targetTile = walkTilemap.WorldToCell(targetWorldPos);
+
+        if (startTile == targetTile) yield break;
+
+        List<Vector3Int> path = pathfinding.FindPath(startTile, targetTile);
+
+        if (path != null && path.Count > 0)
+        {
+            int currentWaypointIndex = 0;
+
+            // foreach 대신 while을 써서 목표점(waypoint)들을 순회합니다.
+            while (currentWaypointIndex < path.Count)
+            {
+                Vector3 worldPos = walkTilemap.GetCellCenterWorld(path[currentWaypointIndex]);
+
+                // 💡 핵심 1: '도착 판정 거리'를 유동적으로 설정합니다.
+                // 마지막 목적지면 0.05f(정밀 주차), 지나가는 길목이면 0.2f(미리 다음 타일로 목표 변경)
+                // 이 값을 0.2f ~ 0.3f로 조절하시면 코너를 돌 때 둥글고 부드럽게 꺾여서 갑니다!
+                float distanceThreshold = (currentWaypointIndex == path.Count - 1) ? 0.05f : 0.2f;
+
+                // 💡 핵심 2: 타일 중앙에 완벽히 닿기 '직전'까지만 이동합니다.
+                while (Vector3.Distance(transform.position, worldPos) > distanceThreshold)
+                {
+                    // 방향을 루프 안에서 계속 갱신해주어 코너를 돌 때 애니메이션이 자연스럽게 넘어갑니다.
+                    Vector3 direction = (worldPos - transform.position).normalized;
+                    SetDirection(direction);
+
+                    transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
+                    yield return null;
+                }
+
+                // 💡 핵심 3: 중간 길목에서 위치를 강제로 스냅(Snap)시키는 코드를 삭제하여 덜컹거림 방지
+                currentWaypointIndex++;
+            }
+
+            // 마지막 목적지에서는 정확하게 위치를 맞춰줍니다.
+            transform.position = walkTilemap.GetCellCenterWorld(path[path.Count - 1]);
+        }
+        else
+        {
+            Debug.LogWarning($"[{name}] 길을 찾을 수 없습니다! 목표: {targetTile}");
+        }
+
+        // 도착 후 멈춤 처리
+        animator.SetFloat("Speed", 0f);
+        animator.SetFloat("MoveX", lastMoveDir.x);
+        animator.SetFloat("MoveY", lastMoveDir.y);
+    }
+    /*
     IEnumerator MoveWithAStar(Vector3 targetWorldPos)
     {
         Vector3Int startTile = walkTilemap.WorldToCell(transform.position);
@@ -391,8 +439,7 @@ public class NPCAI : MonoBehaviour
         animator.SetFloat("Speed", 0f);
         animator.SetFloat("MoveX", lastMoveDir.x);
         animator.SetFloat("MoveY", lastMoveDir.y);
-    }
-    // [NPCAI.cs 수정]
+    }*/
 
     IEnumerator NormalShopRoutine()
     {

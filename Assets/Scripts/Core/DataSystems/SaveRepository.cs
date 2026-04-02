@@ -342,7 +342,7 @@ public class SaveRepository
                 moonrock = 1000,
                 todayGold = 0,
                 todayMoonrock = 0,
-                playTime = 0,
+                playTime = 108000, // 아침 6시
                 endScene = "BlanketShop",
                 isOpen = false,
                 itemShopLevel = 1,
@@ -376,24 +376,38 @@ public class SaveRepository
             {
                 inventoryID = 3,
                 itemName = "꿈실",
-                count = 2
+                count = 5
             });
 
             connection.Insert(new MaterialInventory
             {
                 inventoryID = 3,
                 itemName = "운무솜",
-                count = 3
+                count = 5
             });
 
             connection.Insert(new MaterialInventory
             {
                 inventoryID = 3,
                 itemName = "달조각",
-                count = 3
+                count = 5
             });
 
             // BlanketInventory
+            connection.Insert(new BlanketInventory
+            {
+                inventoryID = 1,
+                itemName = "기본이불",
+                count = 1
+            });
+
+            // SnackInventory
+            connection.Insert(new SnackInventory
+            {
+                inventoryID = 4,
+                itemName = "사탕귤",
+                count = 1
+            });
 
             // ToolInventory
             connection.Insert(new ToolInventory
@@ -408,6 +422,14 @@ public class SaveRepository
                 toolType = ToolType.FISHING
             });
 
+
+            // ShopTable
+            connection.Insert(new ShopTable
+            {
+                tableID = 1,
+                itemName = "기본이불",
+                count = 1
+            });
 
             // ==== 기본 인테리어 배치 ====
 
@@ -458,7 +480,7 @@ public class SaveRepository
             {
                 ID = 1,
                 gridNumber = 40,
-                itemName = "BlanketStorage",
+                itemName = "이불재고함",
                 interiorType = RoomInteriorType.BLANKET_BOX
             });
 
@@ -466,7 +488,7 @@ public class SaveRepository
             {
                 ID = 2,
                 gridNumber = 16,
-                itemName = "PersonalCraftBox",
+                itemName = "개인제작대",
                 interiorType = RoomInteriorType.CRAFTING_TABLE
             });
 
@@ -474,22 +496,22 @@ public class SaveRepository
             {
                 ID = 3,
                 gridNumber = 42,
-                itemName = "MaterialStorage",
+                itemName = "재료재고함",
                 interiorType = RoomInteriorType.MATERIAL_BOX
             });
 
             connection.Insert(new RoomInteriorPlaced
             {
                 ID = 4,
-                gridNumber = 43,
-                itemName = "SnackBox",
+                gridNumber = 45,
+                itemName = "간식박스",
                 interiorType = RoomInteriorType.SNACK_BOX
             });
 
             connection.Insert(new RoomInteriorPlaced
             {
                 ID = 5,
-                gridNumber = 18,
+                gridNumber = 22,
                 itemName = "고양이",
                 interiorType = RoomInteriorType.WORKER
             });

@@ -6,7 +6,7 @@ public class SaveService
     private readonly DirtyDataRegistry dirtyRegistry;
 
     private bool isAutoSaveEnabled = false;
-    private float saveInterval = 15f;
+    private float saveInterval = 180f;  // 3분(180초)에 한번씩 저장
     private float timer;
 
     public SaveService(

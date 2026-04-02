@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ExitUpgradeMaterialLevel
   m_EditorClassIdentifier: 
   highlightTarget: 28
-  dialogue: 
+  dialogue: "\uC9C0\uAE08\uC740 \uC6D4\uC11D\uC774 \uBD80\uC871\uD558\uB2C8\uAE4C
+    \uB098\uAC00\uC790."
   showDialogue: 1
   completeEvent: 28
   autoProceed: 0

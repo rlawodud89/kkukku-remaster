@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ClickBuyMaterialButton
   m_EditorClassIdentifier: 
   highlightTarget: 22
-  dialogue: 
+  dialogue: "\uAD6C\uB9E4 \uBC84\uD2BC\uC744 \uB204\uB974\uBA74 \uD574\uB2F9 \uC544\uC774\uD15C\uC744
+    \uAD6C\uB9E4\uD560 \uC218 \uC788\uC5B4."
   showDialogue: 1
   completeEvent: 22
   autoProceed: 0
