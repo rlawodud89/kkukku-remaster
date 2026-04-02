@@ -151,14 +151,22 @@ public class FishingManagerUI : MonoBehaviour
 
         if (distance <= perfectDistance)
         {
+            
+            
             Debug.Log($"<color=cyan>Perfect!</color> ({targetFish.name})");
-            CatchText.SetText("<color=cyan>Perfect!</color>");
+
+            CatchText.color = Color.cyan; 
+            CatchText.SetText("Perfect!");
+
             CatchFish(targetFish);
         }
         else if (distance <= perfectDistance * 2.5f)
         {
-            Debug.Log($"<color=green>Good</color> ({targetFish.name})");
-            CatchText.SetText("<color=green>Good</color>");
+            Debug.Log($"<color=green>Good</color> ({targetFish.name})"); 
+            
+            CatchText.color = Color.green;
+            CatchText.SetText("Good");
+            
             CatchFish(targetFish);
         }
         else 
@@ -166,6 +174,10 @@ public class FishingManagerUI : MonoBehaviour
             // 범위를 벗어났을 때 (Miss)
             Debug.Log($"<color=red>Miss</color> ({targetFish.name})");
             CatchText.SetText("<color=red>Miss</color>");
+            
+            
+            CatchText.color = Color.red;
+            CatchText.SetText("Miss");
             
             // 획득 실패 처리: 물고기를 잡지 않고 파괴합니다.
             activeFishes.Remove(targetFish);

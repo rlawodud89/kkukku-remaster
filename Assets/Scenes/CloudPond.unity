@@ -1614,7 +1614,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1036388583}
   targetBar: {fileID: 2096711594}
   fishParent: {fileID: 1477381064}
-  CatchText: {fileID: 0}
+  CatchText: {fileID: 312460320}
   FishingButton: {fileID: 2074951418}
   caughtItemsContent: {fileID: 784773313}
   caughtItemSlotPrefab: {fileID: 6426827816897207629, guid: a6b30b2c38e2483438fab7b90936f2b0, type: 3}
