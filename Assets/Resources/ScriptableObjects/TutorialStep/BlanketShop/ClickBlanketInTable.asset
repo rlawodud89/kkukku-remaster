@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: ShopOpen
+  m_Name: ClickBlanketInTable
   m_EditorClassIdentifier: 
-  highlightTarget: 35
-  dialogue: "\uAC00\uAC8C \uD45C\uC9C0\uD310\uC744 \uB20C\uB7EC\uC11C \uAC00\uAC8C\uB97C
-    \uC5F4\uC5B4\uBD10."
+  highlightTarget: 39
+  dialogue: 
   showDialogue: 1
-  completeEvent: 35
+  completeEvent: 39
   autoProceed: 0
