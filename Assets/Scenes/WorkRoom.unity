@@ -15695,7 +15695,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 110
+  m_SortingOrder: 90
   m_TargetDisplay: 0
 --- !u!224 &1885158906
 RectTransform:
@@ -15922,7 +15922,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1819186615}
   m_HandleRect: {fileID: 1819186614}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

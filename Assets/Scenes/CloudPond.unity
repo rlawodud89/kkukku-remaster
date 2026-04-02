@@ -249,9 +249,9 @@ RectTransform:
   m_Father: {fileID: 1777649486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &84847342
 MonoBehaviour:
@@ -861,10 +861,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 554284012}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.8439287}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.001698494}
-  m_SizeDelta: {x: 20, y: 18.3283}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.36069965}
+  m_SizeDelta: {x: 20, y: 17.568}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &847457306
 MonoBehaviour:
@@ -879,15 +879,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.36320752, g: 0.29863957, b: 0.23471428, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 371551066, guid: d4689008242f3b046bfaf75eefae6b0c, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1236,6 +1236,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 574acdd782f222746851b5f690f6d978, type: 2}
   - {fileID: 11400000, guid: 699e4c073a344964e8735e17dcb6f5ae, type: 2}
   - {fileID: 11400000, guid: 3bab3c60eb0f1f4469ebbe0d40e03961, type: 2}
+  - {fileID: 11400000, guid: ff525bb32dbde504f951f6722076cfdd, type: 2}
+  - {fileID: 11400000, guid: dfc186803c4e055428a143f667d3e491, type: 2}
+  - {fileID: 11400000, guid: 9a100572970e0064cb5a58bf7fc89cb2, type: 2}
+  - {fileID: 11400000, guid: 48687224fc21b2a4ca57092725663828, type: 2}
+  - {fileID: 11400000, guid: 12c77728b89d75c4fa673cbe7f9f43a3, type: 2}
+  - {fileID: 11400000, guid: a3173d7f57903cb41b71473d181fc910, type: 2}
   currentFishingLevel: 1
   bonusCatchCount: 0
   fishPrefab: {fileID: 1580398984914599885, guid: d446863a82975fd4595cf257fcddef74, type: 3}
@@ -1286,7 +1292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1477381064
 RectTransform:
   m_ObjectHideFlags: 0
