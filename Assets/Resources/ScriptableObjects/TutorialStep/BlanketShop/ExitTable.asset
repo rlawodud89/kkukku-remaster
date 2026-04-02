@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ExitTable
   m_EditorClassIdentifier: 
   highlightTarget: 42
-  dialogue: 
+  dialogue: "\uC791\uC5C5\uC2E4\uC5D0 \uC788\uB294 \uC774\uBD88 \uC7AC\uACE0\uD568\uC73C\uB85C
+    \uC62E\uACA8\uC84C\uC5B4. \uB098\uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 42
   autoProceed: 0

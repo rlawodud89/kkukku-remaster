@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: AnotherMaterialMenu
   m_EditorClassIdentifier: 
   highlightTarget: 24
-  dialogue: 
+  dialogue: "\uC606\uC5D0 \uC788\uB294 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uBA74
+    \uB2E4\uB978 \uC885\uB958\uC758 \uC544\uC774\uD15C\uB3C4 \uBCFC \uC218 \uC788\uC5B4."
   showDialogue: 1
   completeEvent: 24
   autoProceed: 0

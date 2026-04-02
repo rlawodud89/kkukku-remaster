@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ClickTable
   m_EditorClassIdentifier: 
   highlightTarget: 38
-  dialogue: 
+  dialogue: "\uC774\uBD88 \uAC00\uAC8C\uC5D0 \uC628 \uAC78 \uD658\uC601\uD574. \uBA3C\uC800
+    \uC774\uBD88\uC7A5\uC744 \uD655\uC778\uD574\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 38
   autoProceed: 0

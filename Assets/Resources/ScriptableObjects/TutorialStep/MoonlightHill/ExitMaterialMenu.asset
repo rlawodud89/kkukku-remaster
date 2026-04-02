@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ExitMaterialMenu
   m_EditorClassIdentifier: 
   highlightTarget: 25
-  dialogue: 
+  dialogue: "\uB2E4\uB978 \uAC83\uB3C4 \uBCF4\uAE30 \uC704\uD574 \uB098\uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 25
   autoProceed: 0

@@ -106,6 +106,8 @@ public class RoomStoragePanel : MonoBehaviour
         selectedLeft.SetHighlight(true);
         RefreshButtonState();
         ValidateTransferCount();
+
+        TutorialEventBus.Raise(TutorialID.ClickBlanketInBox);
     }
 
     // 오른쪽 판매대 선택
@@ -116,6 +118,8 @@ public class RoomStoragePanel : MonoBehaviour
         selectedRight.SetHighlight(true);
         RefreshButtonState();
         ValidateTransferCount();
+
+        TutorialEventBus.Raise(TutorialID.ClickTableInBox);
     }
     private void ValidateTransferCount()
     {
@@ -205,6 +209,8 @@ public class RoomStoragePanel : MonoBehaviour
         quantityText.text = "1";
         ValidateTransferCount();
         RefreshButtonState();
+
+        TutorialEventBus.Raise(TutorialID.ClickPassInBox);
     }
 
     // 패널 닫기 및 초기화
@@ -213,9 +219,11 @@ public class RoomStoragePanel : MonoBehaviour
         ClearList();
         UIEventManager.ShowMainUI();
         gameObject.SetActive(false);
+
+        TutorialEventBus.Raise(TutorialID.ExitBlanketBox);
     }
 
-    
+
     private void ClearList()
     {
         if (selectedLeft != null) selectedLeft.SetHighlight(false);

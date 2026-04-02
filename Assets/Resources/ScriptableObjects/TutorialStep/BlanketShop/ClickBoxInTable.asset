@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightTarget: 40
   dialogue: 
-  showDialogue: 1
+  showDialogue: 0
   completeEvent: 40
   autoProceed: 0

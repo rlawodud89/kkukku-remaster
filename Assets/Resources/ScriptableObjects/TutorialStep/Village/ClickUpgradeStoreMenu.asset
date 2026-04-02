@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ClickUpgradeStoreMenu
   m_EditorClassIdentifier: 
   highlightTarget: 34
-  dialogue: 
+  dialogue: "\uC2DC\uC124 \uD655\uC7A5\uC73C\uB85C \uB118\uC5B4\uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 34
   autoProceed: 0

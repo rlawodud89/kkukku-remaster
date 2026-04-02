@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: ClickInteriorStore
   m_EditorClassIdentifier: 
   highlightTarget: 29
-  dialogue: 
+  dialogue: "\uB9C8\uC744\uC5D0\uB294 \uC778\uD14C\uB9AC\uC5B4 \uC0C1\uC810\uACFC
+    \uB69D\uB531\uACF5\uBC29\uC774 \uC788\uC5B4. \uC778\uD14C\uB9AC\uC5B4 \uC0C1\uC810\uBD80\uD130
+    \uB4E4\uC5B4\uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 29
   autoProceed: 0

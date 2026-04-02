@@ -39,6 +39,7 @@ public class ItemFruit : MonoBehaviour
 
     void Start()
     {
+        maxClickCount = ServiceLocator.Get<GameData>().User.GetCurrentUsedTool(ToolType.GATHERING).needClickCount;
         countText.text = (maxClickCount - currentClickCount).ToString();
     }
 

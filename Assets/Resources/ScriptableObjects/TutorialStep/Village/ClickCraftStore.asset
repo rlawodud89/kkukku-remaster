@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ClickCraftStore
   m_EditorClassIdentifier: 
   highlightTarget: 31
-  dialogue: 
+  dialogue: "\uC774\uBC88\uC5D4 \uB69D\uB531\uACF5\uBC29\uC5D0 \uB4E4\uC5B4\uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 31
   autoProceed: 0
