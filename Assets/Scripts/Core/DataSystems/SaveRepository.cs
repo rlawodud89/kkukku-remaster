@@ -401,6 +401,14 @@ public class SaveRepository
                 count = 1
             });
 
+            // SnackInventory
+            connection.Insert(new SnackInventory
+            {
+                inventoryID = 4,
+                itemName = "사탕귤",
+                count = 1
+            });
+
             // ToolInventory
             connection.Insert(new ToolInventory
             {
@@ -414,6 +422,14 @@ public class SaveRepository
                 toolType = ToolType.FISHING
             });
 
+
+            // ShopTable
+            connection.Insert(new ShopTable
+            {
+                tableID = 1,
+                itemName = "기본이불",
+                count = 1
+            });
 
             // ==== 기본 인테리어 배치 ====
 

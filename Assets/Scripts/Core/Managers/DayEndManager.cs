@@ -40,8 +40,5 @@ public class DayEndManager : MonoBehaviour
             ServiceLocator.Get<GameData>().User.GetTodayMoonrock()
             );
         dayEndUI.gameObject.SetActive(true);
-
-        ServiceLocator.Get<GameData>().User.ResetTodayGoldMoonrock();
-        ServiceLocator.Get<GameData>().Store.ResetAllStoreItemList();
     }
 }
