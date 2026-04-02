@@ -53,5 +53,6 @@ public class UpgradePopup : MonoBehaviour
     public void OnClickNoBtn()
     {
         gameObject.SetActive(false);
+        TutorialEventBus.Raise(TutorialID.ExitUpgradeMaterialLevelPanel);
     }
 }

@@ -88,7 +88,7 @@ public class ShopManager : MonoBehaviour
     // 가게 들어왔을 때 자연스럽게 몇 명 깔아두는 코루틴
     private void SpawnInitialSurvivors()
     {
-        int initialCount = UnityEngine.Random.Range(1, spawnInitCustomers+1);
+        int initialCount = UnityEngine.Random.Range(1, spawnInitCustomers + 1);
         for (int i = 0; i < initialCount; i++)
         {
             CreateCustomer(isSurvivor: true);
@@ -103,10 +103,12 @@ public class ShopManager : MonoBehaviour
         if (isStoreOpen)
         {
             StartCoroutine(SpawnCustomerRoutine());
+            TutorialEventBus.Raise(TutorialID.ShopOpen);
         }
         else
         {
             StopAllCoroutines();
+            TutorialEventBus.Raise(TutorialID.ShopClose);
         }
     }
 

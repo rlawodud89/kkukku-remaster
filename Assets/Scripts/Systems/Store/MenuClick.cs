@@ -22,6 +22,7 @@ public class MenuClick : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         materialPurchasePanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ClickMaterialMenu);
     }
 
     public void OnClickWorkerBtn()
@@ -34,6 +35,7 @@ public class MenuClick : MonoBehaviour
     {
         materialPurchasePanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ExitMaterialMenu);
     }
 
     public void OnClickWorkerBackBtn()
@@ -47,28 +49,33 @@ public class MenuClick : MonoBehaviour
     public void OnClickInteriorStoreBtn()
     {
         interiorStorePanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ClickInteriorStore);
     }
 
     public void OnClickCraftStoreBtn()
     {
         craftStorePanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ClickCraftStore);
     }
 
     public void OnClickInteriorStoreBackBtn()
     {
         interiorStorePanel.SetActive(false);
+        TutorialEventBus.Raise(TutorialID.ExitInteriorStore);
     }
 
     public void OnClickToolBtn()
     {
         toolPurcahsePanel.SetActive(true);
         craftStorePanel.SetActive(false);
+        TutorialEventBus.Raise(TutorialID.ClickToolStoreMenu);
     }
 
     public void OnClickFacilityBtn()
     {
         facilityUpgradePanel.SetActive(true);
         craftStorePanel.SetActive(false);
+        TutorialEventBus.Raise(TutorialID.ClickUpgradeStoreMenu);
     }
 
     public void OnClickCraftStoreBackBtn()
@@ -80,6 +87,7 @@ public class MenuClick : MonoBehaviour
     {
         toolPurcahsePanel.SetActive(false);
         craftStorePanel.SetActive(true);
+        TutorialEventBus.Raise(TutorialID.ExitToolStoreMenu);
     }
 
     public void OnClickFacilityUpgradeBackBtn()

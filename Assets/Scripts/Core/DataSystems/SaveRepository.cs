@@ -335,7 +335,7 @@ public class SaveRepository
             // ==== User 초기값 ====
             var user = new User
             {
-                shopName = "",
+                shopName = "꾸꾸",
                 level = 1,
                 energy = 0,
                 gold = 1000,

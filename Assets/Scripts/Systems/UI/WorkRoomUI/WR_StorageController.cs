@@ -142,37 +142,50 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         
         return true; // 수납 성공!
     }
-   
+
 
     // ==========================================
     // 3. UI 상호작용 (클릭)
     // ==========================================
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (myStorageType==StorageUIController.StorageType.None)
-        {
-            return;
-        }
-        if (StorageUIController.Instance.IsPopupOpen) return;
-        
+        if (myStorageType == StorageUIController.StorageType.None) return;
+        if (StorageUIController.Instance != null && StorageUIController.Instance.IsPopupOpen) return;
+
         // 편집 모드 체크
-        if (RoomInteriorManager.Instance != null && RoomInteriorManager.Instance.IsEditMode) 
-        {
+        if (RoomInteriorManager.Instance != null && RoomInteriorManager.Instance.IsEditMode)
             return;
-        }
 
-        if (storageUIController == null)
-            storageUIController = FindObjectOfType<StorageUIController>();
-        
-        if (storageUIController != null)
+        UpdateTotalItemCount(); // UI 열기 전 갱신
+
+        // 💡 분기 처리: 이불장(Blanket)일 경우 방금 만든 RoomStoragePanel 열기
+        if (myStorageType == StorageUIController.StorageType.Blanket)
         {
-            UpdateTotalItemCount(); // UI 열기 전 갱신
-
-            storageUIController.OpenPopup(myStorageID, myStorageType);
+            RoomStoragePanel roomPanel = FindObjectOfType<RoomStoragePanel>(true);
+            if (roomPanel != null)
+            {
+                UIEventManager.HideMainUI();
+                roomPanel.OpenStorage(myStorageID);
+            }
+            else
+            {
+                Debug.LogError("RoomStoragePanel을 찾을 수 없습니다!");
+            }
         }
+        // 💡 다른 수납장일 경우 기존 팝업 열기
         else
         {
-            Debug.LogError($"[Click Test] {gameObject.name}에 popupUI가 연결되지 않았습니다!");
+            if (storageUIController == null)
+                storageUIController = FindObjectOfType<StorageUIController>();
+
+            if (storageUIController != null)
+            {
+                storageUIController.OpenPopup(myStorageID, myStorageType);
+            }
+            else
+            {
+                Debug.LogError($"[Click Test] {gameObject.name}에 popupUI가 연결되지 않았습니다!");
+            }
         }
     }
 

@@ -448,6 +448,7 @@ GameObject:
   - component: {fileID: 3234547976137405323}
   - component: {fileID: 4275512390410188089}
   - component: {fileID: 8690604192099119684}
+  - component: {fileID: 3338050324664508104}
   m_Layer: 5
   m_Name: ForestButton
   m_TagString: Untagged
@@ -556,7 +557,36 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4275512390410188089}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3338050324664508104}
+        m_TargetAssemblyTypeName: MistForestMapButton, Assembly-CSharp
+        m_MethodName: OnClickSpot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3338050324664508104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033174782119681003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 035596236989d8f4a9e5606553f42f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endingLevel: 10
+  mapButton: {fileID: 8690604192099119684}
+  endingSceneName: Ending
+  mistForestName: MistForest
+  locationName: "\uB4A4\uCC99\uC784\uC548\uAC1C\uC232"
 --- !u!1 &2116758121787612002
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,7 +652,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6e568af4bef17d14c9da4cb8871e1639, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 473c91dab523e844dbc9616a2b878707, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -988,6 +1018,7 @@ GameObject:
   - component: {fileID: 5963641352870147638}
   - component: {fileID: 4377740870226938398}
   - component: {fileID: 487674432498090293}
+  - component: {fileID: 2711507510392779053}
   m_Layer: 5
   m_Name: MoonlightHillButton
   m_TagString: Untagged
@@ -1123,6 +1154,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: MoonlightHill
   locationName: "\uB2EC\uBE5B\uC5B8\uB355"
+--- !u!114 &2711507510392779053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200138795556532539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 11
 --- !u!1 &4201123338697482242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,6 +1332,7 @@ GameObject:
   - component: {fileID: 2785211810018144172}
   - component: {fileID: 5654642804036771187}
   - component: {fileID: 3861350012750022570}
+  - component: {fileID: 3486218245227642178}
   m_Layer: 5
   m_Name: CloundPondButton
   m_TagString: Untagged
@@ -1423,6 +1468,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: CloudPond
   locationName: "\uAD6C\uB984\uC815\uC6D0"
+--- !u!114 &3486218245227642178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5810428839939904228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 10
 --- !u!1 &6043264480906768677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,6 +1494,7 @@ GameObject:
   - component: {fileID: 8440871458603539104}
   - component: {fileID: 490754209547014238}
   - component: {fileID: 2696944744850485674}
+  - component: {fileID: 1929570369685880549}
   m_Layer: 5
   m_Name: VillageButton
   m_TagString: Untagged
@@ -1571,6 +1630,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: Village
   locationName: "\uB9C8\uC744"
+--- !u!114 &1929570369685880549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043264480906768677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 12
 --- !u!1 &6082947902037058672
 GameObject:
   m_ObjectHideFlags: 0
@@ -1699,6 +1771,7 @@ GameObject:
   - component: {fileID: 6241808907933189040}
   - component: {fileID: 3181159118466578146}
   - component: {fileID: 8951850696269789530}
+  - component: {fileID: 7062293872901406244}
   m_Layer: 5
   m_Name: SleepGardenButton
   m_TagString: Untagged
@@ -1832,8 +1905,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31dd4ef1fd420c94caa190bfedeb913d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: SleepGarden
+  sceneName: SleepingGarden
   locationName: "\uC218\uBA74\uC815\uC6D0"
+--- !u!114 &7062293872901406244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6503655706351550120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 9
 --- !u!1 &6556843679869345273
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,6 +2277,7 @@ GameObject:
   - component: {fileID: 1204248748017085728}
   - component: {fileID: 9219134071827707180}
   - component: {fileID: 8450780532474465514}
+  - component: {fileID: 729146710821020134}
   m_Layer: 5
   m_Name: BlanketShopButton
   m_TagString: Untagged
@@ -2326,6 +2413,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneName: BlanketShop
   locationName: "\uC774\uBD88\uAC00\uAC8C"
+--- !u!114 &729146710821020134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8178214275632279879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d100b5eae5b944ca2c682f4e430a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorID: 8
 --- !u!1 &8720915134885661397
 GameObject:
   m_ObjectHideFlags: 0
@@ -2546,12 +2646,12 @@ GameObject:
   - component: {fileID: 1827281919594012776}
   - component: {fileID: 5294575420044361617}
   m_Layer: 5
-  m_Name: MapPanel
+  m_Name: mapPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9111335615970701896
 RectTransform:
   m_ObjectHideFlags: 0

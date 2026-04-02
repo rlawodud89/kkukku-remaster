@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
 
     public DayPhase currentPhase;
     public static event Action<DayPhase> OnPhaseChangedEvent;
+    public static event Action OnDayEndEvent;
 
     [Header("디버그 도구")]
     [Range(0, 23)] public int debugHour; // 인스펙터 슬라이더로 조절
@@ -101,11 +102,11 @@ public class GameManager : MonoBehaviour
     {
         // 1. 전달받은 초 단위 시간을 그대로 적용
         gameTime = targetGameTime;
-        
+
         // 2. 적용된 초 단위 시간을 바탕으로 시/분 역산
         hour = (int)(gameTime / 3600) % 24;
         minute = (int)(gameTime / 60) % 60;
-        
+
         // 3. 즉시 UI와 페이즈 업데이트
         UpdateDayPhase();
         UpdateTimeUI(hour, minute);
@@ -149,6 +150,8 @@ public class GameManager : MonoBehaviour
         {
             OnPhaseChanged();
         }
+
+        if (hour == 0) OnDayEndEvent?.Invoke();
     }
 
     void OnPhaseChanged()
@@ -202,9 +205,12 @@ public class GameManager : MonoBehaviour
     // 게임 종료, 씬 이동, 또는 일시정지 될 때 호출해주면 됩니다.
     public void SaveCurrentTime()
     {
-        PlayerPrefs.SetFloat("SavedGameTime", gameTime);
-        PlayerPrefs.Save(); // 즉시 디바이스에 물리적 저장
-        
+        //PlayerPrefs.SetFloat("SavedGameTime", gameTime);
+        //PlayerPrefs.Save(); // 즉시 디바이스에 물리적 저장
+
+        ServiceLocator.Get<GameData>().User.SetPlayTime(gameTime);
+        ServiceLocator.Get<SaveService>().SaveNow();
+
         Debug.Log($"<color=green>게임 시간 저장 완료: {hour:D2}:{minute:D2}</color>");
     }
 
@@ -223,7 +229,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+
 
 
     void LoadGameData()

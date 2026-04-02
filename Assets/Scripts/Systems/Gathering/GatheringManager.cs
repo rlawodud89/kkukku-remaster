@@ -60,6 +60,7 @@ public class GatheringManager : MonoBehaviour
         }
 
 
+        trees = new List<ItemTree>(FindObjectsOfType<ItemTree>());
         ResetAllButtons();
         StartTimer();
     }
@@ -149,7 +150,7 @@ public class GatheringManager : MonoBehaviour
             return;
         }
 
-        TutorialEventBus.Raise(TutorialID.GatheringItem);
+        TutorialEventBus.Raise(TutorialID.GatheringSnack);
 
         snackBoxData[currentSnackBoxIndex].count++;
 

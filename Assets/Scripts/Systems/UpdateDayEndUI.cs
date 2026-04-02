@@ -31,5 +31,6 @@ public class UpdateDayEndUI : MonoBehaviour
     public void ClickOKButton()
     {
         this.gameObject.SetActive(false);
+        GameManager.Instance.SetGameTime(6, 0);
     }
 }
