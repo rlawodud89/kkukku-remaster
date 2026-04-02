@@ -16,7 +16,7 @@ MonoBehaviour:
   roomInteriorType: 1
   image: {fileID: -2077623967, guid: 1ba599a4f1c22bd419d32fa17aad91dc, type: 3}
   prefab: {fileID: 5788206324561782486, guid: 03fd73e1ff5aea147908a56298665c0c, type: 3}
-  price: 0
+  price: 15000
   itemWidth: 1
   itemHeight: 1
   slotCount: 500
