@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
   m_Name: GotoRoom
   m_EditorClassIdentifier: 
-  highlightTarget: 46
+  highlightTarget: 37
   dialogue: "\uC791\uC5C5\uC2E4\uB85C \uB4E4\uC5B4\uAC00\uBCF4\uC790."
   showDialogue: 1
-  completeEvent: 46
+  completeEvent: 37
   autoProceed: 0

@@ -93,9 +93,9 @@ public class ShopStoragePanel : MonoBehaviour
         // 이전 데이터 삭제
         ClearList();
 
-        if(ShopStorageDataManager.Instance.GetTableClass(id, out TableClass blanketList))
+        if (ShopStorageDataManager.Instance.GetTableClass(id, out TableClass blanketList))
         {
-            for(int i = 0; i < blanketList.itemName.Count; i++)
+            for (int i = 0; i < blanketList.itemName.Count; i++)
             {
                 if (blanketList.count[i] <= 0) continue;
 
@@ -155,7 +155,7 @@ public class ShopStoragePanel : MonoBehaviour
     [Header("UI Elements")]
     public Button sendButton;
     public TMP_InputField quantityText;
-    
+
 
     int currentTransferCount = 1;
 
@@ -166,6 +166,8 @@ public class ShopStoragePanel : MonoBehaviour
         selectedLeft = item;
         selectedLeft.SetHighlight(true);
         RefreshButtonState();
+
+        TutorialEventBus.Raise(TutorialID.ClickBlanketInTable);
     }
 
     // 오른쪽 재고함 선택 시 호출
@@ -175,6 +177,8 @@ public class ShopStoragePanel : MonoBehaviour
         selectedRight = item;
         selectedRight.SetHighlight(true);
         RefreshButtonState();
+
+        TutorialEventBus.Raise(TutorialID.ClickBoxInTable);
     }
 
     // 버튼 활성화 여부 결정
@@ -256,6 +260,8 @@ public class ShopStoragePanel : MonoBehaviour
         if (quantityText != null) quantityText.text = "1";
 
         RefreshButtonState();
+
+        TutorialEventBus.Raise(TutorialID.ClickPassInTable);
     }
 
 
@@ -277,6 +283,8 @@ public class ShopStoragePanel : MonoBehaviour
         // 3. 패널 비활성화
         UIEventManager.ShowMainUI();
         gameObject.SetActive(false);
+
+        TutorialEventBus.Raise(TutorialID.ExitTable);
     }
 
     // 인스펙터에서 InputField의 On End Edit 또는 On Value Changed에 연결할 함수

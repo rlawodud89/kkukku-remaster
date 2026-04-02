@@ -49,22 +49,16 @@ public enum TutorialID
     ExitToolStoreMenu,
     ClickUpgradeStoreMenu,
 
-    // CommonUI
-    QuestConfirm,
-    RecipeConfirm,
-
     // BlanketShop
-    ClickTable,
-    ClickBlanketInBox,
-    ClickBoxInTable,
-    AddBlanket,
-    ClickBlanketInTable,
-    RemoveBlanket,
-    ExitTable,
-
     ShopOpen,
     ShopClose,
     GotoRoom,
+
+    ClickTable,
+    ClickBlanketInTable,
+    ClickBoxInTable,
+    ClickPassInTable,
+    ExitTable,
 
     // WorkingRoom
     ClickPersonalCraft,
@@ -77,7 +71,11 @@ public enum TutorialID
     ClickWorker,
     SelectWorkerRecipe,
     MakeBlanket,
-    MakeBlanketFinish,   
+    MakeBlanketFinish,
+
+    // CommonUI
+    QuestConfirm,
+    RecipeConfirm,
 
     // Interior
 

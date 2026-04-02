@@ -7560,7 +7560,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f16d02cdc4bdf4cadb8a9478362c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
+  steps:
+  - {fileID: 11400000, guid: 71e2db4b024c05148a95923cf46dfec7, type: 2}
+  - {fileID: 11400000, guid: c623f6af74eff6f4b834203f4eaa8ada, type: 2}
+  - {fileID: 11400000, guid: 6da3024dfb827a04fbdff9a7ef16acba, type: 2}
+  - {fileID: 11400000, guid: 7c07b04900383eb4cbaaea0effc6df7b, type: 2}
+  - {fileID: 11400000, guid: 7593ee48ffa3a8246b9d00f7c34ca0f7, type: 2}
 --- !u!1001 &1796497797
 PrefabInstance:
   m_ObjectHideFlags: 0
