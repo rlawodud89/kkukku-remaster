@@ -137,6 +137,8 @@ public class NPCAI : MonoBehaviour
         {
             ShowSpeechBubble(talk);
         }
+
+        QuestManager.Instance.UpdateQuestProgressByID(4);
     }
 
     public void ShowSpeechBubble(string message)

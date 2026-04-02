@@ -169,6 +169,9 @@ public class BlanketCraftController : MonoBehaviour
         }
 
         isCrafting = false; // UI 잠금 해제
+
+        // 퀘스트 
+        QuestManager.Instance.UpdateQuestProgressByID(1);
     }
 
 }   

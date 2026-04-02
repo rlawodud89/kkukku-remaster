@@ -152,6 +152,9 @@ public class GatheringManager : MonoBehaviour
 
         TutorialEventBus.Raise(TutorialID.GatheringSnack);
 
+        // 퀘스트
+        QuestManager.Instance.UpdateQuestProgressByID(2);
+
         snackBoxData[currentSnackBoxIndex].count++;
 
         ServiceLocator.Get<GameData>().Inventory.AdjustSnackCount(
