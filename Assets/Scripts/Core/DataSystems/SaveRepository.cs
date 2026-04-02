@@ -376,24 +376,30 @@ public class SaveRepository
             {
                 inventoryID = 3,
                 itemName = "꿈실",
-                count = 2
+                count = 5
             });
 
             connection.Insert(new MaterialInventory
             {
                 inventoryID = 3,
                 itemName = "운무솜",
-                count = 3
+                count = 5
             });
 
             connection.Insert(new MaterialInventory
             {
                 inventoryID = 3,
                 itemName = "달조각",
-                count = 3
+                count = 5
             });
 
             // BlanketInventory
+            connection.Insert(new BlanketInventory
+            {
+                inventoryID = 1,
+                itemName = "기본이불",
+                count = 1
+            });
 
             // ToolInventory
             connection.Insert(new ToolInventory

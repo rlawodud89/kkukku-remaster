@@ -18,7 +18,7 @@ public class EmployeeController : MonoBehaviour
     public EmployeeState currentState = EmployeeState.Idle;
 
     [Header("스탯 정보")]
-    public int currentStamina = 100; 
+    public int currentStamina = 100;
     public int maxStamina = 100;
     public int staminaCostPerWork = 10;
     public float workingTime = 10f;
@@ -32,11 +32,11 @@ public class EmployeeController : MonoBehaviour
     [Header("체력 툴팁")]
     public GameObject staminaTooltipObj; // 껐다 켤 툴팁 전체 오브젝트 (배경 포함)
     public TextMeshProUGUI staminaTooltipText;
-    
+
     private void Start()
     {
         if (staminaTooltipObj != null) staminaTooltipObj.SetActive(false);
-        
+
         // 씬 진입 시 오프라인 시간 계산 및 복구
         LoadAndCalculateOfflineProgress();
     }
@@ -57,22 +57,22 @@ public class EmployeeController : MonoBehaviour
             staminaTooltipObj.SetActive(false);
         }
     }
-    
+
     // ==========================================================
     // 1. 작업 시작 (UI 매니저가 호출)
     // ==========================================================
     public bool StartCrafting(string itemName, Action onComplete)
     {
-        if (currentState != EmployeeState.Idle) 
+        if (currentState != EmployeeState.Idle)
         {
             Debug.Log("직원이 이미 일하고 있습니다!");
-            return false; 
+            return false;
         }
 
         if (currentStamina < staminaCostPerWork)
         {
             Debug.Log($"스태미나가 부족해서 일을 시작할 수 없습니다! {currentStamina}/{staminaCostPerWork}");
-            return false; 
+            return false;
         }
 
         // 상태 및 스탯 갱신
@@ -96,8 +96,10 @@ public class EmployeeController : MonoBehaviour
     public void EatSnack(int recoverAmount)
     {
         currentStamina = Mathf.Min(currentStamina + recoverAmount, maxStamina);
-        
+
         Debug.Log($"간식을 먹었습니다! 현재 체력: {currentStamina}");
+
+        TutorialEventBus.Raise(TutorialID.FeedSnack);
 
         SaveStateToDB(0f);
         UpdateUI();
@@ -106,7 +108,7 @@ public class EmployeeController : MonoBehaviour
     // ==========================================================
     // 3. 씬 나갈 때 / 게임 끌 때 저장
     // ==========================================================
-    private void OnDestroy() 
+    private void OnDestroy()
     {
         if (currentState == EmployeeState.Working)
         {
@@ -114,7 +116,7 @@ public class EmployeeController : MonoBehaviour
             SaveStateToDB(currentProgress);
         }
     }
-    
+
     private void OnApplicationQuit()
     {
         if (currentState == EmployeeState.Working)
@@ -168,9 +170,9 @@ public class EmployeeController : MonoBehaviour
 
         if (mySO != null)
         {
-            maxStamina = mySO.maxStamina; 
+            maxStamina = mySO.maxStamina;
             workingTime = mySO.workingTime; // <- 진짜 작업 시간(workingTime) 갱신이 누락된 것 같습니다!
-            
+
             Debug.Log($"<color=cyan>[오프라인 1단계]</color> SO 로드 성공! ({myName}) | 최대 체력: {maxStamina}, 세팅된 작업시간(workingTime 변수): {workingTime}");
         }
         else
@@ -178,21 +180,21 @@ public class EmployeeController : MonoBehaviour
             Debug.LogWarning($"<color=red>[오프라인 1단계 실패]</color> '{myName}'의 SO 데이터를 찾을 수 없습니다!");
         }
 
-        currentStamina = 0; 
+        currentStamina = 0;
 
         WorkerState worker = ServiceLocator.Get<GameData>().ShopState.GetWorkerState(myWorkerID);
 
-        if (worker == null) 
+        if (worker == null)
         {
             Debug.Log($"<color=yellow>[오프라인 2단계]</color> ID:{myWorkerID} 직원의 DB 기록이 없습니다. (새로 배치됨) UI 갱신 후 종료합니다.");
-            UpdateUI(); 
+            UpdateUI();
             return;
         }
 
-        currentStamina = worker.stamina; 
+        currentStamina = worker.stamina;
         Debug.Log($"<color=green>[오프라인 2단계]</color> DB 기록 로드 성공! 현재 체력 복구: {currentStamina}");
 
-        if (string.IsNullOrEmpty(worker.workingItem)) 
+        if (string.IsNullOrEmpty(worker.workingItem))
         {
             Debug.Log($"<color=yellow>[오프라인 3단계]</color> 직원이 씬을 나갈 때 쉬고 있었습니다(Idle). 오프라인 계산 없이 종료합니다.");
             UpdateUI();
@@ -204,7 +206,7 @@ public class EmployeeController : MonoBehaviour
         // ==========================================================
         currentWorkingItem = worker.workingItem;
         currentState = EmployeeState.Working;
-        
+
         Debug.Log($"<color=orange>[오프라인 3단계]</color> '{currentWorkingItem}' 제작 중이었습니다. 시간 계산을 시작합니다.");
 
         if (!string.IsNullOrEmpty(worker.lastSceneTime))
@@ -212,12 +214,12 @@ public class EmployeeController : MonoBehaviour
             DateTime lastTime = DateTime.Parse(worker.lastSceneTime).ToUniversalTime();
             float passedSeconds = (float)(DateTime.UtcNow - lastTime).TotalSeconds;
 
-            
+
             if (passedSeconds < 0)
             {
                 passedSeconds = 0f;
             }
-            
+
             if (workingTime <= 0)
             {
                 workingTime = 1f; // 임시 
@@ -234,7 +236,7 @@ public class EmployeeController : MonoBehaviour
             }
             else
             {
-                float startTimer = finalProgress * workingTime; 
+                float startTimer = finalProgress * workingTime;
                 Debug.Log($"<color=cyan>오프라인 복구 완료:</color> 아직 덜 만들었습니다. 타이머 {startTimer}초부터 코루틴을 재시작합니다.");
                 StartCoroutine(CraftingRoutine(startTimer));
             }
@@ -243,8 +245,8 @@ public class EmployeeController : MonoBehaviour
         {
             Debug.LogWarning("DB에 lastSceneTime(마지막 접속 시간)이 비어있습니다. 시간 계산을 패스합니다.");
         }
-        
-        UpdateUI(); 
+
+        UpdateUI();
     }
 
     public void UpdateUI()
@@ -256,7 +258,7 @@ public class EmployeeController : MonoBehaviour
         {
             progressBar.fillAmount = 0f;
         }
-        
+
         if (staminaTooltipObj != null && staminaTooltipObj.activeSelf)
         {
             staminaTooltipText.text = $"{currentStamina} / {maxStamina}";
@@ -268,14 +270,14 @@ public class EmployeeController : MonoBehaviour
     // ==========================================================
     private IEnumerator CraftingRoutine(float startTimer)
     {
-        float timer = startTimer; 
-        
+        float timer = startTimer;
+
         while (timer < workingTime)
         {
             timer += Time.deltaTime;
             if (progressBar != null)
                 progressBar.fillAmount = timer / workingTime;
-            
+
             yield return null;
         }
 
@@ -309,8 +311,8 @@ public class EmployeeController : MonoBehaviour
                 if (RoomInteriorManager.Instance != null)
                 {
                     isAdded = RoomInteriorManager.Instance.TryAddToAnyStorage(
-                        StorageUIController.StorageType.Blanket, 
-                        currentWorkingItem, 
+                        StorageUIController.StorageType.Blanket,
+                        currentWorkingItem,
                         1
                     );
                 }
@@ -319,8 +321,8 @@ public class EmployeeController : MonoBehaviour
                     // 다른 미니게임 씬 등이라면 CrossScene 방식 사용
                     // (※ 만약 이 함수가 없다면 위쪽 if문만 사용해도 됩니다)
                     isAdded = RoomInteriorManager.Instance.TryAddToAnyStorage_CrossScene(
-                        StorageUIController.StorageType.Blanket, 
-                        currentWorkingItem, 
+                        StorageUIController.StorageType.Blanket,
+                        currentWorkingItem,
                         1
                     );
                 }
@@ -340,8 +342,8 @@ public class EmployeeController : MonoBehaviour
         currentWorkingItem = null;
         currentState = EmployeeState.Idle;
         currentCallback = null;
-        
-        SaveStateToDB(0f); 
-        UpdateUI(); 
+
+        SaveStateToDB(0f);
+        UpdateUI();
     }
 }

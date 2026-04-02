@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: TestStep2
+  m_Name: SelectWorkerRecipe
   m_EditorClassIdentifier: 
-  highlightTarget: 9
-  dialogue: "\uB3C4\uAD6C\uB97C \uBCC0\uACBD\uD574\uBCF4\uC790."
+  highlightTarget: 54
+  dialogue: "\uC9C1\uC6D0\uC5D0\uAC8C\uB294 \uAC16\uACE0 \uC788\uB294 \uC774\uBD88
+    \uB808\uC2DC\uD53C\uB97C \uC81C\uC791\uD558\uB3C4\uB85D \uD560 \uC218 \uC788\uC5B4.
+    \uB808\uC2DC\uD53C\uB97C \uC120\uD0DD\uD574\uBCF4\uC790."
   showDialogue: 1
-  completeEvent: 9
+  completeEvent: 54
   autoProceed: 0

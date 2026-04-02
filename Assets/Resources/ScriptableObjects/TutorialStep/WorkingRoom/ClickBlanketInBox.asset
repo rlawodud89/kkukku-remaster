@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: TestStep3
+  m_Name: ClickBlanketInBox
   m_EditorClassIdentifier: 
-  highlightTarget: 0
-  dialogue: "\uC124\uBA85\uCC3D\uB9CC \uC788\uB294 \uACBD\uC6B0"
+  highlightTarget: 58
+  dialogue: "\uC774\uBC88\uC5D4 \uAC00\uAC8C\uC5D0\uC11C \uD310\uB9E4\uD560 \uC774\uBD88\uC744
+    \uBCF4\uB0B4\uBCFC \uAC70\uC57C. \uD074\uB9AD\uD574\uBCF4\uC790."
   showDialogue: 1
-  completeEvent: 1
+  completeEvent: 58
   autoProceed: 0

@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: ClickMaterialMenu
+  m_Name: ClickPassInBox
   m_EditorClassIdentifier: 
-  highlightTarget: 20
-  dialogue: "\uC5EC\uAE30\uC11C\uB294 \uC5EC\uB7EC \uC544\uC774\uD15C\uC744 \uAD6C\uB9E4\uD560
-    \uC218 \uC788\uC5B4. \uD55C\uBC88 \uB4E4\uC5B4\uAC00\uBCF4\uC790."
-  showDialogue: 1
-  completeEvent: 20
+  highlightTarget: 60
+  dialogue: 
+  showDialogue: 0
+  completeEvent: 60
   autoProceed: 0

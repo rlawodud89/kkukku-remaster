@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: ClickMaterialMenu
+  m_Name: ClickSnackBox
   m_EditorClassIdentifier: 
-  highlightTarget: 20
-  dialogue: "\uC5EC\uAE30\uC11C\uB294 \uC5EC\uB7EC \uC544\uC774\uD15C\uC744 \uAD6C\uB9E4\uD560
-    \uC218 \uC788\uC5B4. \uD55C\uBC88 \uB4E4\uC5B4\uAC00\uBCF4\uC790."
+  highlightTarget: 50
+  dialogue: "\uC9C1\uC6D0\uC774 \uC77C\uD558\uAE30 \uC704\uD574\uC120 \uAC04\uC2DD\uC744
+    \uBA39\uC5EC\uC11C \uC2A4\uD14C\uBBF8\uB098\uB97C \uBCF4\uCDA9\uD574\uC57C\uD574.
+    \uAC04\uC2DD\uBC15\uC2A4\uB97C \uD074\uB9AD\uD574\uBCF4\uC790."
   showDialogue: 1
-  completeEvent: 20
+  completeEvent: 50
   autoProceed: 0

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ClickUpgradeMaterialLevel
   m_EditorClassIdentifier: 
   highlightTarget: 27
-  dialogue: 
+  dialogue: "\uAFB9 \uB204\uB974\uC9C0 \uC54A\uACE0 \uD074\uB9AD\uD558\uBA74 \uC5C5\uADF8\uB808\uC774\uB4DC\uB97C
+    \uAD6C\uB9E4\uD560 \uC218 \uC788\uC5B4."
   showDialogue: 1
   completeEvent: 27
   autoProceed: 0

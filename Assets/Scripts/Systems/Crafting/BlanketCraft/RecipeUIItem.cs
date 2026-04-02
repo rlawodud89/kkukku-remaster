@@ -22,5 +22,6 @@ public class RecipeUIItem : MonoBehaviour
     public void OnClick()
     {
         BlanketCraftController.Instance.ApplyRecipeToSlots(myData);
-    }   
+        TutorialEventBus.Raise(TutorialID.SelectWorkerRecipe);
+    }
 }

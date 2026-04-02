@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe9f6b5d1698a834480a85204c2a5dad, type: 3}
-  m_Name: TestStep0
+  m_Name: FeedSnack
   m_EditorClassIdentifier: 
-  highlightTarget: 6
-  dialogue: 
+  highlightTarget: 0
+  dialogue: "\uAC04\uC2DD\uC744 \uB4DC\uB798\uADF8\uD574\uC11C \uC9C1\uC6D0\uC5D0\uAC8C
+    \uAC00\uC838\uAC00\uBCF4\uC790. \uC9C1\uC6D0\uC774 \uAC04\uC2DD\uC744 \uBA39\uC73C\uBA74\uC11C
+    \uC2A4\uD14C\uBBF8\uB098\uAC00 \uCC30 \uAC70\uC57C."
   showDialogue: 1
-  completeEvent: 0
-  autoProceed: 1
+  completeEvent: 51
+  autoProceed: 0

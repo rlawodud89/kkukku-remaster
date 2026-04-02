@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: ExitToolStoreMenu
   m_EditorClassIdentifier: 
   highlightTarget: 33
-  dialogue: 
+  dialogue: "\uCC44\uC9D1\uC774\uB098 \uB09A\uC2DC\uC5D0 \uC0AC\uC6A9\uD558\uB294
+    \uB3C4\uAD6C\uB97C \uAD6C\uB9E4\uD560 \uC218 \uC788\uC5B4. \uB2E4\uB978 \uBA54\uB274\uB3C4
+    \uBCF4\uB7EC \uAC00\uBCF4\uC790."
   showDialogue: 1
   completeEvent: 33
   autoProceed: 0

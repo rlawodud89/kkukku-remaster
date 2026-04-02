@@ -72,14 +72,17 @@ public enum TutorialID
     ExitPersonalCraft,
 
     ClickSnackBox,
-    FeedSnak,
+    FeedSnack,
     ExitSnackBox,
 
     ClickWorker,
     SelectWorkerRecipe,
     MakeBlanket,
     MakeBlanketFinish,
-
-    // Interior
-
+    
+    ClickBlanketBox,
+    ClickBlanketInBox,
+    ClickTableInBox,
+    ClickPassInBox,
+    ExitBlanketBox,
 }

@@ -30,7 +30,7 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         // 3. 현재 들어있는 아이템 개수 계산
         UpdateTotalItemCount();
     }
-    
+
     // ==========================================
     // 1. 초기화 및 상태 갱신 로직
     // ==========================================
@@ -39,10 +39,10 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         RoomInteriorItemSO interiorData = null;
         var inventory = ServiceLocator.Get<GameData>().Inventory;
 
-        switch (myStorageType) 
+        switch (myStorageType)
         {
             case StorageUIController.StorageType.Blanket:
-                interiorData = inventory.GetRoomInteriorItemSO("BlanketStorage"); 
+                interiorData = inventory.GetRoomInteriorItemSO("BlanketStorage");
                 break;
 
             case StorageUIController.StorageType.Material:
@@ -66,7 +66,7 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            maxCapacity = 0; 
+            maxCapacity = 0;
         }
     }
 
@@ -79,23 +79,23 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
         {
             case StorageUIController.StorageType.Blanket:
                 var bList = inventory.GetBlanketsInBox(myStorageID);
-                if (bList != null) 
+                if (bList != null)
                     foreach (var item in bList) totalItemCount += item.count;
                 break;
 
             case StorageUIController.StorageType.Material:
             case StorageUIController.StorageType.CraftBox:
                 var mList = inventory.GetMaterialItems(myStorageID);
-                if (mList != null) 
+                if (mList != null)
                     foreach (var item in mList) totalItemCount += item.count;
                 break;
 
             case StorageUIController.StorageType.Snack:
                 var sList = inventory.GetSnackItems(myStorageID);
-                if (sList != null) 
+                if (sList != null)
                     foreach (var item in sList) totalItemCount += item.count;
                 break;
-                
+
             case StorageUIController.StorageType.Employee:
                 // 직원은 아이템 카운트에서 제외
                 break;
@@ -119,27 +119,27 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
 
         // 2. 수납 통과 시 DB에 추가
         var inventory = ServiceLocator.Get<GameData>().Inventory;
-        
+
         switch (myStorageType)
         {
             case StorageUIController.StorageType.Blanket:
-                inventory.AdjustBlanketCount(myStorageID, itemName, amountToAdd); 
+                inventory.AdjustBlanketCount(myStorageID, itemName, amountToAdd);
                 break;
 
             case StorageUIController.StorageType.Material:
 
 
             case StorageUIController.StorageType.CraftBox:
-                inventory.AdjustMaterialCount(myStorageID, itemName, amountToAdd); 
+                inventory.AdjustMaterialCount(myStorageID, itemName, amountToAdd);
                 break;
 
             case StorageUIController.StorageType.Snack:
                 // inventory.AddSnack(myStorageID, itemName, amountToAdd); // 스낵 추가 함수명
                 break;
         }
-        
+
         UpdateTotalItemCount();
-        
+
         return true; // 수납 성공!
     }
 
@@ -186,6 +186,23 @@ public class WR_StorageController : MonoBehaviour, IPointerClickHandler
             {
                 Debug.LogError($"[Click Test] {gameObject.name}에 popupUI가 연결되지 않았습니다!");
             }
+        }
+
+
+        switch (myType)
+        {
+            case RoomInteriorType.BLANKET_BOX:
+                TutorialEventBus.Raise(TutorialID.ClickBlanketBox);
+                break;
+            case RoomInteriorType.CRAFTING_TABLE:
+                TutorialEventBus.Raise(TutorialID.ClickPersonalCraft);
+                break;
+            case RoomInteriorType.SNACK_BOX:
+                TutorialEventBus.Raise(TutorialID.ClickSnackBox);
+                break;
+            case RoomInteriorType.WORKER:
+                TutorialEventBus.Raise(TutorialID.ClickWorker);
+                break;
         }
     }
 
