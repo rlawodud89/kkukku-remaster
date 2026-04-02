@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: "\uD45C\uBC94"
   roomInteriorType: 3
   image: {fileID: 2011545879, guid: 14154b646aac86945bd7b2fc341038fa, type: 3}
-  prefab: {fileID: 0}
+  prefab: {fileID: 1356217643815084127, guid: 88caf61c7c38b6747a694680c345f24b, type: 3}
   price: 2000
   itemWidth: 2
   itemHeight: 1

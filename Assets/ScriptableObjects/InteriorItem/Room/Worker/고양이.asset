@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: "\uACE0\uC591\uC774"
   roomInteriorType: 3
   image: {fileID: -1806266859, guid: 14154b646aac86945bd7b2fc341038fa, type: 3}
-  prefab: {fileID: 0}
+  prefab: {fileID: 1879808591346012676, guid: a96fa23d220255a43b96ccaac73c4ef5, type: 3}
   price: 1000
   itemWidth: 2
   itemHeight: 1

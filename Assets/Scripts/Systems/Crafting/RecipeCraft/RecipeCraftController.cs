@@ -35,7 +35,7 @@ public class RecipeCraftController : MonoBehaviour
     private Sprite[] historySprites;
     private int[] historyNums;
 
-    private Sprite failureSprite;
+    public Sprite failureSprite;
     private string failureMessage = "레시피 제작에 실패했습니다... 엉성한 이불을 획득하였습니다.";
 
     // 전체 레시피를 빠르게 찾기 위한 사전 (Key: 조합문자열, Value: 결과물)
@@ -423,7 +423,8 @@ public class RecipeCraftController : MonoBehaviour
             
             // (선택) 실패 효과음 재생
         }
-
+        
+        CraftPopupPanel.SetActive(false);
         resultPopupPanel.SetActive(true);
     }
 

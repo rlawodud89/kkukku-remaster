@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,16 +29,39 @@ public class EmployeeController : MonoBehaviour
     public Image staminaBarImage;
     private Action currentCallback;
 
+    [Header("체력 툴팁")]
+    public GameObject staminaTooltipObj; // 껐다 켤 툴팁 전체 오브젝트 (배경 포함)
+    public TextMeshProUGUI staminaTooltipText;
+    
     private void Start()
     {
+        if (staminaTooltipObj != null) staminaTooltipObj.SetActive(false);
+        
         // 씬 진입 시 오프라인 시간 계산 및 복구
         LoadAndCalculateOfflineProgress();
     }
 
+    public void OnPointerEnterStaminaBar()
+    {
+        if (staminaTooltipObj != null)
+        {
+            staminaTooltipObj.SetActive(true);
+            staminaTooltipText.text = $"{currentStamina} / {maxStamina}";
+        }
+    }
+
+    public void OnPointerExitStaminaBar()
+    {
+        if (staminaTooltipObj != null)
+        {
+            staminaTooltipObj.SetActive(false);
+        }
+    }
+    
     // ==========================================================
     // 1. 작업 시작 (UI 매니저가 호출)
     // ==========================================================
-    public bool StartCrafting(string itemName, int staminaCost, Action onComplete)
+    public bool StartCrafting(string itemName, Action onComplete)
     {
         if (currentState != EmployeeState.Idle) 
         {
@@ -45,16 +69,16 @@ public class EmployeeController : MonoBehaviour
             return false; 
         }
 
-        if (currentStamina < staminaCost)
+        if (currentStamina < staminaCostPerWork)
         {
-            Debug.Log($"스태미나가 부족해서 일을 시작할 수 없습니다! {currentStamina}/{staminaCost}");
+            Debug.Log($"스태미나가 부족해서 일을 시작할 수 없습니다! {currentStamina}/{staminaCostPerWork}");
             return false; 
         }
 
         // 상태 및 스탯 갱신
         currentState = EmployeeState.Working;
         currentWorkingItem = itemName;
-        currentStamina -= staminaCost;
+        currentStamina -= staminaCostPerWork;
         currentCallback = onComplete;
 
         // DB에 방금 시작함(진행도 0%)으로 저장
@@ -145,8 +169,7 @@ public class EmployeeController : MonoBehaviour
         if (mySO != null)
         {
             maxStamina = mySO.maxStamina; 
-            staminaCostPerWork = mySO.workingTime; // 💡 (체크해 보세요) 체력 소모량에 작업 시간을 넣는 게 맞나요?
-            // workingTime = mySO.workingTime; // <- 진짜 작업 시간(workingTime) 갱신이 누락된 것 같습니다!
+            workingTime = mySO.workingTime; // <- 진짜 작업 시간(workingTime) 갱신이 누락된 것 같습니다!
             
             Debug.Log($"<color=cyan>[오프라인 1단계]</color> SO 로드 성공! ({myName}) | 최대 체력: {maxStamina}, 세팅된 작업시간(workingTime 변수): {workingTime}");
         }
@@ -232,6 +255,11 @@ public class EmployeeController : MonoBehaviour
         if (currentState == EmployeeState.Idle)
         {
             progressBar.fillAmount = 0f;
+        }
+        
+        if (staminaTooltipObj != null && staminaTooltipObj.activeSelf)
+        {
+            staminaTooltipText.text = $"{currentStamina} / {maxStamina}";
         }
     }
 
