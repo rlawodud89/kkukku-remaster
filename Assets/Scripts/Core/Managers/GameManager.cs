@@ -209,7 +209,6 @@ public class GameManager : MonoBehaviour
         //PlayerPrefs.Save(); // 즉시 디바이스에 물리적 저장
 
         ServiceLocator.Get<GameData>().User.SetPlayTime(gameTime);
-        ServiceLocator.Get<SaveService>().SaveNow();
 
         Debug.Log($"<color=green>게임 시간 저장 완료: {hour:D2}:{minute:D2}</color>");
     }
