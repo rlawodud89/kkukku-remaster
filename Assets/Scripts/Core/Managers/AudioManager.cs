@@ -10,7 +10,7 @@ public class AudioManager : MonoBehaviour
     public UnityEngine.Audio.AudioMixer audioMixer;
     [SerializeField] public AudioSource bgmAudioSource;
     [SerializeField] private AudioSource sfxAudioSource;
-    
+
     public static AudioManager Instance
     {
         get
@@ -39,19 +39,19 @@ public class AudioManager : MonoBehaviour
         }
 
 
-         // AudioSource 준비
-        if(bgmAudioSource == null)
+        // AudioSource 준비
+        if (bgmAudioSource == null)
         {
             bgmAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
             bgmAudioSource.loop = true;
             bgmAudioSource.playOnAwake = false;
         }
 
-        
+
         // audioMixer 할당
-        if(audioMixer == null)
+        if (audioMixer == null)
         {
-            var grp=bgmAudioSource.outputAudioMixerGroup;
+            var grp = bgmAudioSource.outputAudioMixerGroup;
             audioMixer = grp.audioMixer;
         }
     }
@@ -94,7 +94,7 @@ public class AudioManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Boot"|| scene.name == "Prolog" || scene.name == "Start")
+        if (scene.name == "Boot" || scene.name == "Prolog" || scene.name == "Start" || scene.name == "Ending")
         {
             bgmAudioSource.Stop();
         }
