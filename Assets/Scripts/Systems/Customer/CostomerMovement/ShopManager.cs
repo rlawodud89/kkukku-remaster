@@ -22,16 +22,22 @@ public class ShopManager : MonoBehaviour
 
     [Header("Simulation Settings")]
     public float averageShoppingTime = 20f; // 손님 1명이 물건 사고 나가는 평균 시간 (초)
+    public float offlineEfficiency = 0.4f;  // 💡 [추가] 오프라인 판매 효율 (0.4 = 실제 플레이의 40% 속도로 팔림)
 
     [Header("Scene Settings")]
     public string shopSceneName;
 
     private float exitGameTime;
 
+    [HideInInspector] public int pendingOfflineGold = 0;
+    [HideInInspector] public int pendingOfflineSoldCount = 0;
+
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); }
+
+        LoadExitTime();
     }
 
     void OnEnable()
@@ -51,7 +57,7 @@ public class ShopManager : MonoBehaviour
         if (scene.name == shopSceneName)
         {
             isStoreOpen = ServiceLocator.Get<GameData>().User.GetIsOpen();
-         
+
             // 1. 오프라인 시간 동안의 판매 시뮬레이션 돌리기
             SimulateOfflineProgress();
 
@@ -62,8 +68,6 @@ public class ShopManager : MonoBehaviour
                 ServiceLocator.Get<GameData>().User.SetIsOpen(false);
                 Debug.Log("[ShopManager] 밤이 되어 자동으로 가게 문이 닫혔습니다.");
             }
-
-            Debug.Log($"[ShopManager] 가게 복귀. 상태: {(isStoreOpen ? "영업중" : "준비중")}");
 
             // 2. 시뮬레이션 끝난 후 시각적 갱신 (가구 비우기 등)
             RefreshAllFurnitureVisuals();
@@ -85,7 +89,6 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    // 가게 들어왔을 때 자연스럽게 몇 명 깔아두는 코루틴
     private void SpawnInitialSurvivors()
     {
         int initialCount = UnityEngine.Random.Range(1, spawnInitCustomers + 1);
@@ -130,138 +133,151 @@ public class ShopManager : MonoBehaviour
     {
         totalCustomerCount++;
         CustomerData newGuest = new CustomerData(totalCustomerCount);
-        newGuest.isSurvivor = isSurvivor; // NPC 생성 시 이 플래그를 보고 행동 결정
+        newGuest.isSurvivor = isSurvivor;
 
-        // 생존자라면 상태를 랜덤하게 설정 (쇼핑중 or 계산중)
+        // 생존자라면 무조건 고민(Deciding)부터 하게 하여 재고 확인 유도
         if (isSurvivor)
         {
-            // 70% 확률로 구경 중, 30% 확률로 계산 중
-            newGuest.currentState = (UnityEngine.Random.value > 0.3f)
-                ? CustomerData.State.Deciding
-                : CustomerData.State.Paying;
+            newGuest.currentState = CustomerData.State.Deciding;
         }
 
         activeCustomers.Add(newGuest);
         NPCSpawner.Instance?.SpawnNPC(newGuest);
     }
 
+    public void LoadExitTime()
+    {
+        if (PlayerPrefs.HasKey("LastExitTime"))
+        {
+            if (DateTime.TryParse(PlayerPrefs.GetString("LastExitTime"), out DateTime savedTime))
+                lastExitTime = savedTime;
+
+            exitGameTime = PlayerPrefs.GetFloat("LastExitGameTime", 0f);
+        }
+
+        // 대기열 돈 불러오기
+        pendingOfflineGold = PlayerPrefs.GetInt("PendingOfflineGold", 0);
+        pendingOfflineSoldCount = PlayerPrefs.GetInt("PendingOfflineSoldCount", 0);
+    }
+
     public void SaveExitTime()
     {
         lastExitTime = DateTime.UtcNow;
+        PlayerPrefs.SetString("LastExitTime", lastExitTime.ToString("o"));
+
         if (GameManager.Instance != null)
         {
             exitGameTime = GameManager.Instance.gameTime;
+            PlayerPrefs.SetFloat("LastExitGameTime", exitGameTime);
         }
+        PlayerPrefs.Save();
     }
 
     // =========================================================
-    // 💡 핵심 수정: 오프라인 계산 로직 개선
+    // 💡 오프라인 계산 로직 개선
     // =========================================================
     public void SimulateOfflineProgress()
     {
-        if(!isStoreOpen)
+        int totalEarned = pendingOfflineGold;
+        int soldCount = pendingOfflineSoldCount;
+
+        // 정산 대기열 싹 비우기 (중복 방지)
+        pendingOfflineGold = 0;
+        pendingOfflineSoldCount = 0;
+        PlayerPrefs.SetInt("PendingOfflineGold", 0);
+        PlayerPrefs.SetInt("PendingOfflineSoldCount", 0);
+
+        if (!isStoreOpen)
         {
-            Debug.Log("가게 문을 닫아놓고 나가서 수익이 없습니다.");
+            if (soldCount > 0) StartCoroutine(GiveOfflineRewardDelayed(totalEarned, soldCount, "밀린 결제 정산"));
+            SaveExitTime();
             return;
         }
 
-        if (lastExitTime == default(DateTime)) return;
+        if (lastExitTime == default(DateTime))
+        {
+            if (soldCount > 0) StartCoroutine(GiveOfflineRewardDelayed(totalEarned, soldCount, "초기 밀린 결제"));
+            return;
+        }
 
         TimeSpan span = DateTime.UtcNow - lastExitTime;
         float offlineSeconds = (float)span.TotalSeconds;
 
-        // 너무 짧은 시간(예: 5초 미만)은 무시
-        if (offlineSeconds < 5f) return;
+        // 5초 미만으로 짧게 나갔다 온 경우 빠른 정산
+        if (offlineSeconds < 5f)
+        {
+            if (soldCount > 0) StartCoroutine(GiveOfflineRewardDelayed(totalEarned, soldCount, "가상 결제 빠른 정산"));
+            return;
+        }
 
         if (GameManager.Instance != null)
         {
-            // 하루는 86400초, 밤 9시(21:00)는 21 * 3600 = 75600초
             float daySecondsAtExit = exitGameTime % 86400f;
             float nightStartSeconds = 21f * 3600f; // 밤이 시작되는 시점
 
-            // 씬을 나간 시점이 밤 9시 이전이었다면
             if (daySecondsAtExit < nightStartSeconds)
             {
-                // 밤이 되기까지 남은 '게임 내 시간(초)'
                 float inGameSecondsUntilNight = nightStartSeconds - daySecondsAtExit;
-
-                // 이를 '현실 시간(초)'으로 환산 (timeScale 적용)
                 float realSecondsUntilNight = inGameSecondsUntilNight / GameManager.Instance.timeScale;
 
-                // 실제 부재 시간이 밤까지 남은 시간보다 길다면, 밤 전까지만 계산하도록 잘라냄
                 if (offlineSeconds > realSecondsUntilNight)
                 {
-                    Debug.Log($"[정산 제한] 부재 중 밤이 되었습니다. 닫기 전까지의 시간({realSecondsUntilNight:F0}초)만 계산합니다.");
                     offlineSeconds = realSecondsUntilNight;
                 }
             }
             else
             {
-                // 나갈 때 이미 밤이었다면 장사를 할 수 없으므로 수익 없음
-                Debug.Log("[정산 제한] 나갈 때 이미 밤이었으므로 판매 수익이 없습니다.");
+                if (soldCount > 0) StartCoroutine(GiveOfflineRewardDelayed(totalEarned, soldCount, "야간 결제 이관"));
+                SaveExitTime();
                 return;
             }
         }
 
-        if (offlineSeconds > 86400f * 3) offlineSeconds = 86400f * 3; // 최대 3일치만 계산 (오버플로우 방지)
+        if (offlineSeconds > 86400f * 3) offlineSeconds = 86400f * 3; // 최대 3일치만 계산
+
+        // 💡 [핵심 수정] 예상 방문객을 계산할 때 '오프라인 효율(offlineEfficiency)'을 곱해서 판매 속도를 낮춥니다.
+        int potentialVisitorCount = (int)((offlineSeconds * offlineEfficiency) / averageShoppingTime);
 
         Debug.Log($"============== [오프라인 정산 시작] ==============");
-        Debug.Log($"부재 시간: {offlineSeconds:F0}초");
+        Debug.Log($"부재 시간: {offlineSeconds:F0}초 | 오프라인 효율: {offlineEfficiency * 100}% | 예상 방문객: {potentialVisitorCount}명");
 
-
-        // 1. 이 시간 동안 다녀갔을 '가상의 손님 수' 계산
-        // (부재 시간 / 한 명당 소요 시간) * (동시 입장 가능 비율 보정 1.5배 등)
-        int potentialVisitorCount = (int)(offlineSeconds / averageShoppingTime);
-
-        Debug.Log($"예상 방문객: {potentialVisitorCount}명");
-
-        int totalEarned = 0;
-        int soldCount = 0;
-
-        // 2. 가상의 손님들이 물건 사가는 로직 (데이터만 빠르게 처리)
         for (int i = 0; i < potentialVisitorCount; i++)
         {
-            // 랜덤한 물건 하나 판매 시도
             if (TrySellRandomItem(out int price))
             {
                 totalEarned += price;
                 soldCount++;
             }
-            else
-            {
-                // 재고가 다 떨어졌으면 더 이상 계산 의미 없음
-                Debug.Log("재고 소진으로 오프라인 판매 조기 종료!");
-                break;
-            }
+            else break; // 재고 소진
         }
 
         if (soldCount > 0)
         {
-            // 한 번에 골드 추가
-            GameManager.Instance.ChangeGold(totalEarned);
-            Debug.Log($"💰 [정산 완료] {soldCount}개 판매, 총 {totalEarned}G 획득!");
-
-            // (선택사항) 여기서 "부재중 수익 팝업"을 띄워주면 좋습니다.
-            // UIManager.Instance.ShowOfflineRewardPopup(totalEarned, soldCount);
-        }
-        else
-        {
-            Debug.Log("💤 판매된 물건이 없습니다 (재고 부족 등).");
+            StartCoroutine(GiveOfflineRewardDelayed(totalEarned, soldCount, "오프라인 누적 정산"));
         }
 
-        Debug.Log($"============== [오프라인 정산 종료] ==============");
+        SaveExitTime();
     }
 
-    // 데이터상으로만 판매 처리하는 함수 (비주얼 갱신 X)
+    // 💡 [핵심 수정] 씬이 켜지자마자 몰래 돈을 넣지 않고, 1초 뒤에 눈에 띄게 넣어줍니다.
+    IEnumerator GiveOfflineRewardDelayed(int gold, int count, string reason)
+    {
+        // 씬 로딩, 페이드 인, UI 초기화가 모두 끝날 때까지 여유롭게 1.5초 대기
+        yield return new WaitForSeconds(1.5f);
+
+        GameManager.Instance.ChangeGold(gold);
+        Debug.Log($"💰 [{reason}] {count}개 판매, 총 {gold}G 획득!");
+
+        // 나중에 UI 연결이 필요하시면 여기에 팝업 호출 코드를 넣으시면 완벽합니다!
+        // UIManager.Instance.ShowMessage($"부재중 정산으로 {gold}G를 벌었습니다!");
+    }
+
     bool TrySellRandomItem(out int price)
     {
         price = 0;
-
-        // 1. 재고가 있는 모든 테이블 찾기
         var allTables = ShopStorageDataManager.Instance.interiorData.Table;
         List<int> validTableIDs = new List<int>();
 
-        // (최적화를 위해 ShopStorageDataManager에 '재고 있는 테이블 리스트'를 캐싱해두면 더 좋음)
         foreach (var table in allTables)
         {
             if (ShopStorageDataManager.Instance.GetTableClass(table.ID, out var tableData))
@@ -270,14 +286,12 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        if (validTableIDs.Count == 0) return false; // 팔 게 없음
+        if (validTableIDs.Count == 0) return false;
 
-        // 2. 랜덤 테이블 선택
         int randomTableID = validTableIDs[UnityEngine.Random.Range(0, validTableIDs.Count)];
 
         if (ShopStorageDataManager.Instance.GetTableClass(randomTableID, out var targetTable))
         {
-            // 3. 그 테이블 안에서 재고 있는 아이템 찾기
             List<int> stockIndices = new List<int>();
             for (int i = 0; i < targetTable.count.Count; i++)
             {
@@ -290,18 +304,14 @@ public class ShopManager : MonoBehaviour
                 string itemName = targetTable.itemName[itemIndex];
 
                 price = ServiceLocator.Get<GameData>().Inventory.GetBlanketPrice(itemName);
-
-                // 4. 재고 차감 (데이터만)
                 ShopStorageDataManager.Instance.UpdateTableData(randomTableID, itemIndex, -1);
 
                 return true;
             }
         }
-
         return false;
     }
 
-    // 시뮬레이션 끝난 후 화면에 보이는 가구들 한 번에 새로고침
     void RefreshAllFurnitureVisuals()
     {
         var allStorages = FindObjectsOfType<ShopStorageClick>();

@@ -34,6 +34,7 @@ public class NPCAI : MonoBehaviour
     private int selectedItemIndex;    // 그 가구의 몇 번째 칸인지
     private string selectedItemName;  // 물건 이름
     private int priceToPay;           // 내야 할 돈
+    private bool isPaid = false;
 
 
     void Awake()
@@ -83,10 +84,23 @@ public class NPCAI : MonoBehaviour
             else if (myData.currentState == CustomerData.State.Paying ||
                      myData.currentState == CustomerData.State.MovingToCashier)
             {
-                Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
-                transform.position = cashierPos; // ✨ 순간이동!
-                SetDirection(Vector3.up);
-                if (animator != null) animator.SetFloat("Speed", 0f);
+                // 💡 [수정] 무작정 계산대에 세우는 게 아니라, 진짜로 재고를 하나 깎아서 들려줍니다.
+                Interiorinfo targetTable = GetRandomTableWithStock();
+                if (targetTable != null && TryPickItem(targetTable.ID))
+                {
+                    // 재고 차감에 성공했으므로 계산대에 세움
+                    Vector3 cashierPos = CashierManager.Instance.GetCashierPosition();
+                    transform.position = cashierPos; // ✨ 순간이동!
+                    SetDirection(Vector3.up);
+                    if (animator != null) animator.SetFloat("Speed", 0f);
+                }
+                else
+                {
+                    // 살 물건이 하나도 없었다면? 자연스럽게 고민(Deciding) 상태로 돌려서
+                    // "아무것도 없네..." 하고 나가게 만듭니다.
+                    myData.currentState = CustomerData.State.Deciding;
+                    // 위치는 대충 입구 근처나 무작위로 두셔도 됩니다.
+                }
             }
         }
     }
@@ -397,49 +411,7 @@ public class NPCAI : MonoBehaviour
         animator.SetFloat("MoveX", lastMoveDir.x);
         animator.SetFloat("MoveY", lastMoveDir.y);
     }
-    /*
-    IEnumerator MoveWithAStar(Vector3 targetWorldPos)
-    {
-        Vector3Int startTile = walkTilemap.WorldToCell(transform.position);
-        Vector3Int targetTile = walkTilemap.WorldToCell(targetWorldPos);
-
-        if (startTile == targetTile) yield break;
-
-        List<Vector3Int> path = pathfinding.FindPath(startTile, targetTile);
-
-        if (path != null && path.Count > 0)
-        {
-            foreach (Vector3Int nextTile in path)
-            {
-                Vector3 worldPos = walkTilemap.GetCellCenterWorld(nextTile);
-
-                // 💡 핵심 변경: 이동하기 전에 "방향"을 먼저 고정합니다.
-                // 덜덜 떨리는 delta 값이 아니라, 명확한 목적지 벡터를 사용합니다.
-                Vector3 direction = (worldPos - transform.position).normalized;
-                SetDirection(direction);
-
-                // 이동 로직
-                while (Vector3.Distance(transform.position, worldPos) > 0.05f)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
-
-                    // 이동 중에는 UpdateAnimation을 호출하지 않습니다. 
-                    // 이미 위에서 SetDirection으로 방향을 고정했기 때문입니다.
-                    yield return null;
-                }
-                transform.position = worldPos;
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"[{name}] 길을 찾을 수 없습니다! 목표: {targetTile}");
-        }
-
-        // 도착 후 멈춤 처리
-        animator.SetFloat("Speed", 0f);
-        animator.SetFloat("MoveX", lastMoveDir.x);
-        animator.SetFloat("MoveY", lastMoveDir.y);
-    }*/
+    
 
     IEnumerator NormalShopRoutine()
     {
@@ -562,6 +534,7 @@ public class NPCAI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         GameManager.Instance.ChangeGold(priceToPay);
+        isPaid = true;
         Debug.Log($"[판매] {priceToPay}G 획득!");
 
         yield return StartCoroutine(LeaveShop());
@@ -797,17 +770,27 @@ public class NPCAI : MonoBehaviour
 
     void OnDestroy()
     {
-        // 1. 내가 물건을 집었는데(가격이 있음)
-        // 2. 아직 계산 완료 상태(Paying 끝남)가 아니라면? -> 도둑놈이거나 버그임
-        // 3. 다시 재고를 +1 해줘야 함
-
-        if (priceToPay > 0 && myData.currentState != CustomerData.State.Paying)
+        // 💡 [핵심] 씬 전환 등으로 파괴될 때, 물건은 집었는데 돈을 안 냈다면 가상 정산으로 넘깁니다.
+        if (priceToPay > 0 && !isPaid)
         {
-            ShopStorageDataManager.Instance.UpdateTableData(selectedTableID, selectedItemIndex, 1); 
+            if (ShopManager.Instance != null)
+            {
+                ShopManager.Instance.pendingOfflineGold += priceToPay;
+                ShopManager.Instance.pendingOfflineSoldCount += 1;
+
+                // 앱 강제 종료 시 날아가지 않도록 즉시 기기에 저장
+                PlayerPrefs.SetInt("PendingOfflineGold", ShopManager.Instance.pendingOfflineGold);
+                PlayerPrefs.SetInt("PendingOfflineSoldCount", ShopManager.Instance.pendingOfflineSoldCount);
+                PlayerPrefs.Save();
+
+                Debug.Log($"[가상 정산 대기] 씬을 이동하여 {selectedItemName}({priceToPay}G) 결제를 대기열로 넘깁니다.");
+            }
         }
 
-        if (ShopManager.Instance != null)
+        if (ShopManager.Instance != null && myData != null)
+        {
             ShopManager.Instance.activeCustomers.Remove(myData);
+        }
     }
 
     Interiorinfo GetRandomTableWithStock()
