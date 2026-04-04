@@ -148,6 +148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 3823238487741141930}
   iconImage: {fileID: 2714352044972125906}
+  tooltipObj: {fileID: 0}
+  tooltipText: {fileID: 0}
 --- !u!1 &3972481486193304405
 GameObject:
   m_ObjectHideFlags: 0

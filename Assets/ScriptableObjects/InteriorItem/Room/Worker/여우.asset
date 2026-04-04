@@ -20,5 +20,5 @@ MonoBehaviour:
   itemWidth: 2
   itemHeight: 1
   slotCount: 0
-  maxStamina: 80
-  workingTime: 20
+  maxStamina: 70
+  workingTime: 30

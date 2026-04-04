@@ -89,6 +89,7 @@ public class RoomInventoryManager : MonoBehaviour
         placedFurnitureCount.Clear(); // 일단 싹 비웁니다.
         
         var placedList = RoomInteriorManager.Instance.currentPlacedList;
+        
         foreach (var placed in placedList)
         {
             if (placedFurnitureCount.ContainsKey(placed.itemName))
@@ -96,9 +97,48 @@ public class RoomInventoryManager : MonoBehaviour
             else
                 placedFurnitureCount[placed.itemName] = 1;
         }
+    
+        
+        var bagList = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemInventory();
 
+        //  씬 + 가방을 합친 '진짜 전체 가구 리스트' 만들기
+        this.furnitureList = new List<FurnitureItem>();
+        
+        if (bagList != null)
+        {
+            foreach (var bagItem in bagList)
+            {
+                int availableCount = bagItem.quantity;
+
+                this.furnitureList.Add(new FurnitureItem {
+                    itemName = bagItem.itemName,
+                    itemImage = bagItem.itemImage,
+                    quantity = availableCount, // 계산된 남은 개수!
+                    prefab = bagItem.prefab
+                });
+            }
+        }
+        
+        
+        foreach (var placedName in placedFurnitureCount.Keys)
+        {
+            if (!this.furnitureList.Exists(x => x.itemName == placedName))
+            {
+                var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(placedName);
+                if (so != null)
+                {
+                    this.furnitureList.Add(new FurnitureItem {
+                        itemName = placedName,
+                        itemImage = so.image,
+                        quantity = 0,        
+                        prefab = so.prefab  
+                    });
+                }
+            }
+        }
+        
         int startIndex = currentPage * itemsPerPage;
-
+        
         for (int i = 0; i < slots.Length; i++)
         {
             int itemIndex = startIndex + i;
@@ -109,9 +149,7 @@ public class RoomInventoryManager : MonoBehaviour
                 {
                     var item = furnitureList[itemIndex];
 
-                    // 배치된 개수 확인 및 남은 수량 계산
-                    int placedCount = placedFurnitureCount.ContainsKey(item.itemName) ? placedFurnitureCount[item.itemName] : 0;
-                    int availableCount = Mathf.Max(0, item.quantity - placedCount);
+                    int availableCount = item.quantity;
 
                     slots[i].UpdateSlot(item.itemImage, item.itemName, 0, availableCount, true, false);
                 }

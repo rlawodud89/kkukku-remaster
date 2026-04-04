@@ -95,58 +95,54 @@ public class BlanketCraftController : MonoBehaviour
 
     public void OnClickCraftButton()
     {
-        if (isCrafting) return;
 
-    // 1. 재료 검사 (외부 환경)
-    foreach (var slot in slots)
-    {
-        if (!slot.IsSufficient) 
-        {
-            Debug.Log($"재료 부족: {slot.ItemName}");
-            return; 
-        }
-    }
-
-    // 2. 이불장 빈자리 검사 (외부 환경)
-    bool hasEmptySpace = RoomInteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
-    if (!hasEmptySpace)
-    {
-        Debug.LogWarning("이불장에 빈자리가 없습니다! 이불을 먼저 팔아주세요.");
-        // TODO: NoticeText 등 토스트 메시지 띄우기
-        return;
-    }
-
-    // 3. 직원 할당 여부 확인
-    if (currentEmployee == null)
-    {
-        Debug.LogError("선택된 직원이 없습니다!");
-        return;
-    }
-
-    bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, () => FinishCrafting(RecipeData));
-
-    // 5. 직원이 일을 시작하겠다고 수락했다면?
-    if (isAccepted)
-    {
-        isCrafting = true; 
-        
-        // 그때 재료를 확실하게 소모합니다.
         foreach (var slot in slots)
         {
             if (slot.IsEmpty) continue;
             RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty); 
         }
-        
-        Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
-        StorageUIController.Instance.CloseAllPanels(); // UI 닫기
-        UIEventManager.ShowMainUI();
+
+
+        // 2. 이불장 빈자리 검사 (외부 환경)
+        bool hasEmptySpace = RoomInteriorManager.Instance.HasAnyEmptySpace(StorageUIController.StorageType.Blanket);
+        if (!hasEmptySpace)
+        {
+            Debug.LogWarning("이불장에 빈자리가 없습니다! 이불을 먼저 팔아주세요.");
+            // TODO: NoticeText 등 토스트 메시지 띄우기
+            return;
+        }
+
+        // 3. 직원 할당 여부 확인
+        if (currentEmployee == null)
+        {
+            Debug.LogError("선택된 직원이 없습니다!");
+            return;
+        }
+
+        bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, () => FinishCrafting(RecipeData));
+
+        // 5. 직원이 일을 시작하겠다고 수락했다면?
+        if (isAccepted)
+        {
+            // 그때 재료를 확실하게 소모합니다.
+            foreach (var slot in slots)
+            {
+                if (slot.IsEmpty) continue;
+                RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty);
+            }
+
+            Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
+            StorageUIController.Instance.CloseAllPanels(); // UI 닫기
+            UIEventManager.ShowMainUI();
+        }
+        else
+        {
+            // 체력이 없거나 다른 일 중이라서 직원이 거절함
+            Debug.LogWarning("직원이 체력이 부족하거나 이미 일하는 중입니다!");
+        }
+
+        TutorialEventBus.Raise(TutorialID.MakeBlanket);
     }
-    else
-    {
-        // 체력이 없거나 다른 일 중이라서 직원이 거절함
-        Debug.LogWarning("직원이 체력이 부족하거나 이미 일하는 중입니다!");
-    }
-}
 
     public void FinishCrafting(BlanketItemSO resultItem)
     {

@@ -61,7 +61,7 @@ public class RoomInteriorManager : MonoBehaviour
         for(int i = 0; i < gridOccupancyMap.Length; i++) gridOccupancyMap[i] = -1;
 
         SpawnFurniture(); 
-        //InjectTestData(); // ★ 테스트용 데이터 주입 함수 (필요할 때만 켜세요!)
+        InjectTestData(); // ★ 테스트용 데이터 주입 함수 (필요할 때만 켜세요!)
         InitializeRoomTiles(); 
         uiManager = FindObjectOfType<RoomInventoryManager>();
     }
@@ -200,13 +200,9 @@ public class RoomInteriorManager : MonoBehaviour
         // ---------------------------------------------------------
 
         // 1. (0,0) 위치인 0번 그리드에 가구 추가
-        //interiorDB.AddRoomInterior(0, "BlanketStorage"); 
-        //interiorDB.AddRoomInterior(8, "PersonalCraftBox"); 
-        //interiorDB.AddRoomInterior(15, "MaterialStorage"); 
-        //interiorDB.AddRoomInterior(14, "SnackBox");
-        //interiorDB.AddRoomInterior(18, "여우");
+        interiorDB.AddRoomInterior(0, "재료재고함");
         
-        interiorDB.AddRoomInterior(0, "BlanketStorage"); 
+        //interiorDB.AddRoomInterior(0, "BlanketStorage"); 
     }
 
     public void TurnOnEditMode()
@@ -584,6 +580,10 @@ public void SpawnFurniture()
             var placedData = currentPlacedList.Find(x => x.ID == targetID);
             if (placedData != null)
             {
+                MarkGridOccupancy(placedData.gridNumber, itemWidth, itemHeight, -1);
+                
+                MarkGridOccupancy(newGridIndex, itemWidth, itemHeight, targetID);
+                
                 placedData.gridNumber = newGridIndex;
             }
 
