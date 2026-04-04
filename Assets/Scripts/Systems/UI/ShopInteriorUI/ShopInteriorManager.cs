@@ -289,49 +289,48 @@ public class ShopInteriorManager : MonoBehaviour
             int targetID = script.myStorageID;
             string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim();
             
-            // 크기 가져오기
             var so = ServiceLocator.Get<GameData>().Inventory.GetShopInteriorItemSO(itemName);
             int itemWidth = so != null ? so.itemWidth : 1;
             int itemHeight = so != null ? so.itemHeight : 1;
 
-            // ✨ 이동할 때도 Bottom-Left 좌표를 구한 뒤 Top-Left로 올려서 계산해야 합니다.
             Vector3Int bottomLeftCell = floorTilemap.WorldToCell(currentSelectedFurniture.transform.position);
             Vector3Int topLeftCell = new Vector3Int(bottomLeftCell.x, bottomLeftCell.y + itemHeight - 1, 0);
             
             int newGridIndex = ShopStorageDataManager.Instance.pathfinding.PosToIndex(topLeftCell);
+            var data = ShopStorageDataManager.Instance.interiorData;
 
-            if (newGridIndex == -1) return;
+            // 🌟 [추가] 튕겨내기를 위해 가구의 '원래 위치' 정보를 미리 찾아둡니다.
+            Interiorinfo oldInfo = null;
+            if (data.Interior != null) oldInfo = data.Interior.Find(x => x.ID == targetID);
+            if (oldInfo == null && data.Table != null) oldInfo = data.Table.Find(x => x.ID == targetID);
+            if (oldInfo == null && data.Casher != null && data.Casher.ID == targetID) oldInfo = data.Casher;
 
-            if (CheckIfPlacementInvalid(newGridIndex, itemWidth, itemHeight, targetID))
+            // 유효성 검사
+            if (newGridIndex == -1 || CheckIfPlacementInvalid(newGridIndex, itemWidth, itemHeight, targetID))
             {
                 Debug.LogWarning("🚨 여기는 겹치거나 벽 때문에 놓을 수 없습니다!");
+                
+                // 🌟 [핵심 수정] 실패 시 가구를 원래 자리(oldInfo)로 즉시 돌려보냅니다!
+                if (oldInfo != null)
+                {
+                    Vector3Int oldTopLeft = ShopStorageDataManager.Instance.pathfinding.IndexToPos(oldInfo.placement);
+                    Vector3Int oldBottomLeft = new Vector3Int(oldTopLeft.x, oldTopLeft.y - oldInfo.Height + 1, 0);
+                    currentSelectedFurniture.transform.position = floorTilemap.CellToWorld(oldBottomLeft);
+                }
                 return;
             }
 
-            // 로컬 데이터 갱신
-            var data = ShopStorageDataManager.Instance.interiorData;
-            var placedData = data.Interior.Find(x => x.ID == targetID);
-            if (placedData != null) placedData.placement = newGridIndex;
-            
-            var placedTable = data.Table.Find(x => x.ID == targetID);
-            if (placedTable != null) placedTable.placement = newGridIndex;
+            // 이동 성공 시 로컬 데이터 갱신
+            if (oldInfo != null) oldInfo.placement = newGridIndex;
 
             if (data.Casher != null && data.Casher.ID == targetID)
             {
-                data.Casher.placement = newGridIndex; // 위치 갱신
-
-                // 맵에 존재하는 모든 NPC에게 계산대 위치가 변경되었음을 알림
                 NPCAI[] allNPCs = FindObjectsOfType<NPCAI>();
-                foreach (NPCAI npc in allNPCs)
-                {
-                    npc.RedirectToNewCashier();
-                }
+                foreach (NPCAI npc in allNPCs) npc.RedirectToNewCashier();
             }
 
-            // DB 업데이트
+            // DB 업데이트 및 길찾기 갱신
             ServiceLocator.Get<GameData>().Interior.TransferShopInterior(targetID, newGridIndex);
-            
-            // 길찾기 맵 갱신
             ShopStorageDataManager.Instance.pathfinding.BuildObstacleMap(data);
 
             Debug.Log($"✅ [이동 완료] 가구가 {newGridIndex}번 칸으로 이동 저장되었습니다!");
@@ -373,20 +372,25 @@ public class ShopInteriorManager : MonoBehaviour
         
         var allItems = new List<Interiorinfo>();
         if (data.Casher != null) allItems.Add(data.Casher);
-        allItems.AddRange(data.Interior);
-        allItems.AddRange(data.Table);
+        if (data.Interior != null) allItems.AddRange(data.Interior);
+        if (data.Table != null) allItems.AddRange(data.Table);
 
         foreach (var item in allItems)
         {
-            if (item.ID == excludeID) continue; // 나 자신은 검사 무시!
+            if (item.ID == excludeID) continue; // 나 자신은 무시
 
             Vector3Int itemStartCell = pf.IndexToPos(item.placement);
             
-            // 타겟 셀이 이 가구의 영역 안에 들어오는지 판별
             bool overlapX = targetCell.x >= itemStartCell.x && targetCell.x < itemStartCell.x + item.Width;
             bool overlapY = targetCell.y <= itemStartCell.y && targetCell.y > itemStartCell.y - item.Height;
 
-            if (overlapX && overlapY) return true; // 밟음 (겹침)
+            if (overlapX && overlapY)
+            {
+                // 🌟 [추가됨] 범인이 누구인지 정확하게 알려줍니다!
+                string ghostName = item.prefab != null ? item.prefab.name : "알수없음";
+                Debug.LogWarning($"🚨 [설치 차단] {targetCell} 위치는 이미 [ID:{item.ID} / {ghostName}] 가구가 차지하고 있습니다!");
+                return true; 
+            }
         }
         return false;
     }

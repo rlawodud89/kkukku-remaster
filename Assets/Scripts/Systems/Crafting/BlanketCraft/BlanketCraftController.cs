@@ -14,7 +14,6 @@ public class BlanketCraftController : MonoBehaviour
     public Image blanketImage; // 이불 아이콘 (있으면 연결)
     public TextMeshProUGUI blanketNameText; // 이불 이름 텍스트 (있으면 연결)
     public GameObject EmployeePanel;
-    public bool isCrafting = false;
     private EmployeeController currentEmployee; // 현재 작업 중인 직원 참조
     private BlanketItemSO RecipeData;
 
@@ -25,9 +24,6 @@ public class BlanketCraftController : MonoBehaviour
 
     private void Start()
     {
-        // 씬에 다시 들어왔을 때는 무조건 UI 잠금을 풀어줍니다!
-        isCrafting = false;
-
         if (blanketImage != null) blanketImage.enabled = false;
     }
     // 레시피 UI 아이템이 클릭되었을 때 호출되는 함수
@@ -95,7 +91,6 @@ public class BlanketCraftController : MonoBehaviour
 
     public void OnClickCraftButton()
     {
-        if (isCrafting) return;
 
         // 1. 재료 검사 (외부 환경)
         foreach (var slot in slots)
@@ -123,13 +118,13 @@ public class BlanketCraftController : MonoBehaviour
             return;
         }
 
-        bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, () => FinishCrafting(RecipeData));
+        BlanketItemSO targetRecipe = RecipeData;
+        
+        bool isAccepted = currentEmployee.StartCrafting(RecipeData.itemName, () => FinishCrafting(targetRecipe));
 
         // 5. 직원이 일을 시작하겠다고 수락했다면?
         if (isAccepted)
         {
-            isCrafting = true;
-
             // 그때 재료를 확실하게 소모합니다.
             foreach (var slot in slots)
             {
@@ -171,7 +166,6 @@ public class BlanketCraftController : MonoBehaviour
             Debug.LogError("치명적 오류: 넣을 공간이 없어서 제작된 이불이 증발했습니다!");
         }
 
-        isCrafting = false; // UI 잠금 해제
 
         // 퀘스트 
         QuestManager.Instance.UpdateQuestProgressByID(1);

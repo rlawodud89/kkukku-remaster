@@ -316,6 +316,13 @@ public void SpawnFurniture()
             ID = newID 
         });
 
+        
+        var so = ServiceLocator.Get<GameData>().Inventory.GetRoomInteriorItemSO(itemName);
+        int itemWidth = so != null ? so.itemWidth : 1; 
+        int itemHeight = so != null ? so.itemHeight : 1;
+        MarkGridOccupancy(gridIndex, itemWidth, itemHeight, newID);
+        // ==============================================================
+        
         Debug.Log($"✅ [성공] 가구 설치 완료! (ID: {newID})");
     }
 
@@ -421,7 +428,7 @@ public void SpawnFurniture()
 
         // 2. 새로운 녀석 선택
         currentSelectedFurniture = furniture;
-        UpdateGridHighlight(furniture.transform.position, myID, furniture.gameObject.name);
+        UpdateGridHighlight(furniture.transform.position, myID, furniture.gameObject.name.Replace("(Clone)", "").Trim());
         // 3. 켜기
         if (currentSelectedFurniture != null)
         {
@@ -503,6 +510,17 @@ public void SpawnFurniture()
         }
     }
 
+    public void ClearGridOccupancy(int furnitureID)
+    {
+        for (int i = 0; i < gridOccupancyMap.Length; i++)
+        {
+            if (gridOccupancyMap[i] == furnitureID)
+            {
+                gridOccupancyMap[i] = -1;
+            }
+        }
+    }
+    
    public void StoreSelectedFurniture()
     {
         if (currentSelectedFurniture == null) return;
@@ -527,7 +545,9 @@ public void SpawnFurniture()
                     return; 
                 }
             }
-
+            
+            ClearGridOccupancy(targetID);
+            
             string itemName = currentSelectedFurniture.gameObject.name.Replace("(Clone)", "").Trim(); 
             var gameData = ServiceLocator.Get<GameData>();
 
@@ -575,7 +595,11 @@ public void SpawnFurniture()
             if (CheckIfPlacementInvalid(newGridIndex, itemWidth, itemHeight, targetID))
             {
                 Debug.LogWarning("여기는 가구를 놓을 수 없는 자리(맵 이탈 또는 겹침)입니다!");
-                // TODO: 유저에게 겹쳤다고 UI 알림 띄우기 (또는 제자리로 튕겨내기)
+                var failData = currentPlacedList.Find(x => x.ID == targetID);
+                if (failData != null)
+                {
+                    currentSelectedFurniture.transform.position = GridToWorld(failData.gridNumber);
+                }
                 return;
             }
 
@@ -589,7 +613,9 @@ public void SpawnFurniture()
             ServiceLocator.Get<GameData>().Interior.TransferRoomInterior(targetID, newGridIndex);
 
             Debug.Log($"✅ [이동 완료] ID: {targetID} 가구가 {newGridIndex}번 칸으로 이동 저장되었습니다!");
-
+            
+            ClearGridOccupancy(targetID);
+            MarkGridOccupancy(newGridIndex, itemWidth, itemHeight, targetID);
 
             uiManager.RefreshUI();
 

@@ -444,6 +444,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - storeItemList
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7caea30ddb042440a9aa5eb97b10a01
+    m_Address: Assets/Scenes/Boot.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf955827781db0c45b8843f1f1d39dda
     m_Address: "Assets/ScriptableObjects/InteriorItem/Tile/Wall/\uD558\uD2B8\uD0C0\uC77C.asset"
     m_ReadOnly: 0

@@ -12401,7 +12401,6 @@ MonoBehaviour:
   blanketImage: {fileID: 365598045}
   blanketNameText: {fileID: 1670102323}
   EmployeePanel: {fileID: 990473333}
-  isCrafting: 0
 --- !u!1 &1203836153
 GameObject:
   m_ObjectHideFlags: 0
