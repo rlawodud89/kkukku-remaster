@@ -88,7 +88,7 @@ public class ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         if (ghostIcon != null)
         {
-            ghostIcon.transform.position = Input.mousePosition; // 마우스 따라다니기
+            ghostIcon.transform.position = eventData.position;
         }
     }
 
@@ -98,10 +98,17 @@ public class ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             Destroy(ghostIcon);
 
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                Debug.Log("<color=yellow>[배치 취소]</color> UI 창 위에 놓아서 배치가 취소되었습니다.");
+                return;
+            }
+            
+            
             RoomInventoryManager roomUIManager = FindObjectOfType<RoomInventoryManager>();
             InventoryManager shopUIManager = FindObjectOfType<InventoryManager>();
 
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(eventData.position);
             worldPoint.z = 0;
 
             // =========================================================

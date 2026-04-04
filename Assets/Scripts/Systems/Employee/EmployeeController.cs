@@ -330,6 +330,12 @@ public class EmployeeController : MonoBehaviour
                 if (isAdded)
                 {
                     Debug.Log($"<color=green>[오프라인 보상]</color> 직원이 직접 '{currentWorkingItem}'을 이불장에 수납했습니다!");
+                    
+                    if (QuestManager.Instance != null)
+                    {
+                        QuestManager.Instance.UpdateQuestProgressByID(1);
+                    }
+                    
                 }
                 else
                 {
