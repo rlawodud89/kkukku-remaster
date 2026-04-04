@@ -22,6 +22,26 @@ public class BlanketCraftController : MonoBehaviour
         if (Instance == null) Instance = this;
     }
 
+    private void OnEnable()
+    {
+        if (RecipeData != null)
+        {
+            ApplyRecipeToSlots(RecipeData);
+        }
+    }
+
+    public void RefreshAllSlots()
+    {
+        if (slots == null) return;
+        foreach (var slot in slots)
+        {
+            if (slot != null && !slot.IsEmpty)
+            {
+                slot.RefreshQty();
+            }
+        }
+    }
+
     private void Start()
     {
         if (blanketImage != null) blanketImage.enabled = false;
@@ -132,6 +152,12 @@ public class BlanketCraftController : MonoBehaviour
                 RoomInteriorManager.Instance.ConsumeMaterialFromAnyStorage(slot.ItemName, slot.CurrentSlotQty);
             }
 
+            foreach (var slot in slots)
+            {
+                if (slot.IsEmpty) continue;
+                slot.RefreshQty();
+            }
+            
             Debug.Log("제작 시작! 재료가 즉시 소모되었습니다.");
             StorageUIController.Instance.CloseAllPanels(); // UI 닫기
             UIEventManager.ShowMainUI();

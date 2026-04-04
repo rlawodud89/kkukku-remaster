@@ -81,9 +81,14 @@ public class EmployeeController : MonoBehaviour
         currentStamina -= staminaCostPerWork;
         currentCallback = onComplete;
 
+        
+        UpdateUI();
+        
         // DB에 방금 시작함(진행도 0%)으로 저장
         SaveStateToDB(0f);
 
+        
+        
         // 작업 타이머(코루틴) 시작
         StartCoroutine(CraftingRoutine(0f));
 

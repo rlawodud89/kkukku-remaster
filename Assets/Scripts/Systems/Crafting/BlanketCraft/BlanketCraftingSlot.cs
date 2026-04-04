@@ -45,9 +45,25 @@ public class BlanketCraftingSlot : MonoBehaviour
         isEmpty = true;
         itemNameText.text = ""; // 0 보다는 빈칸이 깔끔할 수 있음
         iconImage.sprite = null; // 아이콘 제거
+        iconImage.sprite = null; // 아이콘 제거
     }
 
-private void UpdateUI()
+    public void RefreshQty()
+    {
+        if (isEmpty) return;
+
+        // 인벤토리(RoomInteriorManager)에서 이 아이템의 최신 개수를 다시 가져옴
+        HaveQty = RoomInteriorManager.Instance.GetTotalItemCountInRoom(
+            StorageUIController.StorageType.Material, 
+            ItemName
+        );
+
+        UpdateUI();
+    }
+    
+    
+    
+public void UpdateUI()
 {
     itemNameText.text = $"{HaveQty}/{CurrentSlotQty}";
 
