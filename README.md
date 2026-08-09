@@ -25,16 +25,32 @@
 | 튜토리얼 | 프롤로그 이후 단계별 안내와 하이라이트를 제공하고, 각 단계의 목표를 완료하면 다음 단계로 진행합니다. |
 | 엔딩 | 레벨 10 달성 후 뒤척임 안개숲이 해금되며, 첫 입장 시 엔딩 애니메이션을 재생합니다. 이후에는 엔딩 이후의 공간을 확인할 수 있습니다. |
 
-이불 가게
-![가게](./images/가게.png)
-작업실
-![작업실](./images/작업실.png)
-채집
-![작업실](./images/채집.png)
-낚시
-![낚시](./images/낚시.png)
-상점
-![상점](./images/상점.png)
+## 🎮 게임 스크린샷
+
+### 🛏️ 이불 가게
+
+<p align="center">
+  <img src="./images/가게.png" width="700">
+</p>
+
+### 🔨 이불 작업실
+
+<p align="center">
+  <img src="./images/작업실.png" width="700">
+</p>
+
+### 🌿 채집 & 🎣 낚시
+
+<p align="center">
+  <img src="./images/채집.png" width="400">
+  <img src="./images/낚시.png" width="400">
+</p>
+
+### 🏪 상점
+
+<p align="center">
+  <img src="./images/상점.png" width="700">
+</p>
 
 ## 🏗️ 게임 아키텍처
 
