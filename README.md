@@ -52,6 +52,18 @@
   <img src="./images/상점.png" width="700">
 </p>
 
+## 🗄️ DB 테이블
+
+게임에서 사용하는 데이터 구조와 데이터 저장 유형은 아래 ERD에서 확인할 수 있습니다.
+
+[DB 테이블 구조 보기 (dbdiagram.io)](https://dbdiagram.io/d/kkukku-68c3d2b7841b2935a634a07e)
+
+다이어그램의 이름 표기 규칙은 다음과 같습니다.
+
+- `~`: SQLite 테이블
+- `~SO`: Unity ScriptableObject
+- `~Type`: C# Enum
+
 ## 🏗️ 게임 아키텍처
 
 ### SQLite + ScriptableObject 하이브리드 데이터 관리
